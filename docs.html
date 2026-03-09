@@ -166,6 +166,8 @@
                     <a href="#code-examples">Code Examples</a>
                     <a href="#error-handling">Error Handling</a>
                     <a href="#rate-limits">Rate Limits</a>
+                    <a href="#tutorials">Tutorials & Guides</a>
+                    <a href="#changelog">API Changelog</a>
                 </nav>
             </aside>
 
@@ -200,7 +202,7 @@
                                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                             </div>
                             <pre><code><span class="tok-comment"># Base URL for all CLEX API calls</span>
-<span class="tok-key">CLEX_BASE_URL</span>=<span class="tok-str">"http://localhost:3000"</span>
+<span class="tok-key">CLEX_BASE_URL</span>=<span class="tok-str">"https://api.clex.in/v1"</span>
 
 <span class="tok-comment"># Your NVIDIA API key (set as environment variable)</span>
 <span class="tok-key">NVIDIA_API_KEY</span>=<span class="tok-str">"nvapi-xxxxxxxxxxxxxxxxxxxx"</span></code></pre>
@@ -216,7 +218,7 @@
                                 <span>cURL</span>
                                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                             </div>
-                            <pre><code><span class="tok-fn">curl</span> http://localhost:3000/api/chat \
+                            <pre><code><span class="tok-fn">curl</span> https://api.clex.in/v1/chat/completions \
   <span class="tok-op">-H</span> <span class="tok-str">"Content-Type: application/json"</span> \
   <span class="tok-op">-d</span> <span class="tok-str">'{
     "model": "meta/llama-3.3-70b-instruct",
@@ -229,20 +231,20 @@
                         <h3 class="text-lg font-medium text-white mb-6 mt-10 flex items-center gap-3">
                             <span
                                 class="w-8 h-8 rounded-lg bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_0_10px_rgba(34,211,238,0.1)] flex items-center justify-center text-cyan-400 text-sm font-bold">3</span>
-                            Start the server
+                            Integrate into your app
                         </h3>
                         <div class="code-block">
                             <div class="code-header">
                                 <span>Terminal</span>
                                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                             </div>
-                            <pre><code><span class="tok-comment"># Install dependencies</span>
-<span class="tok-fn">npm</span> install
+                            <pre><code><span class="tok-comment"># Install OpenAI SDK if not already</span>
+<span class="tok-fn">npm</span> install openai
 
-<span class="tok-comment"># Set your API key and start</span>
-<span class="tok-key">NVIDIA_API_KEY</span>=<span class="tok-str">"nvapi-xxx"</span> <span class="tok-fn">node</span> server.js
+<span class="tok-comment"># Run your script</span>
+<span class="tok-key">NVIDIA_API_KEY</span>=<span class="tok-str">"nvapi-xxx"</span> <span class="tok-fn">node</span> app.js
 
-<span class="tok-comment"># Server running at http://localhost:3000</span></code></pre>
+<span class="tok-comment"># You are now running on CLEX proxy</span></code></pre>
                         </div>
                     </div>
                 </section>
@@ -475,10 +477,15 @@ data: [DONE]</code></pre>
                     <h2 class="text-2xl font-semibold text-white mb-4">Code Examples</h2>
 
                     <!-- Language Tabs -->
-                    <div class="flex gap-2 mb-6">
-                        <button class="category-tab active" onclick="showLang('python', this)">Python</button>
-                        <button class="category-tab" onclick="showLang('javascript', this)">JavaScript</button>
-                        <button class="category-tab" onclick="showLang('curl', this)">cURL</button>
+                    <div class="flex flex-wrap gap-2 mb-6" role="tablist" aria-label="Code Examples">
+                        <button class="category-tab active" role="tab" aria-selected="true" aria-controls="lang-python"
+                            id="tab-python" onclick="showLang('python', this)">Python</button>
+                        <button class="category-tab" role="tab" aria-selected="false" aria-controls="lang-javascript"
+                            id="tab-javascript" onclick="showLang('javascript', this)">JavaScript</button>
+                        <button class="category-tab" role="tab" aria-selected="false" aria-controls="lang-curl"
+                            id="tab-curl" onclick="showLang('curl', this)">cURL</button>
+                        <button class="category-tab" role="tab" aria-selected="false" aria-controls="lang-playground"
+                            id="tab-playground" onclick="showLang('playground', this)">✨ Playground</button>
                     </div>
 
                     <div id="lang-python" class="lang-block">
@@ -490,7 +497,7 @@ data: [DONE]</code></pre>
                             <pre><code><span class="tok-kw">import</span> requests
 <span class="tok-kw">import</span> json
 
-url = <span class="tok-str">"http://localhost:3000/api/chat"</span>
+url = <span class="tok-str">"https://api.clex.in/v1/chat/completions"</span>
 
 payload = {
     <span class="tok-str">"model"</span>: <span class="tok-str">"meta/llama-3.3-70b-instruct"</span>,
@@ -523,7 +530,7 @@ response = requests.<span class="tok-fn">post</span>(url, json=payload, stream=<
                                 <span>JavaScript — fetch</span>
                                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                             </div>
-                            <pre><code><span class="tok-kw">const</span> response = <span class="tok-kw">await</span> <span class="tok-fn">fetch</span>(<span class="tok-str">'http://localhost:3000/api/chat'</span>, {
+                            <pre><code><span class="tok-kw">const</span> response = <span class="tok-kw">await</span> <span class="tok-fn">fetch</span>(<span class="tok-str">'https://api.clex.in/v1/chat/completions'</span>, {
   <span class="tok-key">method</span>: <span class="tok-str">'POST'</span>,
   <span class="tok-key">headers</span>: { <span class="tok-str">'Content-Type'</span>: <span class="tok-str">'application/json'</span> },
   <span class="tok-key">body</span>: JSON.<span class="tok-fn">stringify</span>({
@@ -557,13 +564,14 @@ response = requests.<span class="tok-fn">post</span>(url, json=payload, stream=<
                         </div>
                     </div>
 
-                    <div id="lang-curl" class="lang-block hidden">
+                    <div id="lang-curl" class="lang-block hidden" role="tabpanel" aria-labelledby="tab-curl"
+                        tabindex="0">
                         <div class="code-block">
                             <div class="code-header">
                                 <span>cURL</span>
                                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                             </div>
-                            <pre><code><span class="tok-fn">curl</span> <span class="tok-str">http://localhost:3000/api/chat</span> \
+                            <pre><code><span class="tok-fn">curl</span> <span class="tok-str">https://api.clex.in/v1/chat/completions</span> \
   <span class="tok-op">-X</span> POST \
   <span class="tok-op">-H</span> <span class="tok-str">"Content-Type: application/json"</span> \
   <span class="tok-op">-d</span> <span class="tok-str">'{
@@ -580,66 +588,162 @@ response = requests.<span class="tok-fn">post</span>(url, json=payload, stream=<
   }'</span></code></pre>
                         </div>
                     </div>
+
+                    <!-- Interactive Playground -->
+                    <div id="lang-playground" class="lang-block hidden" role="tabpanel" aria-labelledby="tab-playground"
+                        tabindex="0">
+                        <div
+                            class="glass-card rounded-2xl p-6 border border-cyan-500/30 shadow-[0_0_20px_rgba(34,211,238,0.1)]">
+                            <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-4">
+                                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></div>
+                                    API Explorer
+                                </h3>
+                                <div
+                                    class="text-xs text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 rounded-md">
+                                    Live</div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Request Form -->
+                                <div class="flex flex-col gap-4">
+                                    <div>
+                                        <label for="pg-model"
+                                            class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Model</label>
+                                        <input type="text" id="pg-model" value="meta/llama-3.3-70b-instruct"
+                                            class="w-full bg-[#02050f]/50 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition-colors"
+                                            aria-label="Selected Model" />
+                                        <p class="text-xs text-gray-500 mt-1">Make sure you have <a
+                                                href="#getting-started" class="text-cyan-400 hover:underline">started
+                                                the local server</a> with NVIDIA_API_KEY.</p>
+                                    </div>
+                                    <div>
+                                        <label for="pg-system"
+                                            class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">System
+                                            Prompt (Optional)</label>
+                                        <textarea id="pg-system" rows="2"
+                                            class="w-full bg-[#02050f]/50 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition-colors placeholder-gray-600 resize-none"
+                                            placeholder="You are a helpful assistant..."
+                                            aria-label="System Prompt"></textarea>
+                                    </div>
+                                    <div>
+                                        <label for="pg-user"
+                                            class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">User
+                                            Message</label>
+                                        <textarea id="pg-user" rows="3"
+                                            class="w-full bg-[#02050f]/50 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition-colors placeholder-gray-600 resize-none"
+                                            placeholder="Say hello to the world of AI..."
+                                            aria-label="User Message">Explain quantum computing in 2 sentences.</textarea>
+                                    </div>
+                                    <button id="pg-run-btn"
+                                        class="bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-2.5 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:shadow-[0_0_25px_rgba(34,211,238,0.5)] flex justify-center items-center gap-2 mt-2">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                                                clip-rule="evenodd" fill-rule="evenodd"></path>
+                                        </svg>
+                                        Execute Request
+                                    </button>
+                                </div>
+
+                                <!-- Response Mock Terminal -->
+                                <div class="flex flex-col h-full">
+                                    <label
+                                        class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Response</label>
+                                    <div class="flex-1 bg-[#02050f] border border-white/10 rounded-xl p-4 overflow-y-auto max-h-[350px] font-mono text-sm relative"
+                                        aria-live="polite">
+                                        <div id="pg-response"
+                                            class="text-gray-300 w-full min-h-[100px] whitespace-pre-wrap"><span
+                                                class="text-gray-600 italic">Response will stream here...</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- Error Handling -->
                 <section id="error-handling" class="docs-section mb-16">
                     <h2 class="text-2xl font-semibold text-white mb-4">Error Handling</h2>
-                    <p class="text-gray-400 mb-6">Errors return a JSON object with an <code
-                            class="inline-code">error</code> field.</p>
+                    <p class="text-gray-400 mb-6">Errors return a standardized JSON object containing an <code
+                            class="inline-code">error</code> field with descriptive information, helping developers
+                        debug integrations quickly.</p>
+
+                    <div class="code-block mb-8">
+                        <div class="code-header">
+                            <span>JSON Error Format</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>{
+  <span class="tok-key">"error"</span>: {
+    <span class="tok-key">"code"</span>: <span class="tok-str">"invalid_request_error"</span>,
+    <span class="tok-key">"message"</span>: <span class="tok-str">"Model 'meta/llama-nonexistent' does not exist."</span>,
+    <span class="tok-key">"param"</span>: <span class="tok-str">"model"</span>
+  }
+}</code></pre>
+                    </div>
 
                     <div class="glass-card rounded-2xl overflow-hidden">
                         <table class="param-table">
                             <thead>
                                 <tr>
-                                    <th>Code</th>
-                                    <th>Meaning</th>
-                                    <th>Resolution</th>
+                                    <th>HTTP Status</th>
+                                    <th>Error Code</th>
+                                    <th>Cause & Resolution</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="text-yellow-400">400</td>
-                                    <td class="text-gray-400">Bad Request</td>
-                                    <td class="text-gray-500">Check model name and messages format</td>
+                                    <td class="text-yellow-400 whitespace-nowrap">400 Bad Request</td>
+                                    <td><code class="inline-code text-cyan-400">invalid_request_error</code></td>
+                                    <td class="text-gray-400"><strong class="text-white">Cause:</strong> Malformed JSON
+                                        or invalid parameter.<br /><strong class="text-white">Fix:</strong> Validate the
+                                        <code class="inline-code">messages</code> array structure and parameter types.
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td class="text-yellow-400">401</td>
-                                    <td class="text-gray-400">Unauthorized</td>
-                                    <td class="text-gray-500">Invalid or missing NVIDIA_API_KEY</td>
+                                    <td class="text-yellow-400 whitespace-nowrap">401 Unauthorized</td>
+                                    <td><code class="inline-code text-cyan-400">authentication_error</code></td>
+                                    <td class="text-gray-400"><strong class="text-white">Cause:</strong> Missing or
+                                        invalid NVIDIA API key.<br /><strong class="text-white">Fix:</strong> Ensure the
+                                        <code class="inline-code">NVIDIA_API_KEY</code> environment variable is set on
+                                        the server.
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td class="text-yellow-400">404</td>
-                                    <td class="text-gray-400">Model Not Found</td>
-                                    <td class="text-gray-500">Model ID doesn't exist on NVIDIA</td>
+                                    <td class="text-yellow-400 whitespace-nowrap">404 Not Found</td>
+                                    <td><code class="inline-code text-cyan-400">model_not_found</code></td>
+                                    <td class="text-gray-400"><strong class="text-white">Cause:</strong> Requested model
+                                        ID is incorrect or deprecated.<br /><strong class="text-white">Fix:</strong>
+                                        Verify the model exact string from the <a href="models.html"
+                                            class="text-cyan-400 hover:underline">catalog</a>.</td>
                                 </tr>
                                 <tr>
-                                    <td class="text-yellow-400">429</td>
-                                    <td class="text-gray-400">Rate Limited</td>
-                                    <td class="text-gray-500">Wait and retry, or use a different model</td>
+                                    <td class="text-yellow-400 whitespace-nowrap">429 Rate Limit</td>
+                                    <td><code class="inline-code text-cyan-400">rate_limit_exceeded</code></td>
+                                    <td class="text-gray-400"><strong class="text-white">Cause:</strong> Exceeded
+                                        allowed quota or request velocity.<br /><strong class="text-white">Fix:</strong>
+                                        Pace your requests using exponential backoff. Wait a few seconds before
+                                        retrying.</td>
                                 </tr>
                                 <tr>
-                                    <td class="text-red-400">500</td>
-                                    <td class="text-gray-400">Server Error</td>
-                                    <td class="text-gray-500">Internal issue, retry after a moment</td>
+                                    <td class="text-red-400 whitespace-nowrap">500 Server Error</td>
+                                    <td><code class="inline-code text-cyan-400">internal_server_error</code></td>
+                                    <td class="text-gray-400"><strong class="text-white">Cause:</strong> Unhandled
+                                        backend exception or NVIDIA API failure.<br /><strong
+                                            class="text-white">Fix:</strong> Retry the request after a short delay. If
+                                        it persists, check <a href="support.html"
+                                            class="text-cyan-400 hover:underline">Support</a>.</td>
                                 </tr>
                                 <tr>
-                                    <td class="text-red-400">503</td>
-                                    <td class="text-gray-400">Service Unavailable</td>
-                                    <td class="text-gray-500">Check NVIDIA API status</td>
+                                    <td class="text-red-400 whitespace-nowrap">503 Unavailable</td>
+                                    <td><code class="inline-code text-cyan-400">service_unavailable</code></td>
+                                    <td class="text-gray-400"><strong class="text-white">Cause:</strong> Model is
+                                        overloaded or under maintenance.<br /><strong class="text-white">Fix:</strong>
+                                        Wait and retry, or gracefully fall back to a smaller model (e.g. Llama 8B).</td>
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-
-                    <div class="code-block mt-6">
-                        <div class="code-header">
-                            <span>Error response example</span>
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                        <pre><code>{
-  <span class="tok-key">"error"</span>: <span class="tok-str">"NVIDIA API key not configured. Set NVIDIA_API_KEY environment variable."</span>
-}</code></pre>
                     </div>
                 </section>
 
@@ -680,6 +784,89 @@ response = requests.<span class="tok-fn">post</span>(url, json=payload, stream=<
                     </div>
                 </section>
 
+                <!-- Tutorials & Guides -->
+                <section id="tutorials" class="docs-section mb-16">
+                    <h2 class="text-2xl font-semibold text-white mb-4">Tutorials & Guides</h2>
+                    <p class="text-gray-400 mb-6">Kickstart your production workflow with these step-by-step onboarding
+                        guides.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <a href="#"
+                            class="glass-card rounded-2xl p-6 border border-white/5 hover:border-cyan-500/30 transition-all hover:-translate-y-1 block no-underline group cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
+                                Build a Chatbot UI</h3>
+                            <p class="text-sm text-gray-400 mb-4">Learn to wire up vanilla JS and standard HTML to
+                                stream tokens back to the client.</p>
+                            <span
+                                class="text-xs font-semibold text-cyan-400 uppercase tracking-widest flex items-center gap-1">Read
+                                Guide <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg></span>
+                        </a>
+
+                        <a href="#"
+                            class="glass-card rounded-2xl p-6 border border-white/5 hover:border-cyan-500/30 transition-all hover:-translate-y-1 block no-underline group cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
+                                Agentic Workflows</h3>
+                            <p class="text-sm text-gray-400 mb-4">Use DeepSeek or Llama 3.3 for multi-step reasoning and
+                                tool-calling flows.</p>
+                            <span
+                                class="text-xs font-semibold text-cyan-400 uppercase tracking-widest flex items-center gap-1">Read
+                                Guide <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg></span>
+                        </a>
+
+                        <a href="#"
+                            class="glass-card rounded-2xl p-6 border border-white/5 hover:border-cyan-500/30 transition-all hover:-translate-y-1 block no-underline group cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
+                                RAG Setup</h3>
+                            <p class="text-sm text-gray-400 mb-4">Build retrieval pipelines using NVIDIA embedding
+                                endpoints alongside conversational LLMs.</p>
+                            <span
+                                class="text-xs font-semibold text-cyan-400 uppercase tracking-widest flex items-center gap-1">Read
+                                Guide <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg></span>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- API Changelog -->
+                <section id="changelog" class="docs-section mb-16">
+                    <h2 class="text-2xl font-semibold text-white mb-4">API Changelog & Versioning</h2>
+                    <p class="text-gray-400 mb-6">CLEX endpoints follow semantic versioning. Breaking changes will
+                        always be introduced under a new version prefix (e.g. <code
+                            class="inline-code">/v2/chat/completions</code>). Below are recent platform updates.</p>
+
+                    <div class="relative border-l border-white/10 ml-4 space-y-8 pb-4">
+                        <div class="relative pl-6">
+                            <div
+                                class="absolute w-3 h-3 bg-cyan-400 rounded-full -left-[6.5px] top-1.5 shadow-[0_0_10px_rgba(34,211,238,0.5)]">
+                            </div>
+                            <time class="block text-xs font-mono text-cyan-400 mb-1">March 2026</time>
+                            <h4 class="text-base font-bold text-white mb-2">Interactive Documentation</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">Released the new API Explorer inside our
+                                documentation, standard metadata view in our catalog, and an expanded Error Reference.
+                            </p>
+                        </div>
+
+                        <div class="relative pl-6">
+                            <div
+                                class="absolute w-3 h-3 bg-[#02050f] border-2 border-white/20 rounded-full -left-[6.5px] top-1.5">
+                            </div>
+                            <time class="block text-xs font-mono text-gray-500 mb-1">February 2026</time>
+                            <h4 class="text-base font-bold text-white mb-2">Extended Model Catalog</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">Added support for Mistral Large 3, DeepSeek
+                                R1 distillation variants, and Meta Llama 4 Scout. All endpoints maintained full backward
+                                compatibility.</p>
+                        </div>
+                    </div>
+                </section>
+
             </main>
         </div>
 
@@ -692,14 +879,9 @@ response = requests.<span class="tok-fn">post</span>(url, json=payload, stream=<
                     <span id="copyright-year"></span> clex.in. All rights reserved.
                 </div>
                 <div class="flex flex-wrap justify-center items-center gap-6 font-medium">
-                    <a href="https://www.linkedin.com/in/abhnv07/" target="_blank" rel="noreferrer"
-                        class="hover:text-cyan-300 transition-colors">LinkedIn</a>
-                    <a href="https://github.com/Abhinavv-007" target="_blank" rel="noreferrer"
-                        class="hover:text-cyan-300 transition-colors">GitHub</a>
-                    <a href="https://x.com/Abhnv007" target="_blank" rel="noreferrer"
-                        class="hover:text-cyan-300 transition-colors">X / Twitter</a>
-                    <a href="https://www.abhnv.in/contact" target="_blank" rel="noreferrer"
-                        class="hover:text-cyan-300 transition-colors">Contact</a>
+                    <a href="support.html" class="hover:text-cyan-300 transition-colors">Support</a>
+                    <a href="privacy.html" class="hover:text-cyan-300 transition-colors">Privacy Policy</a>
+                    <a href="terms.html" class="hover:text-cyan-300 transition-colors">Terms of Service</a>
                 </div>
             </div>
         </footer>
@@ -720,10 +902,134 @@ response = requests.<span class="tok-fn">post</span>(url, json=payload, stream=<
 
         // --- Language tabs ---
         function showLang(lang, btn) {
-            document.querySelectorAll('.lang-block').forEach(b => b.classList.add('hidden'));
-            document.getElementById('lang-' + lang).classList.remove('hidden');
-            btn.closest('.flex').querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+            // Hide all tab panels
+            document.querySelectorAll('.lang-block').forEach(b => {
+                b.classList.add('hidden');
+            });
+            // Show selected panel
+            const targetPanel = document.getElementById('lang-' + lang);
+            if (targetPanel) {
+                targetPanel.classList.remove('hidden');
+            }
+
+            // Update tab button states
+            const tabContainer = btn.closest('.flex');
+            tabContainer.querySelectorAll('.category-tab').forEach(t => {
+                t.classList.remove('active');
+                t.setAttribute('aria-selected', 'false');
+            });
             btn.classList.add('active');
+            btn.setAttribute('aria-selected', 'true');
+        }
+
+        // --- Keyboard navigation for tabs ---
+        const tablist = document.querySelector('[role="tablist"]');
+        if (tablist) {
+            const tabs = tablist.querySelectorAll('[role="tab"]');
+            tablist.addEventListener('keydown', (e) => {
+                const currentIndex = Array.from(tabs).findIndex(t => t === document.activeElement);
+                if (currentIndex === -1) return;
+
+                let nextIndex = currentIndex;
+                if (e.key === 'ArrowRight') nextIndex = (currentIndex + 1) % tabs.length;
+                else if (e.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+
+                if (nextIndex !== currentIndex) {
+                    tabs[nextIndex].focus();
+                    tabs[nextIndex].click();
+                    e.preventDefault();
+                }
+            });
+        }
+
+        // --- Interactive Playground Logic ---
+        const pgRunBtn = document.getElementById('pg-run-btn');
+        if (pgRunBtn) {
+            pgRunBtn.addEventListener('click', async () => {
+                const model = document.getElementById('pg-model').value.trim();
+                const sysPrompt = document.getElementById('pg-system').value.trim();
+                const userMsg = document.getElementById('pg-user').value.trim();
+                const responseEl = document.getElementById('pg-response');
+
+                if (!model || !userMsg) {
+                    responseEl.innerHTML = '<span class="text-red-400">Error: Model and User Message are required.</span>';
+                    return;
+                }
+
+                pgRunBtn.disabled = true;
+                pgRunBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                responseEl.innerHTML = '<span class="text-gray-500 italic">Sending request...</span>\n\n';
+
+                const messages = [];
+                if (sysPrompt) messages.push({ role: 'system', content: sysPrompt });
+                messages.push({ role: 'user', content: userMsg });
+
+                try {
+                    const res = await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            model: model,
+                            messages: messages,
+                            stream: true
+                        })
+                    });
+
+                    if (!res.ok) {
+                        const errData = await res.json().catch(() => ({}));
+                        responseEl.innerHTML += `<span class="text-red-400">HTTP Error ${res.status}: ${errData.error || res.statusText}</span>`;
+                        pgRunBtn.disabled = false;
+                        pgRunBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                        return;
+                    }
+
+                    const reader = res.body.getReader();
+                    const decoder = new TextDecoder();
+                    let buffer = '';
+
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+
+                        buffer += decoder.decode(value, { stream: true });
+                        let boundary = buffer.indexOf('\\n\\n');
+
+                        while (boundary !== -1) {
+                            const chunk = buffer.substring(0, boundary).trim();
+                            buffer = buffer.substring(boundary + 2);
+
+                            const lines = chunk.split('\\n');
+                            for (const line of lines) {
+                                if (line.startsWith('data: ')) {
+                                    const data = line.slice(6).trim();
+                                    if (data === '[DONE]') continue;
+                                    try {
+                                        const parsed = JSON.parse(data);
+                                        const token = parsed.choices?.[0]?.delta?.content;
+                                        if (token) {
+                                            if (responseEl.innerHTML.includes('Sending request...')) {
+                                                responseEl.innerHTML = '';
+                                            }
+                                            // Handle HTML escaping to prevent XSS in DOM
+                                            const div = document.createElement('div');
+                                            div.textContent = token;
+                                            responseEl.innerHTML += div.innerHTML;
+                                        }
+                                    } catch (e) {
+                                        // Ignore parse errors on partial chunks
+                                    }
+                                }
+                            }
+                            boundary = buffer.indexOf('\\n\\n');
+                        }
+                    }
+                } catch (err) {
+                    responseEl.innerHTML += `<span class="text-red-400">Fetch error: ${err.message}</span>`;
+                } finally {
+                    pgRunBtn.disabled = false;
+                    pgRunBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            });
         }
 
         // --- Scroll spy ---

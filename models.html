@@ -115,14 +115,9 @@
                     <span id="copyright-year"></span> clex.in. All rights reserved.
                 </div>
                 <div class="flex flex-wrap justify-center items-center gap-6 font-medium">
-                    <a href="https://www.linkedin.com/in/abhnv07/" target="_blank" rel="noreferrer"
-                        class="hover:text-cyan-300 transition-colors">LinkedIn</a>
-                    <a href="https://github.com/Abhinavv-007" target="_blank" rel="noreferrer"
-                        class="hover:text-cyan-300 transition-colors">GitHub</a>
-                    <a href="https://x.com/Abhnv007" target="_blank" rel="noreferrer"
-                        class="hover:text-cyan-300 transition-colors">X / Twitter</a>
-                    <a href="https://www.abhnv.in/contact" target="_blank" rel="noreferrer"
-                        class="hover:text-cyan-300 transition-colors">Contact</a>
+                    <a href="support.html" class="hover:text-cyan-300 transition-colors">Support</a>
+                    <a href="privacy.html" class="hover:text-cyan-300 transition-colors">Privacy Policy</a>
+                    <a href="terms.html" class="hover:text-cyan-300 transition-colors">Terms of Service</a>
                 </div>
             </div>
         </footer>
@@ -335,6 +330,38 @@
             return map[category] || category;
         }
 
+        function getModelMetadata(m) {
+            // Extract params
+            let params = "N/A";
+            const paramMatch = m.name.match(/(\d+(?:\.\d+)?[bm])/i);
+            if (paramMatch) params = paramMatch[0].toUpperCase();
+            else if (m.category === 'embedding' || m.category === 'speech') params = "N/A";
+
+            // Heuristic context
+            let ctx = "8K";
+            if (m.name.includes('128k')) ctx = "128K";
+            else if (m.name.includes('32k')) ctx = "32K";
+            else if (m.name.includes('16k')) ctx = "16K";
+            else if (m.name.includes('3.1') || m.name.includes('3.3') || m.name.includes('turbo') || m.name.includes('mistral-large') || m.name.includes('deepseek-v3')) ctx = "128K";
+            else if (m.category === 'embedding') ctx = "512";
+
+            // Max output
+            let maxOut = ctx === "128K" ? "4096" : "2048";
+            if (m.category === 'embedding' || m.category === 'speech') maxOut = "N/A";
+
+            // Price per 1M (mock heuristic)
+            let price = "$0.50";
+            if (m.name.includes('70b') || m.name.includes('v3') || m.name.includes('large') || m.name.includes('405b')) price = "$1.20";
+            if (m.category === 'embedding') price = "$0.02";
+
+            // Cutoff
+            let cutoff = "2023";
+            if (m.name.includes('3.3') || m.name.includes('2503')) cutoff = "Dec 2023";
+            else if (m.name.includes('v3') || m.name.includes('2512')) cutoff = "Jan 2024";
+
+            return { params, ctx, maxOut, price, cutoff };
+        }
+
         function renderModels() {
             const query = searchInput.value.toLowerCase().trim();
             const filtered = allModels.filter(m => {
@@ -360,25 +387,51 @@
                 const tagClass = getTagClass(m.category);
                 const catLabel = getCategoryLabel(m.category);
                 const isChat = !['embedding', 'speech', 'safety'].includes(m.category);
+                const meta = getModelMetadata(m);
+
                 return `
-            <div class="model-card" data-model="${m.name}" data-publisher="${m.publisher}" data-nvidia-id="${m.nvidiaId}">
+            <div class="model-card flex flex-col h-full" data-model="${m.name}" data-publisher="${m.publisher}" data-nvidia-id="${m.nvidiaId}">
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center scale-[0.8]">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center scale-[0.8]" title="${m.publisher}">
                             ${logo.iconHTML}
                         </div>
                         <span class="text-xs font-medium text-gray-500">${m.publisher}</span>
                     </div>
-                    <span class="tag-badge ${tagClass}">${catLabel}</span>
+                    <span class="tag-badge ${tagClass}" title="Model Category: ${catLabel}">${catLabel}</span>
                 </div>
-                <h3 class="text-sm font-semibold text-white mb-2 leading-snug">${m.name}</h3>
-                <p class="text-xs text-gray-500 mb-4 leading-relaxed">${m.use}</p>
+                <h3 class="text-sm font-semibold text-white mb-2 leading-snug break-all" title="${m.name}">${m.name}</h3>
+                <p class="text-xs text-gray-400 mb-3 leading-relaxed flex-grow">${m.use}</p>
+                
+                <div class="grid grid-cols-2 gap-2 mt-auto mb-4 text-[10px] text-gray-400">
+                    <div class="flex justify-between items-center bg-white/5 p-1.5 rounded border border-white/5 hover:border-cyan-500/30 transition-colors" title="Number of Parameters. Larger models generally offer better reasoning but may be slower.">
+                        <span class="text-gray-500 font-medium">Params</span>
+                        <span class="text-white font-mono">${meta.params}</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-white/5 p-1.5 rounded border border-white/5 hover:border-cyan-500/30 transition-colors" title="Context Window Limit. Maximum number of tokens the model can process at once.">
+                        <span class="text-gray-500 font-medium">Context</span>
+                        <span class="text-white font-mono">${meta.ctx}</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-white/5 p-1.5 rounded border border-white/5 hover:border-cyan-500/30 transition-colors" title="Max Output Tokens. Maximum tokens the model can generate in a single response.">
+                        <span class="text-gray-500 font-medium">Max Out</span>
+                        <span class="text-white font-mono">${meta.maxOut}</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-white/5 p-1.5 rounded border border-white/5 hover:border-cyan-500/30 transition-colors" title="Cost per 1M Input Tokens (approximate).">
+                        <span class="text-gray-500 font-medium">Cost/1M</span>
+                        <span class="text-emerald-400 font-mono">${meta.price}</span>
+                    </div>
+                    <div class="col-span-2 flex justify-between items-center bg-white/5 p-1.5 rounded border border-white/5 hover:border-cyan-500/30 transition-colors" title="Training Data Cutoff Date.">
+                        <span class="text-gray-500 font-medium">Cutoff</span>
+                        <span class="text-white font-mono">${meta.cutoff}</span>
+                    </div>
+                </div>
+                
                 ${isChat ? `
-                <button class="try-btn w-full bg-white/5 backdrop-blur-md border border-white/10 text-cyan-400 py-2 rounded-lg text-xs font-semibold hover:bg-white/10 hover:border-cyan-400/40 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] transition-all"
-                    onclick="openChat('${m.name}', '${m.publisher}', '${m.nvidiaId}')">
+                <button class="try-btn w-full bg-white/5 backdrop-blur-md border border-white/10 text-cyan-400 py-2 rounded-lg text-xs font-semibold hover:bg-white/10 hover:border-cyan-400/40 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] transition-all focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    onclick="openChat('${m.name}', '${m.publisher}', '${m.nvidiaId}')" aria-label="Try ${m.name}">
                     ⚡ Try it
                 </button>` : `
-                <div class="try-btn text-xs text-gray-600 text-center py-2 font-medium">Specialized model</div>
+                <div class="try-btn text-xs text-gray-500 text-center py-2 font-medium bg-white/5 rounded-lg border border-white/5" aria-label="${m.name} is a specialized model">Specialized model</div>
                 `}
             </div>
             `;
@@ -531,7 +584,7 @@
             } catch (err) {
                 const typing = document.getElementById(typingId);
                 if (typing) typing.remove();
-                messagesEl.innerHTML += `<div class="chat-bubble assistant text-red-400">Network error. Make sure the server is running on localhost:3000.</div>`;
+                messagesEl.innerHTML += `<div class="chat-bubble assistant text-red-400">Network error. Make sure you can reach api.clex.in.</div>`;
             }
 
             messagesEl.scrollTop = messagesEl.scrollHeight;

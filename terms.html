@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - Clex.in</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="shared.css">
+</head>
+
+<body class="min-h-screen relative grid-bg">
+
+    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div class="orb w-[40vw] h-[40vw] bg-emerald-900/10 top-[20%] right-[20%]" style="filter: blur(140px)"></div>
+    </div>
+    <canvas id="ascii-canvas" class="fixed inset-0 z-0 pointer-events-none"></canvas>
+
+    <div class="relative z-10 flex flex-col min-h-screen">
+
+        <header id="main-header" class="fixed top-0 w-full z-50 transition-all duration-500 py-6">
+            <div class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 flex items-center justify-between">
+                <a href="index.html" class="flex items-center gap-2 cursor-pointer no-underline group">
+                    <span
+                        class="text-xl font-bold tracking-widest text-white group-hover:tracking-[0.3em] transition-all duration-500">CLEX</span>
+                    <div class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.8)] animate-pulse">
+                    </div>
+                </a>
+                <nav
+                    class="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-1 bg-white/[0.03] border border-white/[0.06] rounded-full p-1 backdrop-blur-xl">
+                    <a href="index.html" class="nav-link">Platform</a>
+                    <a href="models.html" class="nav-link">Models</a>
+                    <a href="docs.html" class="nav-link">Docs</a>
+                    <a href="pricing.html" class="nav-link">Pricing</a>
+                </nav>
+                <div class="flex items-center gap-4">
+                    <a href="login.html"
+                        class="text-sm font-medium text-gray-400 hover:text-white transition-colors hidden sm:block">Sign
+                        In</a>
+                    <a href="docs.html#getting-started"
+                        class="btn-primary text-sm !py-2 !px-5 !shadow-none !bg-white/10 !text-white border border-white/15 hover:!bg-white hover:!text-black no-underline">Get
+                        Started</a>
+                </div>
+            </div>
+        </header>
+
+        <main
+            class="flex-1 flex flex-col max-w-[800px] mx-auto w-full px-6 md:px-12 lg:px-20 pt-40 pb-24 z-10 prose prose-invert prose-p:text-gray-400 prose-headings:text-white prose-a:text-cyan-400 hover:prose-a:text-cyan-300">
+
+            <h1 class="text-4xl font-bold mb-4">Terms of Service</h1>
+            <p class="text-sm font-mono text-gray-500 mb-10">Last Updated: March 2026</p>
+
+            <h2>1. Acceptance of Terms</h2>
+            <p>By accessing and using CLEX ("we", "our", or "us"), you agree to be bound by these Terms of Service. If
+                you do not agree to these terms, please do not use our services or API.</p>
+
+            <h2>2. License to Use the API</h2>
+            <p>We grant you a non-exclusive, non-transferable, revocable license to access our API solely for
+                developing, testing, and operating your applications. You may not reverse engineer, resell, or
+                distribute our API layer as a standalone product.</p>
+
+            <h2>3. API Usage and Rate Limits</h2>
+            <p>You agree not to exceed the usage limits associated with your account or to circumvent any rate-limiting
+                mechanisms. While our Free Tier is available for all users, we reserve the right to actively block or
+                suspend accounts that use automated bots to rotate API keys to bypass rate limits.</p>
+
+            <h2>4. Underlying Provider Terms</h2>
+            <p>CLEX routes your prompts to various AI foundation models (such as Llama, DeepSeek, Mixtral). You agree
+                that in addition to these Terms, your use of our API is subject to the Acceptable Use Policy (AUP) of
+                the underlying provider models. Generating CSAM, illegal content, or malware via our endpoints is
+                strictly prohibited and will result in permanent suspension.</p>
+
+            <h2>5. Service Availability</h2>
+            <p>We do our best to maintain 99.9% uptime, utilizing smart fallbacks across multiple hosting
+                infrastructures. However, our services are provided "as is" and "as available". We are not liable for
+                brief service interruptions caused by upstream provider outages.</p>
+
+            <h2>6. Liability and Indemnification</h2>
+            <p>CLEX is not liable for direct, indirect, incidental, or consequential damages resulting from your use of
+                the API. You agree to indemnify and hold CLEX harmless against any claims, damages, or legal actions
+                originating from the nature of the prompts you submit or the applications you build using our API.</p>
+
+            <h2>7. Governing Law</h2>
+            <p>These Terms shall be interpreted and enforced under the laws of the jurisdiction in which CLEX is
+                incorporated, without giving effect to conflicts of law provisions.</p>
+
+        </main>
+
+        <footer
+            class="w-full py-10 border-t border-white/[0.04] bg-[#02050f]/90 backdrop-blur-md z-20 mt-auto relative">
+            <div class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20">
+                <div class="flex flex-wrap justify-center md:justify-between items-center gap-6 text-sm text-gray-500">
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm font-bold tracking-widest text-gray-600">CLEX</span>
+                        <span class="text-gray-700">•</span>
+                        <span><span id="copyright-year"></span> All rights reserved.</span>
+                    </div>
+                    <div class="flex flex-wrap justify-center items-center gap-6 font-medium">
+                        <a href="support.html" class="hover:text-cyan-300 transition-colors">Support</a>
+                        <a href="privacy.html" class="hover:text-cyan-300 transition-colors">Privacy Policy</a>
+                        <a href="terms.html" class="hover:text-cyan-300 transition-colors">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script src="shared.js"></script>
+</body>
+
+</html>
