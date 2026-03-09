@@ -23,11 +23,17 @@ app.post('/api/chat', async (req, res) => {
 
     if (!NVIDIA_API_KEY) {
         return res.status(500).json({
-            error: 'NVIDIA API key not configured. Set NVIDIA_API_KEY environment variable.\n\nExample: NVIDIA_API_KEY="nvapi-xxx" node server.js'
+            error: 'NVIDIA API key not configured. Set NVIDIA_API_KEY environment variable.'
         });
     }
 
-    const { model, messages, temperature, max_tokens, top_p, stream } = req.body;
+    // On Vercel, req.body might already be parsed, or it might be stringified
+    let body = req.body;
+    if (typeof body === 'string') {
+        try { body = JSON.parse(body); } catch (e) { }
+    }
+
+    const { model, messages, temperature, max_tokens, top_p, stream } = body || {};
 
     if (!model || !messages) {
         return res.status(400).json({
@@ -56,15 +62,11 @@ app.post('/api/chat', async (req, res) => {
 
         if (!nvidiaRes.ok) {
             const errBody = await nvidiaRes.text();
-            let errMsg;
+            let errMsg = errBody;
             try {
                 const parsed = JSON.parse(errBody);
                 errMsg = parsed.detail || parsed.error?.message || parsed.message || errBody;
-            } catch {
-                errMsg = errBody;
-            }
-
-            console.error(`[NVIDIA API Error] ${nvidiaRes.status}: ${errMsg}`);
+            } catch (e) { }
             return res.status(nvidiaRes.status).json({
                 error: `NVIDIA API error (${nvidiaRes.status}): ${errMsg}`
             });
@@ -72,23 +74,25 @@ app.post('/api/chat', async (req, res) => {
 
         if (shouldStream) {
             // Stream the response via SSE
-            res.setHeader('Content-Type', 'text/event-stream');
-            res.setHeader('Cache-Control', 'no-cache');
+            res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+            res.setHeader('Cache-Control', 'no-cache, no-transform');
             res.setHeader('Connection', 'keep-alive');
+            res.setHeader('X-Accel-Buffering', 'no'); // Disable proxy buffering
+            res.flushHeaders(); // Ensure headers are sent immediately
 
-            const reader = nvidiaRes.body.getReader();
-            const decoder = new TextDecoder();
-
-            try {
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-                    const chunk = decoder.decode(value, { stream: true });
-                    res.write(chunk);
+            if (nvidiaRes.body) {
+                // Use async iteration which is extremely robust in Node 18+ for Web Streams
+                const decoder = new TextDecoder();
+                try {
+                    for await (const chunk of nvidiaRes.body) {
+                        res.write(decoder.decode(chunk, { stream: true }));
+                    }
+                } catch (streamErr) {
+                    console.error('[Stream Error]', streamErr.message);
+                } finally {
+                    res.end();
                 }
-            } catch (streamErr) {
-                console.error('[Stream Error]', streamErr.message);
-            } finally {
+            } else {
                 res.end();
             }
         } else {
