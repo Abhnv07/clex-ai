@@ -777,6 +777,23 @@
                 { type: 'model', text: 'Stp', color: '#ec4899', orbitIdx: 0, angle: 5.6, name: 'Step 3.5 Flash' }
             ];
 
+            // Group entities by orbit to space them evenly
+            const orbitGroups = {};
+            entities.forEach(e => {
+                if (!orbitGroups[e.orbitIdx]) orbitGroups[e.orbitIdx] = [];
+                orbitGroups[e.orbitIdx].push(e);
+            });
+
+            // Assign even spacing for items in the same orbit
+            Object.keys(orbitGroups).forEach(orbitIdx => {
+                const group = orbitGroups[orbitIdx];
+                const count = group.length;
+                group.forEach((e, i) => {
+                    // Providers keep their specific angles if desired, but we recalculate for even spacing for all
+                    e.angle = (i / count) * Math.PI * 2;
+                });
+            });
+
             const nodes = [];
 
             entities.forEach(e => {
@@ -810,17 +827,20 @@
                 nodes.push({ el, orbit: orbits[e.orbitIdx], angle: e.angle, speed: orbits[e.orbitIdx].speed });
             });
 
-            let isHovered = false;
-            system.addEventListener('mouseenter', () => isHovered = true);
-            system.addEventListener('mouseleave', () => isHovered = false);
-            // Touch support for mobile to pause
-            system.addEventListener('touchstart', () => isHovered = true, { passive: true });
-            system.addEventListener('touchend', () => { setTimeout(() => isHovered = false, 1000); }, { passive: true });
+            let targetSpeedMultiplier = 1;
+            let currentSpeedMultiplier = 1;
+
+            system.addEventListener('mouseenter', () => targetSpeedMultiplier = 0.15);
+            system.addEventListener('mouseleave', () => targetSpeedMultiplier = 1);
+            // Touch support for mobile to slow down
+            system.addEventListener('touchstart', () => targetSpeedMultiplier = 0.15, { passive: true });
+            system.addEventListener('touchend', () => { setTimeout(() => targetSpeedMultiplier = 1, 1000); }, { passive: true });
 
             function animate() {
-                if (!isHovered) {
-                    nodes.forEach(n => { n.angle += n.speed; });
-                }
+                // Smooth interpolation for speed multiplier
+                currentSpeedMultiplier += (targetSpeedMultiplier - currentSpeedMultiplier) * 0.05;
+
+                nodes.forEach(n => { n.angle += (n.speed * currentSpeedMultiplier); });
 
                 nodes.forEach(n => {
                     const x = Math.cos(n.angle) * n.orbit.rx;
