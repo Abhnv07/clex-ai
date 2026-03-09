@@ -374,11 +374,11 @@
                 <h3 class="text-sm font-semibold text-white mb-2 leading-snug">${m.name}</h3>
                 <p class="text-xs text-gray-500 mb-4 leading-relaxed">${m.use}</p>
                 ${isChat ? `
-                <button class="try-btn w-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 py-2 rounded-lg text-xs font-medium hover:bg-cyan-500/20 transition-all"
+                <button class="try-btn w-full bg-white/5 backdrop-blur-md border border-white/10 text-cyan-400 py-2 rounded-lg text-xs font-semibold hover:bg-white/10 hover:border-cyan-400/40 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] transition-all"
                     onclick="openChat('${m.name}', '${m.publisher}', '${m.nvidiaId}')">
                     ⚡ Try it
                 </button>` : `
-                <div class="try-btn text-xs text-gray-600 text-center py-2">Specialized model</div>
+                <div class="try-btn text-xs text-gray-600 text-center py-2 font-medium">Specialized model</div>
                 `}
             </div>
             `;

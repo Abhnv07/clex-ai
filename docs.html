@@ -179,17 +179,19 @@
                         <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
                         <span class="text-xs text-emerald-300 font-semibold">Quick Start</span>
                     </div>
-                    <h1 class="text-4xl md:text-5xl font-semibold text-white leading-tight mb-4">API <span
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-emerald-300">Documentation</span>
+                    <h1
+                        class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6 tracking-tight">
+                        API <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-teal-300 to-emerald-300 glow-pulse">Documentation</span>
                     </h1>
-                    <p class="text-gray-400 text-lg mb-8 max-w-2xl">Get started with the CLEX unified API in under 60
-                        seconds. Access 150+ models from NVIDIA, Meta, OpenAI, DeepSeek, Qwen and more through a single
-                        endpoint.</p>
+                    <p class="text-gray-400 text-lg md:text-xl mb-10 max-w-3xl leading-relaxed">Get started with the
+                        CLEX unified API in under 60 seconds. Access 150+ world-class AI models from NVIDIA, Meta,
+                        OpenAI, DeepSeek, and Qwen through a single, lightning-fast endpoint.</p>
 
                     <div class="glass-card rounded-2xl p-8">
                         <h3 class="text-lg font-medium text-white mb-6 flex items-center gap-3">
                             <span
-                                class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-sm font-bold">1</span>
+                                class="w-8 h-8 rounded-lg bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center text-cyan-400 text-sm font-bold shadow-[0_0_10px_rgba(34,211,238,0.1)]">1</span>
                             Set your base URL and API key
                         </h3>
                         <div class="code-block">
@@ -206,7 +208,7 @@
 
                         <h3 class="text-lg font-medium text-white mb-6 mt-10 flex items-center gap-3">
                             <span
-                                class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-sm font-bold">2</span>
+                                class="w-8 h-8 rounded-lg bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_0_10px_rgba(34,211,238,0.1)] flex items-center justify-center text-cyan-400 text-sm font-bold">2</span>
                             Make your first API call
                         </h3>
                         <div class="code-block">
@@ -226,7 +228,7 @@
 
                         <h3 class="text-lg font-medium text-white mb-6 mt-10 flex items-center gap-3">
                             <span
-                                class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-sm font-bold">3</span>
+                                class="w-8 h-8 rounded-lg bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_0_10px_rgba(34,211,238,0.1)] flex items-center justify-center text-cyan-400 text-sm font-bold">3</span>
                             Start the server
                         </h3>
                         <div class="code-block">
@@ -256,20 +258,20 @@
                         <div class="flex flex-col gap-3">
                             <div class="flex items-start gap-3">
                                 <span
-                                    class="w-6 h-6 rounded-md bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-xs font-bold flex-shrink-0 mt-0.5">1</span>
+                                    class="w-6 h-6 rounded-md bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_0_10px_rgba(34,211,238,0.1)] flex items-center justify-center text-cyan-400 text-xs font-bold flex-shrink-0 mt-0.5">1</span>
                                 <p class="text-sm text-gray-400">Get a free API key from <a
                                         href="https://build.nvidia.com" target="_blank"
                                         class="text-cyan-400 hover:text-cyan-300 underline">build.nvidia.com</a></p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span
-                                    class="w-6 h-6 rounded-md bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-xs font-bold flex-shrink-0 mt-0.5">2</span>
+                                    class="w-6 h-6 rounded-md bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_0_10px_rgba(34,211,238,0.1)] flex items-center justify-center text-cyan-400 text-xs font-bold flex-shrink-0 mt-0.5">2</span>
                                 <p class="text-sm text-gray-400">Set it as <code
                                         class="inline-code">NVIDIA_API_KEY</code> environment variable</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span
-                                    class="w-6 h-6 rounded-md bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-xs font-bold flex-shrink-0 mt-0.5">3</span>
+                                    class="w-6 h-6 rounded-md bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_0_10px_rgba(34,211,238,0.1)] flex items-center justify-center text-cyan-400 text-xs font-bold flex-shrink-0 mt-0.5">3</span>
                                 <p class="text-sm text-gray-400">The CLEX server automatically includes it in NVIDIA API
                                     requests</p>
                             </div>
@@ -672,7 +674,8 @@ response = requests.<span class="tok-fn">post</span>(url, json=payload, stream=<
                             <li class="flex items-start gap-2"><span class="text-cyan-400">•</span> Use streaming for
                                 long responses to improve UX</li>
                             <li class="flex items-start gap-2"><span class="text-cyan-400">•</span> Set appropriate
-                                <code class="inline-code">max_tokens</code> to avoid wasting quota</li>
+                                <code class="inline-code">max_tokens</code> to avoid wasting quota
+                            </li>
                         </ul>
                     </div>
                 </section>

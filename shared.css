@@ -205,32 +205,37 @@ body {
     transform: translateY(-2px);
 }
 
-/* --- Category Tabs --- */
+/* --- Category Tabs & Glass Buttons --- */
 .category-tab {
     padding: 0.5rem 1.25rem;
     border-radius: 9999px;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     font-weight: 500;
-    color: #6b7280;
-    background: transparent;
-    border: 1px solid transparent;
+    color: #9ca3af;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
     font-family: 'Inter', sans-serif;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .category-tab:hover {
-    color: #d1d5db;
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(255, 255, 255, 0.08);
+    color: white;
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(34, 211, 238, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), 0 0 15px rgba(34, 211, 238, 0.15);
 }
 
 .category-tab.active {
-    color: white;
-    background: rgba(34, 211, 238, 0.08);
-    border-color: rgba(34, 211, 238, 0.3);
-    box-shadow: 0 0 15px rgba(34, 211, 238, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    color: #fff;
+    background: rgba(34, 211, 238, 0.12);
+    border-color: rgba(34, 211, 238, 0.5);
+    box-shadow: 0 0 25px rgba(34, 211, 238, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 /* --- Model Cards (Models Page) --- */
@@ -518,22 +523,26 @@ body {
 }
 
 .copy-btn {
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    color: #6b7280;
-    padding: 0.2rem 0.55rem;
+    color: #9ca3af;
+    padding: 0.25rem 0.65rem;
     border-radius: 0.35rem;
     font-size: 0.65rem;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-family: 'Inter', sans-serif;
     font-weight: 600;
 }
 
 .copy-btn:hover {
-    background: rgba(34, 211, 238, 0.08);
-    border-color: rgba(34, 211, 238, 0.2);
-    color: #22d3ee;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(34, 211, 238, 0.4);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 10px rgba(34, 211, 238, 0.1);
+    transform: translateY(-1px);
 }
 
 /* --- Featured Card (Home) --- */
