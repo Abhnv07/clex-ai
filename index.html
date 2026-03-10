@@ -63,6 +63,48 @@
             animation: heroFadeUp 0.8s ease-out 0.5s both;
         }
 
+        /* Typewriter Animation styling */
+        .typewriter-text {
+            border-right: 0.15em solid #22d3ee;
+            white-space: nowrap;
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: bottom;
+            max-width: fit-content;
+        }
+
+        .typewriter-text.typing {
+            animation: typing 2.5s steps(30, end) forwards,
+                blinkTyping 0.75s step-end infinite;
+        }
+
+        .typewriter-text.done {
+            border-right: none;
+            animation: none;
+        }
+
+        @keyframes typing {
+            from {
+                width: 0
+            }
+
+            to {
+                width: 100%
+            }
+        }
+
+        @keyframes blinkTyping {
+
+            from,
+            to {
+                border-color: transparent
+            }
+
+            50% {
+                border-color: #22d3ee;
+            }
+        }
+
         .hero-btns {
             animation: heroFadeUp 0.8s ease-out 0.7s both;
         }
@@ -285,8 +327,10 @@
                     <h1
                         class="hero-h1 text-[3.2rem] sm:text-6xl lg:text-[4.5rem] font-bold leading-[1.08] tracking-tight mb-6">
                         <span class="text-white">One API.</span><br />
-                        <span class="text-white">Infinite AI</span><br />
-                        <span class="gradient-text">Possibilities.</span>
+                        <span class="text-white"><span id="typewriter-line1" class="typewriter-text">Hundreds of
+                                AI</span></span><br />
+                        <span class="gradient-text"><span id="typewriter-line2" class="typewriter-text"
+                                style="width: 0;">Infinite Possibilities.</span></span>
                     </h1>
 
                     <p class="hero-desc text-gray-400 text-lg md:text-xl max-w-xl leading-relaxed mb-10">
@@ -1044,7 +1088,33 @@
             // Start staggered to prevent immediate layout thrashing
             setTimeout(() => requestAnimationFrame(animate), 100);
         })();
+
+        // --- Typewriter Animation Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const line1 = document.getElementById('typewriter-line1');
+            const line2 = document.getElementById('typewriter-line2');
+
+            // Start line 1 after initial hero fade up
+            setTimeout(() => {
+                line1.classList.add('typing');
+
+                // When line 1 finishes, start line 2
+                setTimeout(() => {
+                    line1.classList.remove('typing');
+                    line1.classList.add('done');
+                    line2.classList.add('typing');
+
+                    // When line 2 finishes, just blink or stop the cursor
+                    setTimeout(() => {
+                        line2.style.borderRightColor = 'transparent'; // Optional: stop blinking at end
+                    }, 2500);
+
+                }, 2500); // Wait for line 1 to type (matches CSS duration)
+
+            }, 800); // Wait for heroFadeUp
+        });
     </script>
 </body>
 
 </html>
+```
