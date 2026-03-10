@@ -482,12 +482,18 @@
         }
 
         async function sendMessage() {
-            const input = document.getElementById('chat-input');
-            const msg = input.value.trim();
-            if (!msg) return;
-            input.value = '';
-
+            const inputEl = document.getElementById('chat-input');
             const messagesEl = document.getElementById('chat-messages');
+            const text = inputEl.value.trim();
+            if (!text) return;
+
+            if (!localStorage.getItem('clex_logged_in')) {
+                messagesEl.innerHTML += `<div class="chat-bubble assistant text-amber-400 bg-amber-400/10 border border-amber-400/20">Authentication required: Please <a href="login.html" class="text-white underline hover:text-amber-300 font-bold">Sign In</a> to test this model.</div>`;
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+                inputEl.value = '';
+                return;
+            }
+            inputEl.value = '';
 
             // Clear welcome message
             if (chatHistory.length === 0) {

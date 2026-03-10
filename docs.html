@@ -956,6 +956,11 @@ response = requests.<span class="tok-fn">post</span>(url, json=payload, stream=<
                     return;
                 }
 
+                if (!localStorage.getItem('clex_logged_in')) {
+                    responseEl.innerHTML = '<span class="text-amber-400 border border-amber-400/20 bg-amber-400/10 p-3 rounded-lg block">Authentication required: Please <a href="login.html" class="text-white underline hover:text-amber-300 font-bold">Sign In</a> to test models in the browser.</span>';
+                    return;
+                }
+
                 pgRunBtn.disabled = true;
                 pgRunBtn.classList.add('opacity-50', 'cursor-not-allowed');
                 responseEl.innerHTML = '<span class="text-gray-500 italic">Sending request...</span>\n\n';
