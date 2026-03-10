@@ -263,3 +263,59 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+// --- Streaming SSE helper (OpenAI-style chunks) ---
+// Expects lines like: `data: {...}\n\n` and termination `data: [DONE]`
+window.clex = window.clex || {};
+window.clex.streamChatCompletionsSSE = async function streamChatCompletionsSSE(
+  response,
+  { onToken, onError, onDone },
+) {
+  if (!response?.body?.getReader) {
+    throw new Error("Streaming not supported in this browser.");
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+
+      let boundary = buffer.indexOf("\n\n");
+      while (boundary !== -1) {
+        const chunk = buffer.slice(0, boundary).trim();
+        buffer = buffer.slice(boundary + 2);
+
+        const lines = chunk.split("\n");
+        for (const line of lines) {
+          if (!line.startsWith("data:")) continue;
+          const data = line.slice(5).trim();
+          if (!data) continue;
+          if (data === "[DONE]") {
+            if (onDone) onDone();
+            continue;
+          }
+          try {
+            const parsed = JSON.parse(data);
+            const token = parsed?.choices?.[0]?.delta?.content;
+            if (token && onToken) onToken(token, parsed);
+          } catch (e) {
+            // Ignore parse errors for partial chunks; surface only if callback exists.
+            if (onError) onError(e, data);
+          }
+        }
+
+        boundary = buffer.indexOf("\n\n");
+      }
+    }
+  } finally {
+    try {
+      reader.releaseLock();
+    } catch (e) {}
+  }
+};

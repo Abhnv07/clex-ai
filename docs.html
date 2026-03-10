@@ -137,6 +137,8 @@
                         class="px-6 py-2 rounded-full text-gray-300 hover:text-white text-sm font-medium transition-colors">Models</a>
                     <a href="docs.html"
                         class="px-6 py-2 rounded-full bg-white text-black text-sm font-medium transition-colors">Docs</a>
+                    <a href="playground.html"
+                        class="px-6 py-2 rounded-full text-gray-300 hover:text-white text-sm font-medium transition-colors">Playground</a>
                 </nav>
                 <div class="flex items-center gap-6">
                     <a href="#authentication"
@@ -987,47 +989,16 @@ response = requests.<span class="tok-fn">post</span>(url, json=payload, stream=<
                         pgRunBtn.classList.remove('opacity-50', 'cursor-not-allowed');
                         return;
                     }
-
-                    const reader = res.body.getReader();
-                    const decoder = new TextDecoder();
-                    let buffer = '';
-
-                    while (true) {
-                        const { done, value } = await reader.read();
-                        if (done) break;
-
-                        buffer += decoder.decode(value, { stream: true });
-                        let boundary = buffer.indexOf('\\n\\n');
-
-                        while (boundary !== -1) {
-                            const chunk = buffer.substring(0, boundary).trim();
-                            buffer = buffer.substring(boundary + 2);
-
-                            const lines = chunk.split('\\n');
-                            for (const line of lines) {
-                                if (line.startsWith('data: ')) {
-                                    const data = line.slice(6).trim();
-                                    if (data === '[DONE]') continue;
-                                    try {
-                                        const parsed = JSON.parse(data);
-                                        const token = parsed.choices?.[0]?.delta?.content;
-                                        if (token) {
-                                            if (responseEl.innerHTML.includes('Sending request...')) {
-                                                responseEl.innerHTML = '';
-                                            }
-                                            // Handle HTML escaping to prevent XSS in DOM
-                                            const div = document.createElement('div');
-                                            div.textContent = token;
-                                            responseEl.innerHTML += div.innerHTML;
-                                        }
-                                    } catch (e) {
-                                        // Ignore parse errors on partial chunks
-                                    }
-                                }
+                    await window.clex.streamChatCompletionsSSE(res, {
+                        onToken: (token) => {
+                            if (responseEl.innerHTML.includes('Sending request...')) {
+                                responseEl.innerHTML = '';
                             }
-                            boundary = buffer.indexOf('\\n\\n');
+                            const div = document.createElement('div');
+                            div.textContent = token;
+                            responseEl.innerHTML += div.innerHTML;
                         }
-                    }
+                    });
                 } catch (err) {
                     responseEl.innerHTML += `<span class="text-red-400">Fetch error: ${err.message}</span>`;
                 } finally {

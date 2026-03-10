@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Playground - Clex.in</title>
+  <meta name="description"
+    content="Build in a browser sandbox with live preview, device simulators, and multi-provider LLM playground (Claude, Gemini, Codex/OpenAI)." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="shared.css" />
+  <link rel="stylesheet" href="playground.css" />
+</head>
+
+<body class="min-h-screen relative">
+  <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+    <div class="absolute top-1/4 left-1/4 w-[40vw] h-[40vw] bg-cyan-900/15 rounded-full blur-[120px] mix-blend-screen">
+    </div>
+    <div
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[55vw] h-[55vw] bg-emerald-900/10 rounded-full blur-[150px] mix-blend-screen">
+    </div>
+  </div>
+
+  <canvas id="ascii-canvas" class="fixed inset-0 z-0 pointer-events-none"></canvas>
+
+  <div class="relative z-10 flex flex-col min-h-screen">
+    <header id="main-header" class="fixed top-0 w-full z-50 transition-all duration-300 py-8">
+      <div class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-1.5 cursor-pointer no-underline">
+          <span class="text-xl font-bold tracking-widest text-white">CLEX</span>
+          <div
+            class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)] animate-pulse"></div>
+        </a>
+        <nav
+          class="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-1 bg-white/5 border border-white/10 rounded-full p-1 backdrop-blur-md">
+          <a href="index.html"
+            class="px-6 py-2 rounded-full text-gray-300 hover:text-white text-sm font-medium transition-colors">Platform</a>
+          <a href="models.html"
+            class="px-6 py-2 rounded-full text-gray-300 hover:text-white text-sm font-medium transition-colors">Models</a>
+          <a href="docs.html"
+            class="px-6 py-2 rounded-full text-gray-300 hover:text-white text-sm font-medium transition-colors">Docs</a>
+          <a href="playground.html"
+            class="px-6 py-2 rounded-full bg-white text-black text-sm font-medium transition-colors">Playground</a>
+        </nav>
+        <div class="flex items-center gap-4">
+          <div id="pg-auth-pill"
+            class="hidden sm:flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1 text-xs text-gray-300">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span>Signed in</span>
+          </div>
+          <a href="login.html"
+            class="bg-white/10 border border-white/20 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-white hover:text-black transition-all no-underline">Sign
+            In</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-[1800px] mx-auto w-full px-4 sm:px-6 md:px-10 lg:px-14 pt-32 pb-10">
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div
+              class="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full px-3 py-1 mb-3">
+              <div class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></div>
+              <span class="text-xs text-cyan-300 font-semibold">Live Builder</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-semibold text-white leading-tight">Playground</h1>
+            <p class="text-gray-400 text-sm sm:text-base mt-2 max-w-2xl">Build in a browser sandbox, preview on multiple
+              devices, and compare premium models with your own API keys (not stored).</p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button id="tab-builder" class="category-tab active">Builder</button>
+            <button id="tab-llm" class="category-tab">AI Playground</button>
+          </div>
+        </div>
+
+        <!-- Builder -->
+        <section id="builder-view" class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-3 glass-card rounded-2xl overflow-hidden">
+            <div class="px-4 py-3 border-b border-white/8 flex items-center justify-between">
+              <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Workspace</div>
+              <select id="template-select"
+                class="bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs text-gray-200 outline-none focus:border-cyan-500/50">
+                <option value="static">Static (HTML/CSS/JS)</option>
+                <option value="vite-react">Vite + React</option>
+              </select>
+            </div>
+            <div class="p-4 flex flex-col gap-3">
+              <button id="boot-btn"
+                class="bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-2.5 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:shadow-[0_0_25px_rgba(34,211,238,0.5)] flex justify-center items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-black/70"></span>
+                Boot Sandbox
+              </button>
+              <button id="install-btn"
+                class="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold py-2.5 px-4 rounded-xl transition-all flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled>
+                npm install
+              </button>
+              <button id="run-btn"
+                class="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold py-2.5 px-4 rounded-xl transition-all flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled>
+                npm run dev
+              </button>
+              <div class="pt-2 border-t border-white/8">
+                <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Files</div>
+                <div id="file-tree" class="flex flex-col gap-1 text-sm"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 glass-card rounded-2xl overflow-hidden flex flex-col min-h-[520px]">
+            <div class="px-4 py-3 border-b border-white/8 flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+                <div class="text-xs font-bold text-gray-400 uppercase tracking-wider" id="active-file-label">Editor</div>
+              </div>
+              <button id="save-btn"
+                class="bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-semibold px-3 py-1.5 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled>Save</button>
+            </div>
+            <div id="editor" class="flex-1 min-h-[460px]"></div>
+          </div>
+
+          <div class="lg:col-span-4 glass-card rounded-2xl overflow-hidden flex flex-col min-h-[520px]">
+            <div class="px-4 py-3 border-b border-white/8 flex items-center justify-between gap-2 flex-wrap">
+              <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></div>
+                <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Preview</div>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <button class="pg-device-btn active" data-device="desktop">Desktop</button>
+                <button class="pg-device-btn" data-device="tablet">Tablet</button>
+                <button class="pg-device-btn" data-device="mobile">Mobile</button>
+                <button id="rotate-btn" class="pg-device-btn" title="Rotate device">Rotate</button>
+              </div>
+            </div>
+
+            <div class="px-4 py-3 border-b border-white/8 flex items-center justify-between gap-2">
+              <div class="text-xs text-gray-500 font-mono truncate" id="preview-url">Preview URL: (not running)</div>
+              <div class="flex items-center gap-2">
+                <input id="custom-w" type="number" min="240" max="1600" placeholder="W"
+                  class="w-20 bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs text-gray-200 outline-none focus:border-cyan-500/50" />
+                <input id="custom-h" type="number" min="240" max="1600" placeholder="H"
+                  class="w-20 bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs text-gray-200 outline-none focus:border-cyan-500/50" />
+                <button id="apply-custom" class="pg-device-btn">Apply</button>
+              </div>
+            </div>
+
+            <div class="p-4 flex-1 overflow-auto">
+              <div id="preview-frame-wrap" class="pg-preview-wrap">
+                <iframe id="preview-frame" title="Live preview" class="pg-preview-iframe" src="about:blank"></iframe>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-12 glass-card rounded-2xl overflow-hidden">
+            <div class="px-4 py-3 border-b border-white/8 flex items-center justify-between gap-2">
+              <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Console</div>
+              <button id="clear-logs" class="pg-device-btn">Clear</button>
+            </div>
+            <pre id="logs" class="p-4 text-xs text-gray-300 font-mono whitespace-pre-wrap max-h-[220px] overflow-auto">
+Boot the sandbox to see logs...
+            </pre>
+          </div>
+        </section>
+
+        <!-- AI Playground -->
+        <section id="llm-view" class="hidden glass-card rounded-2xl overflow-hidden">
+          <div class="px-6 py-5 border-b border-white/8 flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Multi-provider compare</div>
+              <div class="text-white font-semibold">Run the same prompt across models</div>
+            </div>
+            <button id="run-compare"
+              class="bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-2 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(34,211,238,0.25)] disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled>Run</button>
+          </div>
+
+          <div class="p-6 grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <div class="lg:col-span-4 flex flex-col gap-4">
+              <div>
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Prompt</label>
+                <textarea id="compare-prompt" rows="7"
+                  class="w-full bg-[#02050f]/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition-colors placeholder-gray-600 resize-none"
+                  placeholder="Describe the app you want to build..."></textarea>
+                <p class="text-xs text-gray-500 mt-2">Your API keys are sent per-request and are not stored server-side.
+                </p>
+              </div>
+
+              <div class="grid grid-cols-1 gap-3">
+                <div class="flex items-center justify-between">
+                  <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Targets</div>
+                  <button id="add-target" class="pg-device-btn">Add</button>
+                </div>
+                <div id="targets" class="flex flex-col gap-3"></div>
+              </div>
+            </div>
+
+            <div class="lg:col-span-8">
+              <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" id="compare-results"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="w-full py-8 border-t border-white/10 bg-[#02050f]/80 backdrop-blur-md z-20 mt-auto relative">
+      <div
+        class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 flex flex-wrap justify-center md:justify-between items-center gap-6 text-sm text-gray-400">
+        <div class="flex items-center gap-2">
+          <div class="w-2 h-2 rounded-full bg-white/20"></div>
+          <span id="copyright-year"></span> clex.in. All rights reserved.
+        </div>
+        <div class="flex flex-wrap justify-center items-center gap-6 font-medium">
+          <a href="support.html" class="hover:text-cyan-300 transition-colors">Support</a>
+          <a href="privacy.html" class="hover:text-cyan-300 transition-colors">Privacy Policy</a>
+          <a href="terms.html" class="hover:text-cyan-300 transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="shared.js"></script>
+  <script type="module" src="playground.js"></script>
+</body>
+
+</html>
+

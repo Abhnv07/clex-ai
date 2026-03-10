@@ -44,6 +44,8 @@
                         class="px-6 py-2 rounded-full bg-white text-black text-sm font-medium transition-colors">Models</a>
                     <a href="docs.html"
                         class="px-6 py-2 rounded-full text-gray-300 hover:text-white text-sm font-medium transition-colors">Docs</a>
+                    <a href="playground.html"
+                        class="px-6 py-2 rounded-full text-gray-300 hover:text-white text-sm font-medium transition-colors">Playground</a>
                 </nav>
                 <div class="flex items-center gap-6">
                     <a href="docs.html#authentication"
@@ -501,8 +503,8 @@
             }
 
             // Add user bubble
-            chatHistory.push({ role: 'user', content: msg });
-            messagesEl.innerHTML += `<div class="chat-bubble user">${escapeHtml(msg)}</div>`;
+            chatHistory.push({ role: 'user', content: text });
+            messagesEl.innerHTML += `<div class="chat-bubble user">${escapeHtml(text)}</div>`;
 
             // Add typing indicator
             const typingId = 'typing-' + Date.now();
@@ -537,51 +539,22 @@
                 }
 
                 // Handle streaming response
-                const reader = res.body.getReader();
-                const decoder = new TextDecoder();
                 let assistantMsg = '';
-                let buffer = '';
 
                 const bubbleEl = document.createElement('div');
                 bubbleEl.className = 'chat-bubble assistant';
                 messagesEl.appendChild(bubbleEl);
 
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-
-                    buffer += decoder.decode(value, { stream: true });
-
-                    // SSE events are separated by double newlines (\n\n)
-                    let boundary = buffer.indexOf('\n\n');
-                    while (boundary !== -1) {
-                        const chunk = buffer.substring(0, boundary).trim();
-                        buffer = buffer.substring(boundary + 2);
-
-                        // A chunk might contain multiple "data: " lines if it's sent weirdly, but usually it's just one event.
-                        const lines = chunk.split('\n');
-                        for (const line of lines) {
-                            if (line.startsWith('data: ')) {
-                                const data = line.slice(6).trim();
-                                if (data === '[DONE]') continue;
-                                try {
-                                    const parsed = JSON.parse(data);
-                                    const delta = parsed.choices?.[0]?.delta?.content;
-                                    if (delta) {
-                                        assistantMsg += delta;
-                                        bubbleEl.textContent = assistantMsg;
-                                        messagesEl.scrollTop = messagesEl.scrollHeight;
-                                    }
-                                } catch (e) {
-                                    console.error('SSE parser error on chunk:', data, e);
-                                }
-                            }
-                        }
-
-                        // Check for next boundary
-                        boundary = buffer.indexOf('\n\n');
+                await window.clex.streamChatCompletionsSSE(res, {
+                    onToken: (token) => {
+                        assistantMsg += token;
+                        bubbleEl.textContent = assistantMsg;
+                        messagesEl.scrollTop = messagesEl.scrollHeight;
+                    },
+                    onError: (e, raw) => {
+                        console.error('SSE parser error on chunk:', raw, e);
                     }
-                }
+                });
 
                 if (assistantMsg) {
                     chatHistory.push({ role: 'assistant', content: assistantMsg });
@@ -600,6 +573,11 @@
             const div = document.createElement('div');
             div.textContent = s;
             return div.innerHTML;
+        }
+
+        // Guard: shared.js should define `window.clex.streamChatCompletionsSSE`
+        if (!window.clex || !window.clex.streamChatCompletionsSSE) {
+            console.warn('Streaming helper not found. Make sure shared.js is loaded.');
         }
     </script>
 </body>
