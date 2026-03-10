@@ -31,48 +31,7 @@
     ></canvas>
 
     <div class="relative z-10 flex flex-col min-h-screen">
-      <!-- Navigation Bar -->
-      <header
-        id="main-header"
-        class="fixed top-0 w-full z-50 transition-all duration-500 py-6"
-      >
-        <div
-          class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 flex items-center justify-between"
-        >
-          <a
-            href="index.html"
-            class="flex items-center gap-2 cursor-pointer no-underline group"
-          >
-            <span
-              class="text-xl font-bold tracking-widest text-white group-hover:tracking-[0.3em] transition-all duration-500"
-              >CLEX</span
-            >
-            <div
-              class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.8)] animate-pulse"
-            ></div>
-          </a>
-          <nav
-            class="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-1 bg-white/[0.03] border border-white/[0.06] rounded-full p-1 backdrop-blur-xl"
-          >
-            <a href="index.html" class="nav-link">Platform</a>
-            <a href="models.html" class="nav-link">Models</a>
-            <a href="docs.html" class="nav-link">Docs</a>
-            <a href="pricing.html" class="nav-link">Pricing</a>
-          </nav>
-          <div class="flex items-center gap-4">
-            <a
-              href="login.html"
-              class="text-sm font-medium text-gray-400 hover:text-white transition-colors hidden sm:block"
-              >Sign In</a
-            >
-            <a
-              href="docs.html#getting-started"
-              class="btn-primary text-sm !py-2 !px-5 !shadow-none !bg-white/10 !text-white border border-white/15 hover:!bg-white hover:!text-black no-underline"
-              >Get Started</a
-            >
-          </div>
-        </div>
-      </header>
+      <div data-clex-header data-page="support"></div>
 
       <main
         class="flex-1 flex flex-col max-w-[1200px] mx-auto w-full px-6 md:px-12 lg:px-20 pt-40 pb-24 z-10"
@@ -89,7 +48,7 @@
           </h1>
           <p class="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
             Search through our frequently asked questions, join the developer
-            discord, or get in touch below.
+            community, or get in touch below.
           </p>
         </div>
 
@@ -133,9 +92,9 @@
                 >
               </summary>
               <div class="text-sm text-gray-400 px-6 pb-6 leading-relaxed">
-                No. We are zero-retention by default. We do not store your
-                prompts or completions on our servers. Your request is proxied
-                straight to the model provider with sub-50ms overhead.
+                We are zero-retention by default for prompt/response content in
+                the proxy path. Requests are routed through CLEX with
+                low-latency overhead.
               </div>
             </details>
 
@@ -154,7 +113,8 @@
               <div class="text-sm text-gray-400 px-6 pb-6 leading-relaxed">
                 Our unified API automatically routes your request to a fallback
                 cluster running identical weights (e.g. falling back from Meta's
-                Llama cluster to NVIDIA's). You will never notice a disruption.
+                Llama cluster to NVIDIA's) when available. This reduces, but
+                does not eliminate, the chance of user-visible disruption.
               </div>
             </details>
 
@@ -173,9 +133,9 @@
               <div class="text-sm text-gray-400 px-6 pb-6 leading-relaxed">
                 Yes. Please reach out to
                 <a
-                  href="mailto:abhinav@abhnv.in"
+                  href="mailto:support@abhnv.in"
                   class="text-purple-400 hover:text-purple-300 underline"
-                  >abhinav@abhnv.in</a
+                  >support@abhnv.in</a
                 >
                 with your expected TPS (Tokens per Second) and concurrency
                 requirements. We can provision dedicated VPC endpoints.
@@ -186,15 +146,14 @@
               class="mt-8 p-6 bg-purple-500/10 border border-purple-500/20 rounded-2xl flex items-center justify-between group"
             >
               <div>
-                <h3 class="text-white font-semibold mb-1">Developer Discord</h3>
+                <h3 class="text-white font-semibold mb-1">Community</h3>
                 <p class="text-xs text-gray-400">
-                  Join 500+ developers shipping AI apps
+                  Community channel invite will be published soon.
                 </p>
               </div>
-              <a
-                href="#"
-                class="px-5 py-2.5 bg-[#5865F2] hover:bg-[#4752C4] text-white font-semibold rounded-xl text-sm transition-colors shadow-[0_0_15px_rgba(88,101,242,0.3)]"
-                >Join Server</a
+              <span
+                class="px-5 py-2.5 bg-white/5 border border-white/10 text-gray-400 font-semibold rounded-xl text-sm"
+                >Coming soon</span
               >
             </div>
           </div>
@@ -209,13 +168,7 @@
                 Send us a message directly from here.
               </p>
 
-              <form
-                id="contact-form"
-                class="space-y-4"
-                action="mailto:abhinav@abhnv.in"
-                method="POST"
-                enctype="text/plain"
-              >
+              <form id="contact-form" class="space-y-4">
                 <div>
                   <label
                     for="name"
@@ -269,69 +222,60 @@
                 id="form-success"
                 class="hidden mt-4 p-3 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 rounded-lg text-sm text-center"
               >
-                Thanks! We've received your message.
+                Thanks! We have received your message.
               </div>
             </div>
           </div>
         </div>
       </main>
 
-      <footer
-        class="w-full py-10 border-t border-white/[0.04] bg-[#02050f]/90 backdrop-blur-md z-20 mt-auto relative"
-      >
-        <div class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20">
-          <div
-            class="flex flex-wrap justify-center md:justify-between items-center gap-6 text-sm text-gray-500"
-          >
-            <div class="flex items-center gap-3">
-              <span class="text-sm font-bold tracking-widest text-gray-600"
-                >CLEX</span
-              >
-              <span class="text-gray-700">•</span>
-              <span
-                ><span id="copyright-year"></span> All rights reserved.</span
-              >
-            </div>
-            <div
-              class="flex flex-wrap justify-center items-center gap-6 font-medium"
-            >
-              <a
-                href="support.html"
-                class="hover:text-cyan-300 transition-colors"
-                >Support</a
-              >
-              <a
-                href="privacy.html"
-                class="hover:text-cyan-300 transition-colors"
-                >Privacy Policy</a
-              >
-              <a href="terms.html" class="hover:text-cyan-300 transition-colors"
-                >Terms of Service</a
-              >
-            </div>
-          </div>
-        </div>
-      </footer>
+      <div data-clex-footer></div>
     </div>
 
     <script src="shared.js"></script>
     <script>
       document
         .getElementById("contact-form")
-        ?.addEventListener("submit", (e) => {
+        ?.addEventListener("submit", async (e) => {
           e.preventDefault();
-          const btn = e.target.querySelector("button");
+          const form = e.target;
+          const btn = form.querySelector("button");
           const originalText = btn.textContent;
           btn.textContent = "Sending...";
           btn.disabled = true;
           btn.classList.add("opacity-50", "cursor-not-allowed");
 
-          // Mock submission
-          setTimeout(() => {
-            e.target.reset();
-            e.target.style.display = "none";
+          const payload = {
+            name: document.getElementById("name").value.trim(),
+            email: document.getElementById("email").value.trim(),
+            message: document.getElementById("message").value.trim(),
+          };
+
+          try {
+            const res = await fetch("/api/support/contact", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+
+            if (!res.ok) {
+              throw new Error(`HTTP ${res.status}`);
+            }
+
+            form.reset();
+            form.style.display = "none";
             document.getElementById("form-success").classList.remove("hidden");
-          }, 1000);
+          } catch (error) {
+            btn.textContent = "Try Again";
+            btn.disabled = false;
+            btn.classList.remove("opacity-50", "cursor-not-allowed");
+            alert("Unable to send your message right now. Please email support@abhnv.in.");
+            return;
+          }
+
+          btn.textContent = originalText;
+          btn.disabled = false;
+          btn.classList.remove("opacity-50", "cursor-not-allowed");
         });
     </script>
   </body>

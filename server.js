@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// CLEX.IN – NVIDIA API Proxy Server
+// CLEX.IN – API Proxy Server
 // ═══════════════════════════════════════════════════════
 
 const express = require('express');
@@ -87,11 +87,19 @@ app.use(express.static(path.join(__dirname)));
 
 // ─── Chat Completions Proxy ─────────────────────────────
 app.post('/api/chat', requireFirebaseAuth, async (req, res) => {
-    const NVIDIA_API_KEY = process.env.NVIDIA_API_KEY;
+    const headerClexKey = (req.get('x-clex-api-key') || '').trim();
+    const bearerMatch = (req.headers.authorization || '').match(/^Bearer\s+(.+)$/i);
+    const bearerToken = bearerMatch ? bearerMatch[1].trim() : '';
+    const authLooksLikeClexKey = /^clex_/i.test(bearerToken);
+    const CLEX_API_KEY =
+        headerClexKey ||
+        (authLooksLikeClexKey ? bearerToken : '') ||
+        process.env.CLEX_API_KEY ||
+        process.env.NVIDIA_API_KEY;
 
-    if (!NVIDIA_API_KEY) {
+    if (!CLEX_API_KEY) {
         return res.status(500).json({
-            error: 'NVIDIA API key not configured. Set NVIDIA_API_KEY environment variable.'
+            error: 'CLEX API key not configured. Provide x-clex-api-key or set CLEX_API_KEY (legacy fallback: NVIDIA_API_KEY).'
         });
     }
 
@@ -136,11 +144,14 @@ app.post('/api/chat', requireFirebaseAuth, async (req, res) => {
         const timeoutMs = Number(process.env.PROVIDER_TIMEOUT_MS || 60_000);
         const timeoutId = setTimeout(abort, timeoutMs);
 
-        const nvidiaRes = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
+        const upstreamChatUrl =
+            process.env.CLEX_CHAT_COMPLETIONS_URL || 'https://api.clex.in/v1/chat/completions';
+
+        const upstreamRes = await fetch(upstreamChatUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${NVIDIA_API_KEY}`
+                'Authorization': `Bearer ${CLEX_API_KEY}`
             },
             signal: controller.signal,
             body: JSON.stringify({
@@ -154,31 +165,27 @@ app.post('/api/chat', requireFirebaseAuth, async (req, res) => {
         });
         clearTimeout(timeoutId);
 
-        if (!nvidiaRes.ok) {
-            const errBody = await nvidiaRes.text();
+        if (!upstreamRes.ok) {
+            const errBody = await upstreamRes.text();
             let errMsg = errBody;
             try {
                 const parsed = JSON.parse(errBody);
                 errMsg = parsed.detail || parsed.error?.message || parsed.message || errBody;
             } catch (e) { }
-            return res.status(nvidiaRes.status).json({
-                error: `NVIDIA API error (${nvidiaRes.status}): ${errMsg}`
+            return res.status(upstreamRes.status).json({
+                error: `Upstream provider error (${upstreamRes.status}): ${errMsg}`
             });
         }
 
         if (shouldStream) {
             // Stream the response via SSE
-            res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
-            res.setHeader('Cache-Control', 'no-cache, no-transform');
-            res.setHeader('Connection', 'keep-alive');
-            res.setHeader('X-Accel-Buffering', 'no'); // Disable proxy buffering
-            res.flushHeaders(); // Ensure headers are sent immediately
+            setSSEHeaders(res);
 
-            if (nvidiaRes.body) {
+            if (upstreamRes.body) {
                 // Use async iteration which is extremely robust in Node 18+ for Web Streams
                 const decoder = new TextDecoder();
                 try {
-                    for await (const chunk of nvidiaRes.body) {
+                    for await (const chunk of upstreamRes.body) {
                         if (res.writableEnded) break;
                         res.write(decoder.decode(chunk, { stream: true }));
                     }
@@ -194,7 +201,7 @@ app.post('/api/chat', requireFirebaseAuth, async (req, res) => {
             }
         } else {
             // Non-streaming: return JSON directly
-            const data = await nvidiaRes.json();
+            const data = await upstreamRes.json();
             res.json(data);
         }
 
@@ -497,8 +504,39 @@ app.post('/api/playground/chat', requireFirebaseAuth, async (req, res) => {
 app.get('/api/health', (req, res) => {
     res.json({
         status: 'ok',
-        nvidia_key_configured: !!process.env.NVIDIA_API_KEY,
+        clex_key_configured: !!(process.env.CLEX_API_KEY || process.env.NVIDIA_API_KEY),
         timestamp: new Date().toISOString()
+    });
+});
+
+// ─── Support Contact Endpoint ─────────────────────────────
+app.post('/api/support/contact', async (req, res) => {
+    let body = req.body;
+    if (typeof body === 'string') {
+        try { body = JSON.parse(body); } catch (e) { }
+    }
+
+    const contactSchema = z.object({
+        name: z.string().trim().min(1).max(120),
+        email: z.string().trim().email().max(254),
+        message: z.string().trim().min(10).max(5000),
+    });
+
+    const parsed = contactSchema.safeParse(body || {});
+    if (!parsed.success) {
+        return res.status(400).json({
+            error: 'Invalid contact payload.',
+            details: parsed.error.flatten(),
+        });
+    }
+
+    const { name, email, message } = parsed.data;
+    const preview = message.length > 180 ? `${message.slice(0, 180)}...` : message;
+    console.log(`[Support Contact] ${new Date().toISOString()} | ${name} <${email}> | ${preview}`);
+
+    return res.status(202).json({
+        ok: true,
+        message: 'Support request accepted.',
     });
 });
 
@@ -521,7 +559,7 @@ if (require.main === module) {
   ║                                       ║
   ║  🌐  http://localhost:${PORT}            ║
   ║                                       ║
-  ║  NVIDIA API Key: ${process.env.NVIDIA_API_KEY ? '✅ Configured' : '❌ Not set'}       ║
+  ║  CLEX API Key: ${(process.env.CLEX_API_KEY || process.env.NVIDIA_API_KEY) ? '✅ Configured' : '❌ Not set'}         ║
   ║                                       ║
   ║  Pages:                               ║
   ║  • Platform  /index.html              ║
@@ -535,9 +573,9 @@ if (require.main === module) {
   ╚═══════════════════════════════════════╝
   `);
 
-        if (!process.env.NVIDIA_API_KEY) {
-            console.log('  ⚠️  Set NVIDIA_API_KEY to enable AI chat:');
-            console.log('     NVIDIA_API_KEY="nvapi-xxx" node server.js\\n');
+        if (!(process.env.CLEX_API_KEY || process.env.NVIDIA_API_KEY)) {
+            console.log('  ⚠️  Set CLEX_API_KEY to enable AI chat (or legacy NVIDIA_API_KEY):');
+            console.log('     CLEX_API_KEY="clex_xxx" node server.js\\n');
         }
     });
 }

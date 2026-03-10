@@ -1,18 +1,187 @@
-/* ═══════════════════════════════════════════════════════
-   CLEX.IN – SHARED JAVASCRIPT
-   ═══════════════════════════════════════════════════════ */
+/* ============================================================================
+   CLEX.IN - SHARED JAVASCRIPT
+   ========================================================================== */
 
-// --- Copyright Year ---
-document.addEventListener("DOMContentLoaded", () => {
-  const el = document.getElementById("copyright-year");
-  if (el) el.textContent = "© " + new Date().getFullYear();
-});
+const CLEX_NAV_ITEMS = [
+  { key: "platform", href: "index.html", label: "Platform" },
+  { key: "models", href: "models.html", label: "Models" },
+  { key: "docs", href: "docs.html", label: "Docs" },
+  { key: "playground", href: "playground.html", label: "Playground" },
+  { key: "pricing", href: "pricing.html", label: "Pricing" },
+  { key: "support", href: "support.html", label: "Support" },
+];
 
-// --- Header Scroll Effect ---
-(function () {
+const CLEX_PAGE_BY_FILE = {
+  "": "platform",
+  "index.html": "platform",
+  "models.html": "models",
+  "docs.html": "docs",
+  "playground.html": "playground",
+  "pricing.html": "pricing",
+  "support.html": "support",
+  "privacy.html": "privacy",
+  "terms.html": "terms",
+  "login.html": "login",
+};
+
+function getCurrentFileName() {
+  const path = window.location.pathname || "";
+  const file = path.split("/").pop() || "index.html";
+  return file;
+}
+
+function getCurrentPageKey() {
+  return CLEX_PAGE_BY_FILE[getCurrentFileName()] || "platform";
+}
+
+function renderNavLinks(activePage) {
+  return CLEX_NAV_ITEMS.map((item) => {
+    const activeClass = item.key === activePage ? " active" : "";
+    return `<a href="${item.href}" class="nav-link${activeClass}">${item.label}</a>`;
+  }).join("");
+}
+
+function renderAuthActions(options) {
+  const isLoggedIn = localStorage.getItem("clex_logged_in") === "true";
+  const showAuth = options.showAuth !== "false";
+  const ctaHref = options.ctaHref || "docs.html#getting-started";
+  const ctaLabel = options.ctaLabel || "Get Started";
+  const dashboardHref = options.dashboardHref || "";
+
+  if (!showAuth) {
+    return `<a href="${ctaHref}" class="bg-white/10 border border-white/20 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-white hover:text-black transition-all no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400">${ctaLabel}</a>`;
+  }
+
+  if (isLoggedIn) {
+    return `
+      <div class="hidden sm:flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1 text-xs text-gray-300">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+        <span>Signed in</span>
+      </div>
+      ${
+        dashboardHref
+          ? `<a href="${dashboardHref}" class="text-sm font-medium text-gray-300 hover:text-white transition-colors no-underline">Dashboard</a>`
+          : ""
+      }
+      <button type="button" data-clex-signout class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Sign Out</button>
+      <a href="${ctaHref}" class="bg-white/10 border border-white/20 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-white hover:text-black transition-all no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400">${ctaLabel}</a>
+    `;
+  }
+
+  return `
+    <a href="login.html" class="text-sm font-medium text-gray-400 hover:text-white transition-colors hidden sm:block no-underline">Sign In</a>
+    <a href="${ctaHref}" class="bg-white/10 border border-white/20 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-white hover:text-black transition-all no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400">${ctaLabel}</a>
+  `;
+}
+
+function renderHeader(pageKey, options = {}) {
+  return `
+    <header id="main-header" class="fixed top-0 w-full z-50 transition-all duration-300 py-6">
+      <div class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-1.5 cursor-pointer no-underline">
+          <span class="text-xl font-bold tracking-widest text-white">CLEX</span>
+          <div class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)] animate-pulse"></div>
+        </a>
+        <nav class="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-1 bg-white/5 border border-white/10 rounded-full p-1 backdrop-blur-md">
+          ${renderNavLinks(pageKey)}
+        </nav>
+        <div class="flex items-center gap-4">
+          ${renderAuthActions(options)}
+        </div>
+      </div>
+    </header>
+  `;
+}
+
+function renderFooter() {
+  return `
+    <footer class="w-full py-8 border-t border-white/10 bg-[#02050f]/80 backdrop-blur-md z-20 mt-auto relative">
+      <div class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 flex flex-wrap justify-center md:justify-between items-center gap-6 text-sm text-gray-400">
+        <div class="flex items-center gap-2">
+          <div class="w-2 h-2 rounded-full bg-white/20"></div>
+          <span id="copyright-year"></span> clex.in. All rights reserved.
+        </div>
+        <div class="flex flex-wrap justify-center items-center gap-6 font-medium">
+          <a href="support.html" class="hover:text-cyan-300 transition-colors">Support</a>
+          <a href="privacy.html" class="hover:text-cyan-300 transition-colors">Privacy Policy</a>
+          <a href="terms.html" class="hover:text-cyan-300 transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </footer>
+  `;
+}
+
+window.clex = window.clex || {};
+window.clex.renderHeader = renderHeader;
+window.clex.renderFooter = renderFooter;
+
+function applySiteChrome() {
+  const headerMounts = document.querySelectorAll("[data-clex-header]");
+  const footerMounts = document.querySelectorAll("[data-clex-footer]");
+  const defaultPage = getCurrentPageKey();
+
+  headerMounts.forEach((mount) => {
+    const page = mount.dataset.page || defaultPage;
+    mount.outerHTML = renderHeader(page, {
+      showAuth: mount.dataset.showAuth,
+      ctaHref: mount.dataset.ctaHref,
+      ctaLabel: mount.dataset.ctaLabel,
+      dashboardHref: mount.dataset.dashboardHref,
+    });
+  });
+
+  footerMounts.forEach((mount) => {
+    mount.outerHTML = renderFooter();
+  });
+
+  // Fallback for pages not yet migrated to placeholders.
+  if (!headerMounts.length) {
+    document.querySelectorAll("header nav").forEach((nav) => {
+      nav.innerHTML = renderNavLinks(defaultPage);
+    });
+  }
+}
+
+function syncCopyrightYear() {
+  const value = `\u00a9 ${new Date().getFullYear()}`;
+  document.querySelectorAll("#copyright-year, [data-clex-year]").forEach((el) => {
+    el.textContent = value;
+  });
+}
+
+function syncModelCountLabels() {
+  if (!Array.isArray(window.CLEX_MODELS)) return;
+  const count = window.CLEX_MODELS.length;
+  const countPlus = `${count}+`;
+  const countLabel = `${count}+ models`;
+
+  document.querySelectorAll("[data-model-count]").forEach((el) => {
+    el.textContent = String(count);
+  });
+
+  document.querySelectorAll("[data-model-count-plus]").forEach((el) => {
+    el.textContent = countPlus;
+  });
+
+  document.querySelectorAll("[data-model-count-label]").forEach((el) => {
+    el.textContent = countLabel;
+  });
+}
+
+function bindAuthActions() {
+  document.querySelectorAll("[data-clex-signout]").forEach((button) => {
+    button.addEventListener("click", () => {
+      localStorage.removeItem("clex_logged_in");
+      window.location.reload();
+    });
+  });
+}
+
+function initHeaderScrollEffect() {
   const header = document.getElementById("main-header");
   if (!header) return;
-  window.addEventListener("scroll", () => {
+
+  const onScroll = () => {
     if (window.scrollY > 50) {
       header.classList.remove("py-8");
       header.classList.add(
@@ -32,8 +201,11 @@ document.addEventListener("DOMContentLoaded", () => {
         "py-4",
       );
     }
-  });
-})();
+  };
+
+  window.addEventListener("scroll", onScroll);
+  onScroll();
+}
 
 // --- ASCII Canvas Particle Effect ---
 function initAsciiCanvas() {
@@ -128,15 +300,14 @@ function initAsciiCanvas() {
   render(0);
 }
 
-window.addEventListener("load", initAsciiCanvas);
-
 // --- Provider Logo Generator ---
 function getProviderLogo(provider) {
+  const value = String(provider || "").toLowerCase();
   let iconHTML = "";
   let colorClass = "";
   let textName = "";
 
-  switch (provider.toLowerCase()) {
+  switch (value) {
     case "openai":
       iconHTML = `<div class="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center"><div class="w-4 h-4 bg-emerald-400 rounded-sm rotate-45"></div></div>`;
       colorClass = "text-emerald-400";
@@ -157,8 +328,9 @@ function getProviderLogo(provider) {
       colorClass = "text-green-400";
       textName = "NVIDIA";
       break;
-    case "deepseek ai":
+    case "deepseek":
     case "deepseek-ai":
+    case "deepseek ai":
       iconHTML = `<div class="w-10 h-10 rounded-lg bg-indigo-500/20 border border-indigo-500/50 flex items-center justify-center"><div class="w-4 h-4 bg-indigo-400 rounded-full"></div></div>`;
       colorClass = "text-indigo-400";
       textName = "DeepSeek";
@@ -169,50 +341,22 @@ function getProviderLogo(provider) {
       colorClass = "text-orange-400";
       textName = "Mistral AI";
       break;
+    case "anthropic":
+      iconHTML = `<div class="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-500/50 flex items-center justify-center"><span class="text-amber-400 font-bold text-xs">AI</span></div>`;
+      colorClass = "text-amber-400";
+      textName = "Anthropic";
+      break;
     case "qwen":
       iconHTML = `<div class="w-10 h-10 rounded-lg bg-purple-500/20 border border-purple-500/50 flex items-center justify-center"><div class="w-5 h-5 border-[2px] border-purple-400 rounded-full"></div></div>`;
       colorClass = "text-purple-400";
       textName = "Qwen";
       break;
-    case "microsoft":
-      iconHTML = `<div class="w-10 h-10 rounded-md bg-blue-600/20 border border-blue-500/50 flex items-center justify-center"><div class="w-4 h-4 grid grid-cols-2 gap-0.5"><div class="bg-[#f25022]"></div><div class="bg-[#7fba00]"></div><div class="bg-[#00a4ef]"></div><div class="bg-[#ffb900]"></div></div></div>`;
-      colorClass = "text-blue-400";
-      textName = "Microsoft";
-      break;
-    case "ibm":
-      iconHTML = `<div class="w-10 h-10 rounded-md bg-blue-800/20 border border-blue-700/50 flex items-center justify-center font-bold text-blue-400 font-serif tracking-tighter">IBM</div>`;
-      colorClass = "text-blue-400";
-      textName = "IBM";
-      break;
-    case "bytedance":
-      iconHTML = `<div class="w-10 h-10 rounded-full bg-red-500/20 border border-red-500/50 flex items-center justify-center"><span class="text-red-400 font-bold text-lg">B</span></div>`;
-      colorClass = "text-red-400";
-      textName = "ByteDance";
-      break;
-    case "ai21 labs":
-    case "ai21":
-      iconHTML = `<div class="w-10 h-10 rounded-md bg-amber-500/20 border border-amber-500/50 flex items-center justify-center"><span class="text-amber-400 font-bold text-xs">AI21</span></div>`;
-      colorClass = "text-amber-400";
-      textName = "AI21 Labs";
-      break;
-    case "tiiuae":
-      iconHTML = `<div class="w-10 h-10 rounded-full bg-sky-500/20 border border-sky-500/50 flex items-center justify-center"><span class="text-sky-400 font-bold text-lg">F</span></div>`;
-      colorClass = "text-sky-400";
-      textName = "TII UAE";
-      break;
-    case "baai":
-      iconHTML = `<div class="w-10 h-10 rounded-md bg-teal-500/20 border border-teal-500/50 flex items-center justify-center"><span class="text-teal-400 font-bold text-xs">BAAI</span></div>`;
-      colorClass = "text-teal-400";
-      textName = "BAAI";
-      break;
-    default:
-      const initial = provider.substring(0, 1).toUpperCase();
+    default: {
+      const initial = (provider || "?").substring(0, 1).toUpperCase();
       iconHTML = `<div class="w-10 h-10 rounded-md bg-gray-800 border border-gray-600 flex items-center justify-center text-lg font-bold text-gray-300">${initial}</div>`;
       colorClass = "text-gray-300";
-      textName = provider
-        .split(/[-\s]/)
-        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-        .join(" ");
+      textName = String(provider || "Unknown");
+    }
   }
 
   return { iconHTML, colorClass, textName };
@@ -235,38 +379,8 @@ function initFeaturedCards() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", initFeaturedCards);
-
-// --- Auth State UI Management ---
-document.addEventListener("DOMContentLoaded", () => {
-  const isLoggedIn = localStorage.getItem("clex_logged_in") === "true";
-  const signInLinks = document.querySelectorAll('a[href="login.html"]');
-
-  // Convert Sign In buttons to Dashboard or Sign Out links
-  if (isLoggedIn) {
-    signInLinks.forEach((link) => {
-      // Check if it's the main header link, modify it to a dropdown or Sign Out
-      if (link.textContent.trim() === "Sign In") {
-        link.textContent = "Dashboard";
-        link.href = "#";
-
-        // Add a simple click event to clear storage and "sign out" for now
-        // In a real app this would call Firebase auth.signOut()
-        link.addEventListener("click", (e) => {
-          e.preventDefault();
-          if (confirm("Do you want to sign out?")) {
-            localStorage.removeItem("clex_logged_in");
-            window.location.reload();
-          }
-        });
-      }
-    });
-  }
-});
-
 // --- Streaming SSE helper (OpenAI-style chunks) ---
 // Expects lines like: `data: {...}\n\n` and termination `data: [DONE]`
-window.clex = window.clex || {};
 window.clex.streamChatCompletionsSSE = async function streamChatCompletionsSSE(
   response,
   { onToken, onError, onDone },
@@ -304,9 +418,8 @@ window.clex.streamChatCompletionsSSE = async function streamChatCompletionsSSE(
             const parsed = JSON.parse(data);
             const token = parsed?.choices?.[0]?.delta?.content;
             if (token && onToken) onToken(token, parsed);
-          } catch (e) {
-            // Ignore parse errors for partial chunks; surface only if callback exists.
-            if (onError) onError(e, data);
+          } catch (error) {
+            if (onError) onError(error, data);
           }
         }
 
@@ -316,6 +429,19 @@ window.clex.streamChatCompletionsSSE = async function streamChatCompletionsSSE(
   } finally {
     try {
       reader.releaseLock();
-    } catch (e) {}
+    } catch (error) {
+      // no-op
+    }
   }
 };
+
+document.addEventListener("DOMContentLoaded", () => {
+  applySiteChrome();
+  syncCopyrightYear();
+  syncModelCountLabels();
+  bindAuthActions();
+  initFeaturedCards();
+  initHeaderScrollEffect();
+});
+
+window.addEventListener("load", initAsciiCanvas);

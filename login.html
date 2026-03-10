@@ -6,7 +6,7 @@
     <title>Sign In - Clex.in</title>
     <meta
       name="description"
-      content="Sign in to Clex.in to access 150+ AI models through a unified API."
+      content="Sign in to CLEX to access multiple AI models through a unified API."
     />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="shared.css" />
@@ -37,8 +37,17 @@
       style="opacity: 0.4"
     ></canvas>
 
-    <div class="relative z-10 login-container px-6">
-      <div class="w-full max-w-[440px]">
+    <div class="relative z-10 flex flex-col min-h-screen">
+      <div
+        data-clex-header
+        data-page="login"
+        data-show-auth="false"
+        data-cta-href="docs.html#getting-started"
+        data-cta-label="Get Started"
+      ></div>
+
+      <main class="flex-1 flex items-center justify-center relative px-6 pt-24 pb-12">
+        <div class="w-full max-w-[440px]">
         <!-- Logo -->
         <div class="text-center mb-10">
           <a
@@ -53,7 +62,8 @@
             ></div>
           </a>
           <p class="text-gray-500 text-sm mt-2">
-            Access 150+ AI models through one API
+            Access <span data-model-count-label>multiple AI models</span> through
+            one API
           </p>
         </div>
 
@@ -133,7 +143,7 @@
                 <span class="text-xs text-gray-500">Remember me</span>
               </label>
               <a
-                href="#"
+                href="login.html#reset"
                 onclick="resetPassword(event)"
                 class="text-xs text-cyan-400/70 hover:text-cyan-400 transition-colors"
                 >Forgot password?</a
@@ -270,7 +280,9 @@
               />
               <span class="text-xs text-gray-500"
                 >I agree to the
-                <a href="#" class="text-cyan-400/70 hover:text-cyan-400"
+                <a
+                  href="terms.html"
+                  class="text-cyan-400/70 hover:text-cyan-400"
                   >Terms of Service</a
                 ></span
               >
@@ -335,22 +347,26 @@
         <div class="text-center mt-8">
           <p class="text-xs text-gray-600">
             By signing in, you agree to our
-            <a
-              href="#"
-              class="text-gray-500 hover:text-gray-300 transition-colors"
-              >Terms</a
-            >
-            &
-            <a
-              href="#"
-              class="text-gray-500 hover:text-gray-300 transition-colors"
-              >Privacy Policy</a
-            >
+              <a
+                href="terms.html"
+                class="text-gray-500 hover:text-gray-300 transition-colors"
+                >Terms</a
+              >
+              &
+              <a
+                href="privacy.html"
+                class="text-gray-500 hover:text-gray-300 transition-colors"
+                >Privacy Policy</a
+              >
           </p>
         </div>
-      </div>
+        </div>
+      </main>
+
+      <div data-clex-footer></div>
     </div>
 
+    <script src="models-data.js"></script>
     <script src="shared.js"></script>
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";

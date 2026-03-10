@@ -396,179 +396,132 @@ applyDevice({ device: "desktop", w: presets.desktop.w, h: presets.desktop.h });
 setActiveDeviceBtn("desktop");
 
 // -----------------------------------------------------------------------------
-// AI Playground (multi-model compare)
+// AI Playground (CLEX API default)
 // -----------------------------------------------------------------------------
 const runCompareBtn = $("run-compare");
 const promptEl = $("compare-prompt");
-const targetsEl = $("targets");
-const addTargetBtn = $("add-target");
-const resultsEl = $("compare-results");
+const providerFilterEl = $("provider-filter");
+const capabilityFilterEl = $("capability-filter");
+const modelInputEl = $("model-input");
+const modelOptionsEl = $("model-options");
+const clexApiKeyEl = $("clex-api-key");
+const outputEl = $("compare-output");
 
-const targetDefaults = [
-  { provider: "openai", model: "gpt-4.1-mini", key: "" },
-  { provider: "anthropic", model: "claude-3-5-sonnet-latest", key: "" },
-  { provider: "google", model: "gemini-1.5-flash", key: "" },
-];
+const catalogModels = Array.isArray(window.CLEX_MODELS) ? window.CLEX_MODELS : [];
 
-function loadTargets() {
-  try {
-    const raw = localStorage.getItem("clex_playground_targets");
-    if (raw) return JSON.parse(raw);
-  } catch (e) {}
-  return targetDefaults.slice(0, 2);
+function sortedUnique(values) {
+  return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
 }
 
-function saveTargets(targets) {
-  localStorage.setItem("clex_playground_targets", JSON.stringify(targets));
-}
-
-let targets = loadTargets();
-
-function providerLabel(p) {
-  if (p === "openai") return "Codex / OpenAI";
-  if (p === "anthropic") return "Claude (Anthropic)";
-  if (p === "google") return "Gemini (Google)";
-  if (p === "nvidia") return "NVIDIA";
-  return p;
-}
-
-function renderTargets() {
-  targetsEl.innerHTML = "";
-  targets.forEach((t, idx) => {
-    const row = document.createElement("div");
-    row.className =
-      "bg-white/3 border border-white/10 rounded-xl p-3 flex flex-col gap-2";
-
-    row.innerHTML = `
-      <div class="flex items-center justify-between gap-2">
-        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Target ${idx + 1}</div>
-        <button class="pg-device-btn" data-remove="${idx}">Remove</button>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-        <select data-field="provider" data-idx="${idx}"
-          class="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-gray-200 outline-none focus:border-cyan-500/50">
-          <option value="openai" ${t.provider === "openai" ? "selected" : ""}>${providerLabel("openai")}</option>
-          <option value="anthropic" ${t.provider === "anthropic" ? "selected" : ""}>${providerLabel("anthropic")}</option>
-          <option value="google" ${t.provider === "google" ? "selected" : ""}>${providerLabel("google")}</option>
-          <option value="nvidia" ${t.provider === "nvidia" ? "selected" : ""}>${providerLabel("nvidia")}</option>
-        </select>
-        <input data-field="model" data-idx="${idx}" value="${escapeHtmlAttr(t.model || "")}"
-          placeholder="Model id"
-          class="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-gray-200 outline-none focus:border-cyan-500/50" />
-      </div>
-      <input data-field="key" data-idx="${idx}" value="${escapeHtmlAttr(t.key || "")}"
-        placeholder="Your API key (sent per request; not stored server-side)"
-        class="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-gray-200 outline-none focus:border-cyan-500/50" />
-    `;
-
-    targetsEl.appendChild(row);
-  });
-
-  targetsEl.querySelectorAll("[data-remove]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const i = Number(btn.dataset.remove);
-      targets.splice(i, 1);
-      saveTargets(targets);
-      renderTargets();
-      updateRunEnabled();
-    });
-  });
-
-  targetsEl.querySelectorAll("[data-field]").forEach((el) => {
-    el.addEventListener("input", () => {
-      const i = Number(el.dataset.idx);
-      const f = el.dataset.field;
-      targets[i][f] = el.value;
-      saveTargets(targets);
-      updateRunEnabled();
-    });
-    el.addEventListener("change", () => {
-      const i = Number(el.dataset.idx);
-      const f = el.dataset.field;
-      targets[i][f] = el.value;
-      saveTargets(targets);
-      updateRunEnabled();
-    });
+function populateProviderFilter() {
+  if (!providerFilterEl) return;
+  const providers = sortedUnique(catalogModels.map((m) => m.provider).filter(Boolean));
+  providers.forEach((provider) => {
+    const option = document.createElement("option");
+    option.value = provider;
+    option.textContent = provider;
+    providerFilterEl.appendChild(option);
   });
 }
 
-function escapeHtmlAttr(s) {
-  return (s || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+function getFilteredModels() {
+  const selectedProvider = providerFilterEl?.value || "all";
+  const selectedCapability = capabilityFilterEl?.value || "all";
+
+  return catalogModels.filter((model) => {
+    const providerOk = selectedProvider === "all" || model.provider === selectedProvider;
+    const capabilityOk =
+      selectedCapability === "all" ||
+      model.category === selectedCapability ||
+      (Array.isArray(model.capabilities) && model.capabilities.includes(selectedCapability));
+    return providerOk && capabilityOk;
+  });
+}
+
+function refreshModelOptions() {
+  if (!modelOptionsEl) return;
+  const filtered = getFilteredModels();
+  modelOptionsEl.innerHTML = filtered
+    .map((model) => `<option value="${model.id}"></option>`)
+    .join("");
+
+  if ((!modelInputEl.value || !filtered.some((m) => m.id === modelInputEl.value)) && filtered[0]) {
+    modelInputEl.value = filtered[0].id;
+  }
 }
 
 function updateRunEnabled() {
-  const hasPrompt = (promptEl.value || "").trim().length > 0;
-  const usableTargets = targets.filter((t) => (t.model || "").trim() && (t.key || "").trim());
-  runCompareBtn.disabled = !(hasPrompt && usableTargets.length > 0);
+  const hasPrompt = (promptEl?.value || "").trim().length > 0;
+  const hasModel = (modelInputEl?.value || "").trim().length > 0;
+  runCompareBtn.disabled = !(hasPrompt && hasModel);
 }
 
-addTargetBtn.addEventListener("click", () => {
-  targets.push({ provider: "openai", model: "gpt-4.1-mini", key: "" });
-  saveTargets(targets);
-  renderTargets();
-  updateRunEnabled();
-});
-
-promptEl.addEventListener("input", updateRunEnabled);
-
-async function runOneTarget(t, idx) {
-  const card = document.createElement("div");
-  card.className = "glass-card rounded-2xl p-4 border border-white/8 min-h-[180px]";
-  card.innerHTML = `
-    <div class="flex items-center justify-between gap-2 mb-3">
-      <div>
-        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">${providerLabel(t.provider)}</div>
-        <div class="text-xs text-gray-500 font-mono break-all">${escapeHtmlAttr(t.model)}</div>
-      </div>
-      <div class="text-xs text-cyan-400 border border-cyan-500/20 bg-cyan-500/10 px-2 py-1 rounded-md">Streaming</div>
-    </div>
-    <div class="text-sm text-gray-200 whitespace-pre-wrap" id="out-${idx}"><span class="text-gray-600 italic">Running...</span></div>
-  `;
-  resultsEl.appendChild(card);
-
-  const out = card.querySelector(`#out-${idx}`);
-  out.textContent = "";
-
-  const res = await fetch("/api/playground/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      provider: t.provider,
-      user_api_key: t.key,
-      model: t.model,
-      messages: [{ role: "user", content: promptEl.value.trim() }],
-      stream: true,
-    }),
+if (providerFilterEl) {
+  providerFilterEl.addEventListener("change", () => {
+    refreshModelOptions();
+    updateRunEnabled();
   });
+}
 
-  if (!res.ok) {
-    const errText = await res.text();
-    out.textContent = errText;
-    return;
-  }
-
-  let acc = "";
-  await window.clex.streamChatCompletionsSSE(res, {
-    onToken: (tok) => {
-      acc += tok;
-      out.textContent = acc;
-    },
+if (capabilityFilterEl) {
+  capabilityFilterEl.addEventListener("change", () => {
+    refreshModelOptions();
+    updateRunEnabled();
   });
+}
+
+if (modelInputEl) {
+  modelInputEl.addEventListener("input", updateRunEnabled);
+}
+
+if (promptEl) {
+  promptEl.addEventListener("input", updateRunEnabled);
 }
 
 runCompareBtn.addEventListener("click", async () => {
-  resultsEl.innerHTML = "";
-  const usable = targets.filter((t) => (t.model || "").trim() && (t.key || "").trim());
-  if (usable.length === 0) return;
+  const modelId = modelInputEl.value.trim();
+  const prompt = promptEl.value.trim();
+  if (!modelId || !prompt) return;
+
+  const headers = { "Content-Type": "application/json" };
+  const clexKey = clexApiKeyEl?.value?.trim();
+  if (clexKey) headers["x-clex-api-key"] = clexKey;
 
   runCompareBtn.disabled = true;
+  outputEl.textContent = "Sending request...";
+
   try {
-    await Promise.all(usable.map((t, i) => runOneTarget(t, i)));
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        model: modelId,
+        messages: [{ role: "user", content: prompt }],
+        stream: true,
+      }),
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      outputEl.textContent = `Request failed: ${errText || res.statusText}`;
+      return;
+    }
+
+    let acc = "";
+    outputEl.textContent = "";
+    await window.clex.streamChatCompletionsSSE(res, {
+      onToken: (token) => {
+        acc += token;
+        outputEl.textContent = acc;
+      },
+    });
+  } catch (error) {
+    outputEl.textContent = `Request error: ${error.message}`;
   } finally {
     updateRunEnabled();
   }
 });
 
-renderTargets();
+populateProviderFilter();
+refreshModelOptions();
 updateRunEnabled();
-

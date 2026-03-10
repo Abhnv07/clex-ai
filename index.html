@@ -6,7 +6,7 @@
     <title>Clex.in - The Ultimate AI Wrapper API</title>
     <meta
       name="description"
-      content="Connect to 150+ AI models through a single unified API endpoint. DeepSeek, Llama, GPT-OSS, Qwen, Mistral and more. Built for developers."
+      content="Connect to top AI models through one unified API endpoint. DeepSeek, Llama, GPT-OSS, Qwen, Mistral, and more."
     />
     <!-- Add Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -294,48 +294,7 @@
     ></canvas>
 
     <div class="relative z-10 flex flex-col min-h-screen">
-      <!-- Navigation Bar -->
-      <header
-        id="main-header"
-        class="fixed top-0 w-full z-50 transition-all duration-500 py-6"
-      >
-        <div
-          class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 flex items-center justify-between"
-        >
-          <a
-            href="index.html"
-            class="flex items-center gap-2 cursor-pointer no-underline group"
-          >
-            <span
-              class="text-xl font-bold tracking-widest text-white group-hover:tracking-[0.3em] transition-all duration-500"
-              >CLEX</span
-            >
-            <div
-              class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.8)] animate-pulse"
-            ></div>
-          </a>
-          <nav
-            class="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-1 bg-white/[0.03] border border-white/[0.06] rounded-full p-1 backdrop-blur-xl"
-          >
-            <a href="index.html" class="nav-link active">Platform</a>
-            <a href="models.html" class="nav-link">Models</a>
-            <a href="docs.html" class="nav-link">Docs</a>
-            <a href="playground.html" class="nav-link">Playground</a>
-          </nav>
-          <div class="flex items-center gap-4">
-            <a
-              href="login.html"
-              class="text-sm font-medium text-gray-400 hover:text-white transition-colors hidden sm:block"
-              >Sign In</a
-            >
-            <a
-              href="docs.html#getting-started"
-              class="btn-primary text-sm !py-2.5 !px-6 no-underline bg-white !text-black border-none font-bold transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(255,255,255,0.4)]"
-              >Get Started</a
-            >
-          </div>
-        </div>
-      </header>
+      <div data-clex-header data-page="platform"></div>
 
       <!-- Hero Section -->
       <main
@@ -390,9 +349,9 @@
             <p
               class="hero-desc text-gray-400 text-lg md:text-xl max-w-xl leading-relaxed mb-10"
             >
-              Connect to DeepSeek, Llama, GPT-OSS, Qwen, Mistral and 150+
-              cutting-edge models through a single, unified endpoint. Built for
-              developers.
+              Connect to DeepSeek, Llama, GPT-OSS, Qwen, Mistral and
+              <span data-model-count-label>many models</span> through a single,
+              unified endpoint. Built for developers.
             </p>
 
             <div class="hero-btns flex flex-wrap gap-4">
@@ -466,9 +425,10 @@
                 class="absolute top-0 right-0 w-32 h-32 bg-cyan-400/10 rounded-full blur-2xl group-hover:bg-cyan-400/20 group-hover:scale-150 transition-all duration-700"
               ></div>
               <h3
+                id="hero-model-count"
                 class="text-5xl font-light text-cyan-300 tracking-tight mb-2 group-hover:scale-105 origin-left transition-transform duration-500 drop-shadow-[0_0_10px_rgba(34,211,238,0.3)]"
               >
-                150+
+                0
               </h3>
               <p
                 class="text-gray-400 font-bold text-xs tracking-widest uppercase mb-1"
@@ -498,7 +458,7 @@
               <h3
                 class="text-5xl font-light text-emerald-300 tracking-tight mb-2 group-hover:scale-105 origin-left transition-transform duration-500 drop-shadow-[0_0_10px_rgba(52,211,153,0.3)]"
               >
-                &lt; 50ms
+                Low-latency
               </h3>
               <p
                 class="text-gray-400 font-bold text-xs tracking-widest uppercase mb-1"
@@ -512,9 +472,9 @@
                   <div
                     class="pt-4 mt-2 border-t border-white/10 text-sm text-gray-500 leading-relaxed font-medium"
                   >
-                    <span class="text-emerald-400/80">✦</span> Ultra-fast edge
-                    proxy infrastructure ensures minimal overhead on your
-                    requests.
+                    <span class="text-emerald-400/80">✦</span> Optimized routing
+                    infrastructure keeps end-to-end latency low for real-time
+                    applications.
                   </div>
                 </div>
               </div>
@@ -564,6 +524,11 @@
         </p>
 
         <div
+          id="provider-strip"
+          class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 mb-14"
+        ></div>
+
+        <div
           id="planetary-system"
           class="relative w-full aspect-square max-h-[800px] mx-auto overflow-visible flex items-center justify-center pointer-events-auto"
         ></div>
@@ -587,14 +552,14 @@
               Best-in-Class Models
             </h2>
             <p class="text-gray-500 text-base">
-              Swipe through the 5 most powerful flagship models on CLEX
+              Swipe through a few flagship models available via CLEX
             </p>
           </div>
           <a
             href="models.html"
             class="hidden md:flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-medium text-sm transition-colors no-underline group"
           >
-            View all 150+ models
+            View all <span data-model-count-label>models</span>
             <svg
               class="w-4 h-4 group-hover:translate-x-1 transition-transform"
               fill="none"
@@ -617,7 +582,7 @@
           <a
             href="models.html"
             class="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-medium text-sm transition-colors no-underline"
-            >View all 150+ models →</a
+            >View all <span data-model-count-label>models</span> →</a
           >
         </div>
       </section>
@@ -633,8 +598,8 @@
             One Unified Integration
           </h2>
           <p class="text-gray-500 text-base">
-            Instant routing to 150+ state-of-the-art models. Hover to view
-            real-time specs.
+            Instant routing to dozens of state-of-the-art models. Hover to view
+            key details.
           </p>
         </div>
         <div class="w-full overflow-hidden relative pb-10">
@@ -756,182 +721,59 @@
               Unified Analytics
             </h3>
             <p class="text-gray-500 text-sm leading-relaxed">
-              Track token usage, costs, and latency across 150+ different
-              providers in one central, beautiful dashboard.
+              Track token usage, costs, and latency across providers in one
+              central dashboard.
             </p>
           </div>
         </div>
       </section>
 
-      <!-- ★★★ Case Studies & Testimonials ★★★ -->
+      <!-- Social Proof Placeholder -->
       <section
         class="w-full py-24 border-t border-b border-white/[0.04] bg-black/40 backdrop-blur-sm relative z-10"
       >
         <div
-          class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 text-center mb-16"
+          class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 text-center mb-12"
         >
           <div
             class="inline-flex items-center gap-2 bg-purple-500/5 border border-purple-500/15 rounded-full px-3 py-1 mb-4"
           >
             <span
               class="text-[10px] text-purple-400 font-bold uppercase tracking-widest"
-              >Case Studies</span
+              >Customer Stories</span
             >
           </div>
           <h2 class="text-3xl md:text-4xl font-bold text-white mb-3">
-            Trusted by Innovators
+            Case Studies Coming Soon
           </h2>
-          <p class="text-gray-500 text-base max-w-xl mx-auto">
-            See how top engineering teams are scaling their AI applications with
-            CLEX.
+          <p class="text-gray-500 text-base max-w-3xl mx-auto">
+            We will publish verified customer references here once approved for
+            public sharing.
           </p>
         </div>
-
         <div
-          class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 grid grid-cols-1 md:grid-cols-3 gap-6"
+          class="max-w-[1200px] mx-auto px-6 md:px-12 lg:px-20 grid grid-cols-1 md:grid-cols-3 gap-5"
         >
-          <div
-            class="glass-card p-8 rounded-2xl border border-white/5 hover:border-purple-500/30 transition-colors"
-          >
-            <div class="flex items-center gap-1 mb-6 text-yellow-500">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                ></path>
-              </svg>
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                ></path>
-              </svg>
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                ></path>
-              </svg>
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                ></path>
-              </svg>
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                ></path>
-              </svg>
-            </div>
-            <p class="text-gray-300 text-sm leading-relaxed mb-6 font-medium">
-              "Switching to CLEX was a no-brainer. We instantly gained access to
-              Llama 3 and DeepSeek without rewriting a single line of our OpenAI
-              integrations. Our monthly overhead dropped by 40%."
+          <div class="glass-card p-6 rounded-2xl border border-white/5">
+            <h3 class="text-white font-semibold mb-2">Migration Story</h3>
+            <p class="text-sm text-gray-400">
+              Planned: replacing multi-provider SDK integrations with one
+              OpenAI-compatible endpoint.
             </p>
-            <div class="flex items-center gap-3">
-              <div
-                class="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-400 to-purple-500 flex items-center justify-center text-white font-bold"
-              >
-                SM
-              </div>
-              <div>
-                <div class="text-sm font-bold text-white">Sarah M.</div>
-                <div class="text-xs text-gray-500">CTO @ DataFlow</div>
-              </div>
-            </div>
           </div>
-
-          <div
-            class="glass-card p-8 rounded-2xl border border-white/5 hover:border-purple-500/30 transition-colors"
-          >
-            <div class="flex items-center gap-1 mb-6 text-yellow-500">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                ></path>
-              </svg>
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                ></path>
-              </svg>
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                ></path>
-              </svg>
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                ></path>
-              </svg>
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                ></path>
-              </svg>
-            </div>
-            <p class="text-gray-300 text-sm leading-relaxed mb-6 font-medium">
-              "The fallback routing is a lifesaver. Before CLEX, an API outage
-              meant our customer support bots went down. Now, it transparently
-              rolls over to an identical open-weight model flawlessly."
+          <div class="glass-card p-6 rounded-2xl border border-white/5">
+            <h3 class="text-white font-semibold mb-2">Reliability Story</h3>
+            <p class="text-sm text-gray-400">
+              Planned: production failover patterns and routing behavior across
+              model providers.
             </p>
-            <div class="flex items-center gap-3">
-              <div
-                class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 flex items-center justify-center text-white font-bold"
-              >
-                DK
-              </div>
-              <div>
-                <div class="text-sm font-bold text-white">David K.</div>
-                <div class="text-xs text-gray-500">Lead Dev @ OmniSupport</div>
-              </div>
-            </div>
           </div>
-
-          <div
-            class="glass-card p-8 rounded-2xl border border-white/5 hover:border-purple-500/30 transition-colors"
-          >
-            <div class="flex items-center gap-1 mb-6 text-yellow-500">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                ></path>
-              </svg>
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                ></path>
-              </svg>
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                ></path>
-              </svg>
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                ></path>
-              </svg>
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                ></path>
-              </svg>
-            </div>
-            <p class="text-gray-300 text-sm leading-relaxed mb-6 font-medium">
-              "The interactive docs make exploring new models a breeze. Sub-50ms
-              routing means my RAG pipeline responses are practically
-              instantaneous. Highly recommended."
+          <div class="glass-card p-6 rounded-2xl border border-white/5">
+            <h3 class="text-white font-semibold mb-2">Cost Story</h3>
+            <p class="text-sm text-gray-400">
+              Planned: spend and latency optimization outcomes from model
+              selection and routing policy.
             </p>
-            <div class="flex items-center gap-3">
-              <div
-                class="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold"
-              >
-                AL
-              </div>
-              <div>
-                <div class="text-sm font-bold text-white">Amelia L.</div>
-                <div class="text-xs text-gray-500">Founder @ AgenticAI</div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -1000,7 +842,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                1,000 free API calls/day
+                Developer-friendly free tier
               </span>
               <span class="flex items-center gap-1.5">
                 <svg
@@ -1016,7 +858,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                150+ models
+                Unified OpenAI-compatible endpoint
               </span>
               <span class="flex items-center gap-1.5">
                 <svg
@@ -1079,45 +921,10 @@
         </div>
       </section>
 
-      <!-- Footer -->
-      <footer
-        class="w-full py-10 border-t border-white/[0.04] bg-[#02050f]/90 backdrop-blur-md z-20 mt-auto relative"
-      >
-        <div class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20">
-          <div
-            class="flex flex-wrap justify-center md:justify-between items-center gap-6 text-sm text-gray-500"
-          >
-            <div class="flex items-center gap-3">
-              <span class="text-sm font-bold tracking-widest text-gray-600"
-                >CLEX</span
-              >
-              <span class="text-gray-700">•</span>
-              <span
-                ><span id="copyright-year"></span> All rights reserved.</span
-              >
-            </div>
-            <div
-              class="flex flex-wrap justify-center items-center gap-6 font-medium"
-            >
-              <a
-                href="support.html"
-                class="hover:text-cyan-300 transition-colors"
-                >Support</a
-              >
-              <a
-                href="privacy.html"
-                class="hover:text-cyan-300 transition-colors"
-                >Privacy Policy</a
-              >
-              <a href="terms.html" class="hover:text-cyan-300 transition-colors"
-                >Terms of Service</a
-              >
-            </div>
-          </div>
-        </div>
-      </footer>
+      <div data-clex-footer></div>
     </div>
 
+    <script src="models-data.js"></script>
     <script src="shared.js"></script>
 
     <script>
@@ -1136,63 +943,48 @@
         });
       }
 
-      // ── Top 5 Featured Models (Horizontal Slider) ──
-      const topModels = [
-        {
-          name: "deepseek-v3.2",
-          publisher: "DeepSeek AI",
-          use: "Reasoning, Long Context",
-          context: "64K",
-          maxOut: "8K",
-          badge: "🔥 Top Pick",
-          color: "#4f5bd5",
-        },
-        {
-          name: "qwen3.5-397b-a17b",
-          publisher: "Qwen",
-          use: "Vision, Chat, RAG, Agentic",
-          context: "128K",
-          maxOut: "8K",
-          badge: "⚡ Flagship",
-          color: "#6366f1",
-        },
-        {
-          name: "llama-3.3-70b-instruct",
-          publisher: "Meta",
-          use: "Reasoning, Math, Multilingual",
-          context: "128K",
-          maxOut: "8K",
-          badge: "🦙 Best Open",
-          color: "#0081FB",
-        },
-        {
-          name: "gpt-oss-120b",
-          publisher: "OpenAI",
-          use: "Text Reasoning (MoE)",
-          context: "128K",
-          maxOut: "4K",
-          badge: "🧠 Powerful",
-          color: "#ffffff",
-        },
-        {
-          name: "mistral-large-3-675b",
-          publisher: "Mistral AI",
-          use: "Chat, Agentic, VLM",
-          context: "128K",
-          maxOut: "8K",
-          badge: "🎯 Enterprise",
-          color: "#FF7000",
-        },
-      ];
+      // ── Top Featured Models (Horizontal Slider, backed by shared data) ──
+      const topModels = Array.isArray(window.CLEX_TOP_MODELS)
+        ? window.CLEX_TOP_MODELS
+        : [];
+
+      const providerStrip = document.getElementById("provider-strip");
+      if (providerStrip && Array.isArray(window.CLEX_MODELS)) {
+        const providerCounts = window.CLEX_MODELS.reduce((acc, model) => {
+          const provider = model.provider || "Unknown";
+          acc[provider] = (acc[provider] || 0) + 1;
+          return acc;
+        }, {});
+
+        providerStrip.innerHTML = Object.entries(providerCounts)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 8)
+          .map(([provider, count]) => {
+            const logo = getProviderLogo(provider);
+            return `
+              <div class="glass-card rounded-xl p-3 border border-white/5 hover:border-cyan-500/20 transition-all">
+                <div class="flex items-center gap-2">
+                  <div class="scale-[0.7] origin-left">${logo.iconHTML}</div>
+                  <div>
+                    <div class="text-xs font-semibold text-white">${logo.textName}</div>
+                    <div class="text-[11px] text-gray-500">${count} models</div>
+                  </div>
+                </div>
+              </div>
+            `;
+          })
+          .join("");
+      }
 
       const slider = document.getElementById("model-slider");
       topModels.forEach((m) => {
+        const logo = getProviderLogo(m.publisher);
         slider.innerHTML += `
                 <div class="model-slide featured-card group cursor-pointer" onclick="window.location.href='models.html?search=${encodeURIComponent(m.name)}'">
                     <div class="flex items-center justify-between mb-5">
                         <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:${m.color}15; border:1px solid ${m.color}30">
-                                <span class="text-sm font-bold" style="color:${m.color}">${m.publisher.charAt(0)}</span>
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center overflow-hidden" style="background:${m.color}15; border:1px solid ${m.color}30">
+                                ${logo.iconHTML}
                             </div>
                             <span class="text-sm font-medium text-gray-400">${m.publisher}</span>
                         </div>
@@ -1215,184 +1007,9 @@
       });
 
       // ── AI Models Data (Marquee) ──
-      const aiModels = [
-        {
-          name: "gpt-oss-120b",
-          provider: "openai",
-          context: "128K",
-          maxOutput: "4K",
-          inPrice: "$0.15",
-          outPrice: "$0.60",
-        },
-        {
-          name: "llama-3.3-70b-instruct",
-          provider: "meta",
-          context: "128K",
-          maxOutput: "8K",
-          inPrice: "$0.10",
-          outPrice: "$0.30",
-        },
-        {
-          name: "kimi-k2.5",
-          provider: "moonshotai",
-          context: "200K",
-          maxOutput: "8K",
-          inPrice: "$0.20",
-          outPrice: "$0.40",
-        },
-        {
-          name: "deepseek-v3.2",
-          provider: "deepseek-ai",
-          context: "64K",
-          maxOutput: "8K",
-          inPrice: "$0.14",
-          outPrice: "$0.28",
-        },
-        {
-          name: "nemotron-3-nano-30b",
-          provider: "nvidia",
-          context: "4K",
-          maxOutput: "4K",
-          inPrice: "$0.05",
-          outPrice: "$0.15",
-        },
-        {
-          name: "qwen3-next-80b",
-          provider: "qwen",
-          context: "32K",
-          maxOutput: "8K",
-          inPrice: "$0.15",
-          outPrice: "$0.30",
-        },
-        {
-          name: "minimax-m2.1",
-          provider: "minimaxai",
-          context: "32K",
-          maxOutput: "4K",
-          inPrice: "$0.20",
-          outPrice: "$0.40",
-        },
-        {
-          name: "glm5",
-          provider: "z-ai",
-          context: "128K",
-          maxOutput: "4K",
-          inPrice: "$0.25",
-          outPrice: "$0.50",
-        },
-        {
-          name: "step-3.5-flash",
-          provider: "stepfun-ai",
-          context: "32K",
-          maxOutput: "4K",
-          inPrice: "$0.10",
-          outPrice: "$0.20",
-        },
-        {
-          name: "mistral-large-3",
-          provider: "mistralai",
-          context: "128K",
-          maxOutput: "8K",
-          inPrice: "$0.40",
-          outPrice: "$0.80",
-        },
-        {
-          name: "gemma-3-27b-it",
-          provider: "google",
-          context: "8K",
-          maxOutput: "4K",
-          inPrice: "$0.20",
-          outPrice: "$0.40",
-        },
-        {
-          name: "llama-4-maverick-17b",
-          provider: "meta",
-          context: "128K",
-          maxOutput: "8K",
-          inPrice: "$0.08",
-          outPrice: "$0.20",
-        },
-        {
-          name: "qwen3.5-397b-a17b",
-          provider: "qwen",
-          context: "128K",
-          maxOutput: "8K",
-          inPrice: "$0.40",
-          outPrice: "$0.80",
-        },
-        {
-          name: "qwen3-coder-480b",
-          provider: "qwen",
-          context: "256K",
-          maxOutput: "8K",
-          inPrice: "$0.45",
-          outPrice: "$0.90",
-        },
-        {
-          name: "deepseek-r1-distill-qwen-32b",
-          provider: "deepseek-ai",
-          context: "32K",
-          maxOutput: "4K",
-          inPrice: "$0.08",
-          outPrice: "$0.16",
-        },
-        {
-          name: "devstral-2-123b",
-          provider: "mistralai",
-          context: "256K",
-          maxOutput: "8K",
-          inPrice: "$0.35",
-          outPrice: "$0.70",
-        },
-        {
-          name: "llama-3.3-super-49b",
-          provider: "nvidia",
-          context: "128K",
-          maxOutput: "8K",
-          inPrice: "$0.10",
-          outPrice: "$0.25",
-        },
-        {
-          name: "cosmos-nemotron-34b",
-          provider: "nvidia",
-          context: "32K",
-          maxOutput: "4K",
-          inPrice: "$0.10",
-          outPrice: "$0.20",
-        },
-        {
-          name: "granite-3.3-8b-instruct",
-          provider: "ibm",
-          context: "32K",
-          maxOutput: "4K",
-          inPrice: "$0.06",
-          outPrice: "$0.12",
-        },
-        {
-          name: "kimi-k2-thinking",
-          provider: "moonshotai",
-          context: "128K",
-          maxOutput: "16K",
-          inPrice: "$0.30",
-          outPrice: "$0.60",
-        },
-        {
-          name: "whisper-large-v3",
-          provider: "openai",
-          context: "Audio",
-          maxOutput: "Text",
-          inPrice: "$0.006",
-          outPrice: "/min",
-        },
-        {
-          name: "parakeet-ctc-0.6b-zh-tw",
-          provider: "nvidia",
-          context: "Audio",
-          maxOutput: "Text",
-          inPrice: "$0.005",
-          outPrice: "/min",
-        },
-      ];
+      const aiModels = Array.isArray(window.CLEX_MARQUEE_MODELS)
+        ? window.CLEX_MARQUEE_MODELS
+        : [];
 
       // --- Render Marquee ---
       const marqueeContainer = document.getElementById("marquee-container");
@@ -1429,12 +1046,12 @@
                     </div>
                     <div class="grid grid-cols-2 gap-4 pt-1">
                         <div>
-                          <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-0.5">Input / 1M</p>
-                          <p class="text-sm font-medium text-white">${model.inPrice}</p>
+                          <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-0.5">Context / Output</p>
+                          <p class="text-sm font-medium text-white">${model.context} · ${model.maxOutput}</p>
                         </div>
                         <div>
-                          <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-0.5">Output / 1M</p>
-                          <p class="text-sm font-medium text-white">${model.outPrice}</p>
+                          <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-0.5">Pricing</p>
+                          <p class="text-sm font-medium text-white">${model.pricingNote || "See provider"}</p>
                         </div>
                     </div>
                   </div>
@@ -1866,7 +1483,7 @@
             el.innerHTML = `<span class="font-bold text-[8px] md:text-[10px]" style="color:${e.color}; text-shadow: 0 0 5px ${e.color};" title="${e.name}">${e.text}</span>`;
 
             statsHtml = `<div class="text-[10px] text-gray-400 mt-2 flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] animate-pulse"></span> <span class="tracking-wide">Online • < 50ms latency</span>
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] animate-pulse"></span> <span class="tracking-wide">Online • optimized routing</span>
                                  </div>`;
           }
 
@@ -1970,6 +1587,15 @@
           }, 3000);
         }, 1200); // Wait for heroFadeUp
       });
+
+      // Update hero model count from canonical model list (if available)
+      if (window.CLEX_MODELS && Array.isArray(window.CLEX_MODELS)) {
+        const count = window.CLEX_MODELS.length;
+        const heroCountEl = document.getElementById("hero-model-count");
+        if (heroCountEl) {
+          heroCountEl.textContent = `${count}+`;
+        }
+      }
     </script>
   </body>
 </html>

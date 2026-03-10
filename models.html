@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Models - Clex.in | 150+ AI Models</title>
+    <title>Models - Clex.in | AI Model Catalog</title>
     <meta
       name="description"
-      content="Browse 150+ AI models available through Clex.in. Text, code, speech, safety, and embedding models from NVIDIA, Meta, OpenAI, DeepSeek, Qwen and more."
+      content="Browse AI models available through CLEX. Text, code, speech, safety, embedding, and vision models in one unified catalog."
     />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="shared.css" />
@@ -31,63 +31,7 @@
     ></canvas>
 
     <div class="relative z-10 flex flex-col min-h-screen">
-      <!-- Navigation -->
-      <header
-        id="main-header"
-        class="fixed top-0 w-full z-50 transition-all duration-300 py-8"
-      >
-        <div
-          class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 flex items-center justify-between"
-        >
-          <a
-            href="index.html"
-            class="flex items-center gap-1.5 cursor-pointer no-underline"
-          >
-            <span class="text-xl font-bold tracking-widest text-white"
-              >CLEX</span
-            >
-            <div
-              class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)] animate-pulse"
-            ></div>
-          </a>
-          <nav
-            class="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-1 bg-white/5 border border-white/10 rounded-full p-1 backdrop-blur-md"
-          >
-            <a
-              href="index.html"
-              class="px-6 py-2 rounded-full text-gray-300 hover:text-white text-sm font-medium transition-colors"
-              >Platform</a
-            >
-            <a
-              href="models.html"
-              class="px-6 py-2 rounded-full bg-white text-black text-sm font-medium transition-colors"
-              >Models</a
-            >
-            <a
-              href="docs.html"
-              class="px-6 py-2 rounded-full text-gray-300 hover:text-white text-sm font-medium transition-colors"
-              >Docs</a
-            >
-            <a
-              href="playground.html"
-              class="px-6 py-2 rounded-full text-gray-300 hover:text-white text-sm font-medium transition-colors"
-              >Playground</a
-            >
-          </nav>
-          <div class="flex items-center gap-6">
-            <a
-              href="docs.html#authentication"
-              class="text-sm font-medium text-gray-300 hover:text-white transition-colors hidden sm:block"
-              >API Keys</a
-            >
-            <a
-              href="docs.html#getting-started"
-              class="bg-white/10 border border-white/20 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-white hover:text-black transition-all no-underline"
-              >Get Started</a
-            >
-          </div>
-        </div>
-      </header>
+      <div data-clex-header data-page="models"></div>
 
       <!-- Hero Banner -->
       <section
@@ -106,7 +50,8 @@
               <span
                 class="text-xs text-cyan-300 font-semibold"
                 id="model-count-badge"
-                >150+ models</span
+                data-model-count-label
+                >Models</span
               >
             </div>
             <h1
@@ -191,32 +136,7 @@
         </div>
       </section>
 
-      <!-- Footer -->
-      <footer
-        class="w-full py-8 border-t border-white/10 bg-[#02050f]/80 backdrop-blur-md z-20 mt-auto relative"
-      >
-        <div
-          class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 flex flex-wrap justify-center md:justify-between items-center gap-6 text-sm text-gray-400"
-        >
-          <div class="flex items-center gap-2">
-            <div class="w-2 h-2 rounded-full bg-white/20"></div>
-            <span id="copyright-year"></span> clex.in. All rights reserved.
-          </div>
-          <div
-            class="flex flex-wrap justify-center items-center gap-6 font-medium"
-          >
-            <a href="support.html" class="hover:text-cyan-300 transition-colors"
-              >Support</a
-            >
-            <a href="privacy.html" class="hover:text-cyan-300 transition-colors"
-              >Privacy Policy</a
-            >
-            <a href="terms.html" class="hover:text-cyan-300 transition-colors"
-              >Terms of Service</a
-            >
-          </div>
-        </div>
-      </footer>
+      <div data-clex-footer></div>
     </div>
 
     <!-- Chat Panel Overlay -->
@@ -264,7 +184,7 @@
       <div id="chat-messages" class="chat-messages">
         <div class="text-center text-gray-600 text-sm py-10">
           <p>Send a message to start chatting</p>
-          <p class="text-xs text-gray-700 mt-1">Powered by NVIDIA API</p>
+          <p class="text-xs text-gray-700 mt-1">Powered by CLEX API</p>
         </div>
       </div>
       <div class="chat-input-bar">
@@ -292,940 +212,17 @@
       </div>
     </div>
 
+    <script src="models-data.js"></script>
     <script src="shared.js"></script>
     <script>
       // ═══════════════════════════════════════════════════════
-      // FULL MODEL CATALOG
+      // MODEL CATALOG (backed by shared models-data.js)
       // ═══════════════════════════════════════════════════════
 
-      const allModels = [
-        // TEXT / CHAT (General LLMs)
-        {
-          name: "llama-nemotron-rerank-1b-v2",
-          publisher: "NVIDIA",
-          use: "Text retrieval / reranking",
-          category: "embedding",
-          nvidiaId: "nvidia/llama-nemotron-rerank-1b-v2",
-        },
-        {
-          name: "qwen3.5-122b-a10b",
-          publisher: "Qwen",
-          use: "Chat, coding, reasoning",
-          category: "text",
-          nvidiaId: "qwen/qwen3.5-122b-a10b",
-        },
-        {
-          name: "qwen3.5-397b-a17b",
-          publisher: "Qwen",
-          use: "Vision, chat, RAG, agentic",
-          category: "text",
-          nvidiaId: "qwen/qwen3.5-397b-a17b",
-        },
-        {
-          name: "glm5",
-          publisher: "Z.ai",
-          use: "Reasoning, agentic",
-          category: "text",
-          nvidiaId: "zhipuai/glm5",
-        },
-        {
-          name: "minimax-m2.5",
-          publisher: "Minimaxai",
-          use: "Coding, reasoning, office tasks",
-          category: "text",
-          nvidiaId: "minimaxai/minimax-m2.5",
-        },
-        {
-          name: "minimax-m2.1",
-          publisher: "Minimaxai",
-          use: "Coding, app/web dev, agentic",
-          category: "text",
-          nvidiaId: "minimaxai/minimax-m2.1",
-        },
-        {
-          name: "step-3.5-flash",
-          publisher: "Stepfun-ai",
-          use: "Reasoning, agentic",
-          category: "text",
-          nvidiaId: "stepfun-ai/step-3.5-flash",
-        },
-        {
-          name: "kimi-k2.5",
-          publisher: "Moonshotai",
-          use: "Multimodal, video understanding",
-          category: "vision",
-          nvidiaId: "moonshotai/kimi-k2.5",
-        },
-        {
-          name: "glm4.7",
-          publisher: "Z.ai",
-          use: "Agentic coding, tool calling",
-          category: "text",
-          nvidiaId: "zhipuai/glm4.7",
-        },
-        {
-          name: "deepseek-v3.2",
-          publisher: "DeepSeek AI",
-          use: "Reasoning, long context",
-          category: "text",
-          nvidiaId: "deepseek-ai/deepseek-v3.2",
-        },
-        {
-          name: "nemotron-3-nano-30b-a3b",
-          publisher: "NVIDIA",
-          use: "Coding, reasoning, MoE",
-          category: "text",
-          nvidiaId: "nvidia/nemotron-3-nano-30b-a3b",
-        },
-        {
-          name: "kimi-k2-thinking",
-          publisher: "Moonshotai",
-          use: "Reasoning, tool use",
-          category: "text",
-          nvidiaId: "moonshotai/kimi-k2-thinking",
-        },
-        {
-          name: "mistral-large-3-675b-instruct-2512",
-          publisher: "Mistral AI",
-          use: "Chat, agentic, VLM",
-          category: "text",
-          nvidiaId: "mistralai/mistral-large-3-675b-instruct-2512",
-        },
-        {
-          name: "ministral-14b-instruct-2512",
-          publisher: "Mistral AI",
-          use: "Chat, instruction following",
-          category: "text",
-          nvidiaId: "mistralai/ministral-14b-instruct-2512",
-        },
-        {
-          name: "devstral-2-123b-instruct-2512",
-          publisher: "Mistral AI",
-          use: "Code, reasoning",
-          category: "code",
-          nvidiaId: "mistralai/devstral-2-123b-instruct-2512",
-        },
-        {
-          name: "deepseek-v3.1-terminus",
-          publisher: "DeepSeek AI",
-          use: "Agentic, tool calling",
-          category: "text",
-          nvidiaId: "deepseek-ai/deepseek-v3.1-terminus",
-        },
-        {
-          name: "deepseek-v3.1",
-          publisher: "DeepSeek AI",
-          use: "Reasoning, tool use",
-          category: "text",
-          nvidiaId: "deepseek-ai/deepseek-v3.1",
-        },
-        {
-          name: "stockmark-2-100b-instruct",
-          publisher: "Stockmark",
-          use: "Japanese enterprise LLM",
-          category: "text",
-          nvidiaId: "stockmark/stockmark-2-100b-instruct",
-        },
-        {
-          name: "qwen3-next-80b-a3b-instruct",
-          publisher: "Qwen",
-          use: "Chat, long context",
-          category: "text",
-          nvidiaId: "qwen/qwen3-next-80b-a3b-instruct",
-        },
-        {
-          name: "kimi-k2-instruct-0905",
-          publisher: "Moonshotai",
-          use: "Reasoning, long context",
-          category: "text",
-          nvidiaId: "moonshotai/kimi-k2-instruct-0905",
-        },
-        {
-          name: "bielik-11b-v2.6-instruct",
-          publisher: "Speakleash",
-          use: "Polish language, text generation",
-          category: "text",
-          nvidiaId: "speakleash/bielik-11b-v2.6-instruct",
-        },
-        {
-          name: "qwen3-next-80b-a3b-thinking",
-          publisher: "Qwen",
-          use: "Reasoning, multilingual",
-          category: "text",
-          nvidiaId: "qwen/qwen3-next-80b-a3b-thinking",
-        },
-        {
-          name: "seed-oss-36b-instruct",
-          publisher: "ByteDance",
-          use: "Reasoning, agentic",
-          category: "text",
-          nvidiaId: "bytedance/seed-oss-36b-instruct",
-        },
-        {
-          name: "qwen3-coder-480b-a35b-instruct",
-          publisher: "Qwen",
-          use: "Agentic coding",
-          category: "code",
-          nvidiaId: "qwen/qwen3-coder-480b-a35b-instruct",
-        },
-        {
-          name: "nvidia-nemotron-nano-9b-v2",
-          publisher: "NVIDIA",
-          use: "Reasoning, agentic",
-          category: "text",
-          nvidiaId: "nvidia/nvidia-nemotron-nano-9b-v2",
-        },
-        {
-          name: "llama-3.3-nemotron-super-49b-v1.5",
-          publisher: "NVIDIA",
-          use: "Reasoning, chat, tool calling",
-          category: "text",
-          nvidiaId: "nvidia/llama-3.3-nemotron-super-49b-v1.5",
-        },
-        {
-          name: "teuken-7b-instruct-commercial-v0.4",
-          publisher: "Opengpt-x",
-          use: "EU multilingual LLM",
-          category: "text",
-          nvidiaId: "opengpt-x/teuken-7b-instruct-commercial-v0.4",
-        },
-        {
-          name: "sarvam-m",
-          publisher: "Sarvamai",
-          use: "Indian language, coding, math",
-          category: "text",
-          nvidiaId: "sarvamai/sarvam-m",
-        },
-        {
-          name: "mistral-small-3.1-24b-instruct-2503",
-          publisher: "Mistral AI",
-          use: "Multilingual, image understanding",
-          category: "text",
-          nvidiaId: "mistralai/mistral-small-3.1-24b-instruct-2503",
-        },
-        {
-          name: "mistral-medium-3-instruct",
-          publisher: "Mistral AI",
-          use: "Enterprise, software dev",
-          category: "text",
-          nvidiaId: "mistralai/mistral-medium-3-instruct",
-        },
-        {
-          name: "llama-3.1-nemotron-ultra-253b-v1",
-          publisher: "NVIDIA",
-          use: "Scientific reasoning, coding",
-          category: "text",
-          nvidiaId: "nvidia/llama-3.1-nemotron-ultra-253b-v1",
-        },
-        {
-          name: "llama-4-maverick-17b-128e-instruct",
-          publisher: "Meta",
-          use: "Multimodal, multilingual",
-          category: "vision",
-          nvidiaId: "meta/llama-4-maverick-17b-128e-instruct",
-        },
-        {
-          name: "llama-4-scout-17b-16e-instruct",
-          publisher: "Meta",
-          use: "Multimodal, multilingual",
-          category: "vision",
-          nvidiaId: "meta/llama-4-scout-17b-16e-instruct",
-        },
-        {
-          name: "llama-3.3-nemotron-super-49b-v1",
-          publisher: "NVIDIA",
-          use: "Chat, reasoning",
-          category: "text",
-          nvidiaId: "nvidia/llama-3.3-nemotron-super-49b-v1",
-        },
-        {
-          name: "llama-3.1-nemotron-nano-8b-v1",
-          publisher: "NVIDIA",
-          use: "Chat, edge",
-          category: "text",
-          nvidiaId: "nvidia/llama-3.1-nemotron-nano-8b-v1",
-        },
-        {
-          name: "marin-8b-instruct",
-          publisher: "Marin",
-          use: "Reasoning, math, science",
-          category: "text",
-          nvidiaId: "marin/marin-8b-instruct",
-        },
-        {
-          name: "granite-3.3-8b-instruct",
-          publisher: "IBM",
-          use: "Reasoning, coding",
-          category: "text",
-          nvidiaId: "ibm/granite-3.3-8b-instruct",
-        },
-        {
-          name: "eurollm-9b-instruct",
-          publisher: "Utter-project",
-          use: "EU multilingual",
-          category: "text",
-          nvidiaId: "utter-project/eurollm-9b-instruct",
-        },
-        {
-          name: "gemma-2-9b-cpt-sahabatai-instruct",
-          publisher: "Gotocompany",
-          use: "Indonesian language",
-          category: "text",
-          nvidiaId: "gotocompany/gemma-2-9b-cpt-sahabatai-instruct",
-        },
-        {
-          name: "phi-4-mini-flash-reasoning",
-          publisher: "Microsoft",
-          use: "Edge reasoning",
-          category: "text",
-          nvidiaId: "microsoft/phi-4-mini-flash-reasoning",
-        },
-        {
-          name: "kimi-k2-instruct",
-          publisher: "Moonshotai",
-          use: "Coding, reasoning, agentic",
-          category: "text",
-          nvidiaId: "moonshotai/kimi-k2-instruct",
-        },
-        {
-          name: "magistral-small-2506",
-          publisher: "Mistral AI",
-          use: "Reasoning, edge",
-          category: "text",
-          nvidiaId: "mistralai/magistral-small-2506",
-        },
-        {
-          name: "llama-guard-4-12b",
-          publisher: "Meta",
-          use: "Multimodal safety",
-          category: "safety",
-          nvidiaId: "meta/llama-guard-4-12b",
-        },
-        {
-          name: "gemma-3n-e4b-it",
-          publisher: "Google",
-          use: "Text/audio/image, edge",
-          category: "vision",
-          nvidiaId: "google/gemma-3n-e4b-it",
-        },
-        {
-          name: "gemma-3n-e2b-it",
-          publisher: "Google",
-          use: "Text/audio/image, edge",
-          category: "vision",
-          nvidiaId: "google/gemma-3n-e2b-it",
-        },
-        {
-          name: "mistral-nemotron",
-          publisher: "Mistral AI",
-          use: "Coding, agentic",
-          category: "code",
-          nvidiaId: "mistralai/mistral-nemotron",
-        },
-        {
-          name: "llama-3.1-nemotron-nano-vl-8b-v1",
-          publisher: "NVIDIA",
-          use: "Vision-language",
-          category: "vision",
-          nvidiaId: "nvidia/llama-3.1-nemotron-nano-vl-8b-v1",
-        },
-        {
-          name: "llama-3.1-nemotron-nano-4b-v1.1",
-          publisher: "NVIDIA",
-          use: "Reasoning, edge agents",
-          category: "text",
-          nvidiaId: "nvidia/llama-3.1-nemotron-nano-4b-v1.1",
-        },
-        {
-          name: "nemotron-content-safety-reasoning-4b",
-          publisher: "NVIDIA",
-          use: "Safety / guardrails",
-          category: "safety",
-          nvidiaId: "nvidia/nemotron-content-safety-reasoning-4b",
-        },
-        {
-          name: "llama-3.1-nemotron-safety-guard-8b-v3",
-          publisher: "NVIDIA",
-          use: "Content moderation",
-          category: "safety",
-          nvidiaId: "nvidia/llama-3.1-nemotron-safety-guard-8b-v3",
-        },
-        {
-          name: "deepseek-r1-distill-llama-8b",
-          publisher: "DeepSeek AI",
-          use: "Reasoning (distilled)",
-          category: "text",
-          nvidiaId: "deepseek-ai/deepseek-r1-distill-llama-8b",
-        },
-        {
-          name: "deepseek-r1-distill-qwen-32b",
-          publisher: "DeepSeek AI",
-          use: "Coding/reasoning (distilled)",
-          category: "text",
-          nvidiaId: "deepseek-ai/deepseek-r1-distill-qwen-32b",
-        },
-        {
-          name: "deepseek-r1-distill-qwen-14b",
-          publisher: "DeepSeek AI",
-          use: "Coding/reasoning (distilled)",
-          category: "text",
-          nvidiaId: "deepseek-ai/deepseek-r1-distill-qwen-14b",
-        },
-        {
-          name: "deepseek-r1-distill-qwen-7b",
-          publisher: "DeepSeek AI",
-          use: "Coding/reasoning (distilled)",
-          category: "text",
-          nvidiaId: "deepseek-ai/deepseek-r1-distill-qwen-7b",
-        },
-        {
-          name: "phi-4-mini-instruct",
-          publisher: "Microsoft",
-          use: "Chat, multilingual",
-          category: "text",
-          nvidiaId: "microsoft/phi-4-mini-instruct",
-        },
-        {
-          name: "mistral-small-24b-instruct",
-          publisher: "Mistral AI",
-          use: "Code, math, general",
-          category: "text",
-          nvidiaId: "mistralai/mistral-small-24b-instruct",
-        },
-        {
-          name: "llama-3.1-nemoguard-8b-topic-control",
-          publisher: "NVIDIA",
-          use: "Guardrails/topic control",
-          category: "safety",
-          nvidiaId: "nvidia/llama-3.1-nemoguard-8b-topic-control",
-        },
-        {
-          name: "nemoguard-jailbreak-detect",
-          publisher: "NVIDIA",
-          use: "Jailbreak detection",
-          category: "safety",
-          nvidiaId: "nvidia/nemoguard-jailbreak-detect",
-        },
-        {
-          name: "llama-3.1-nemoguard-8b-content-safety",
-          publisher: "NVIDIA",
-          use: "Content safety",
-          category: "safety",
-          nvidiaId: "nvidia/llama-3.1-nemoguard-8b-content-safety",
-        },
-        {
-          name: "colosseum-355b-instruct-16k",
-          publisher: "Igenius",
-          use: "Enterprise regulated industries",
-          category: "text",
-          nvidiaId: "igenius/colosseum-355b-instruct-16k",
-        },
-        {
-          name: "falcon3-7b-instruct",
-          publisher: "Tiiuae",
-          use: "Reasoning, math",
-          category: "text",
-          nvidiaId: "tiiuae/falcon3-7b-instruct",
-        },
-        {
-          name: "italia-10b-instruct-16k",
-          publisher: "Igenius",
-          use: "European multilingual",
-          category: "text",
-          nvidiaId: "igenius/italia-10b-instruct-16k",
-        },
-        {
-          name: "qwen2.5-7b-instruct",
-          publisher: "Qwen",
-          use: "Chinese & English LLM",
-          category: "text",
-          nvidiaId: "qwen/qwen2.5-7b-instruct",
-        },
-        {
-          name: "cosmos-nemotron-34b",
-          publisher: "NVIDIA",
-          use: "Vision-language",
-          category: "vision",
-          nvidiaId: "nvidia/cosmos-nemotron-34b",
-        },
-        {
-          name: "llama-3.2-nv-embedqa-1b-v2",
-          publisher: "NVIDIA",
-          use: "Text embedding / retrieval",
-          category: "embedding",
-          nvidiaId: "nvidia/llama-3.2-nv-embedqa-1b-v2",
-        },
-        {
-          name: "llama-3.2-nv-rerankqa-1b-v2",
-          publisher: "NVIDIA",
-          use: "Reranking",
-          category: "embedding",
-          nvidiaId: "nvidia/llama-3.2-nv-rerankqa-1b-v2",
-        },
-        {
-          name: "llama-3.3-70b-instruct",
-          publisher: "Meta",
-          use: "Reasoning, math",
-          category: "text",
-          nvidiaId: "meta/llama-3.3-70b-instruct",
-        },
-        {
-          name: "nemotron-4-mini-hindi-4b-instruct",
-          publisher: "NVIDIA",
-          use: "Hindi-English bilingual",
-          category: "text",
-          nvidiaId: "nvidia/nemotron-4-mini-hindi-4b-instruct",
-        },
-        {
-          name: "granite-guardian-3.0-8b",
-          publisher: "IBM",
-          use: "Guardrail",
-          category: "safety",
-          nvidiaId: "ibm/granite-guardian-3.0-8b",
-        },
-        {
-          name: "llama-3.1-swallow-70b-instruct-v0.1",
-          publisher: "Tokyo Institute of Science",
-          use: "Japanese sovereign AI",
-          category: "text",
-          nvidiaId: "tokyotech-llm/llama-3.1-swallow-70b-instruct-v0.1",
-        },
-        {
-          name: "llama-3.1-swallow-8b-instruct-v0.1",
-          publisher: "Tokyo Institute of Science",
-          use: "Japanese sovereign AI",
-          category: "text",
-          nvidiaId: "tokyotech-llm/llama-3.1-swallow-8b-instruct-v0.1",
-        },
-        {
-          name: "llama-3.1-nemotron-70b-reward",
-          publisher: "NVIDIA",
-          use: "Reward model (RLHF)",
-          category: "text",
-          nvidiaId: "nvidia/llama-3.1-nemotron-70b-reward",
-        },
-        {
-          name: "llama-3.2-3b-instruct",
-          publisher: "Meta",
-          use: "Chat, reasoning",
-          category: "text",
-          nvidiaId: "meta/llama-3.2-3b-instruct",
-        },
-        {
-          name: "llama-3.2-1b-instruct",
-          publisher: "Meta",
-          use: "Chat, reasoning",
-          category: "text",
-          nvidiaId: "meta/llama-3.2-1b-instruct",
-        },
-        {
-          name: "qwen2-7b-instruct",
-          publisher: "Qwen",
-          use: "Chinese & English LLM",
-          category: "text",
-          nvidiaId: "qwen/qwen2-7b-instruct",
-        },
-        {
-          name: "dracarys-llama-3.1-70b-instruct",
-          publisher: "Abacus.AI",
-          use: "Code, summarization",
-          category: "text",
-          nvidiaId: "abacusai/dracarys-llama-3.1-70b-instruct",
-        },
-        {
-          name: "llama-3.1-405b-instruct",
-          publisher: "Meta",
-          use: "Synthetic data, coding",
-          category: "text",
-          nvidiaId: "meta/llama-3.1-405b-instruct",
-        },
-        {
-          name: "llama-3.1-70b-instruct",
-          publisher: "Meta",
-          use: "Chat",
-          category: "text",
-          nvidiaId: "meta/llama-3.1-70b-instruct",
-        },
-        {
-          name: "llama-3.1-8b-instruct",
-          publisher: "Meta",
-          use: "Chat",
-          category: "text",
-          nvidiaId: "meta/llama-3.1-8b-instruct",
-        },
-        {
-          name: "phi-3-medium-128k-instruct",
-          publisher: "Microsoft",
-          use: "Chat, reasoning",
-          category: "text",
-          nvidiaId: "microsoft/phi-3-medium-128k-instruct",
-        },
-        {
-          name: "gemma-2-27b-it",
-          publisher: "Google",
-          use: "Chat, text generation",
-          category: "text",
-          nvidiaId: "google/gemma-2-27b-it",
-        },
-        {
-          name: "gemma-2-9b-it",
-          publisher: "Google",
-          use: "Chat, text generation",
-          category: "text",
-          nvidiaId: "google/gemma-2-9b-it",
-        },
-        {
-          name: "llama3-chatqa-1.5-8b",
-          publisher: "NVIDIA",
-          use: "Text chatbot/search",
-          category: "text",
-          nvidiaId: "nvidia/llama3-chatqa-1.5-8b",
-        },
-        {
-          name: "mistral-7b-instruct-v0.3",
-          publisher: "Mistral AI",
-          use: "Chat",
-          category: "text",
-          nvidiaId: "mistralai/mistral-7b-instruct-v0.3",
-        },
-        {
-          name: "solar-10.7b-instruct",
-          publisher: "Upstage",
-          use: "NLP, reasoning, math",
-          category: "text",
-          nvidiaId: "upstage/solar-10.7b-instruct",
-        },
-        {
-          name: "nv-embed-v1",
-          publisher: "NVIDIA",
-          use: "Text embeddings",
-          category: "embedding",
-          nvidiaId: "nvidia/nv-embed-v1",
-        },
-        {
-          name: "bge-m3",
-          publisher: "BAAI",
-          use: "Text retrieval / embeddings",
-          category: "embedding",
-          nvidiaId: "baai/bge-m3",
-        },
-        {
-          name: "breeze-7b-instruct",
-          publisher: "MediaTek",
-          use: "Traditional Chinese chat",
-          category: "text",
-          nvidiaId: "mediatek/breeze-7b-instruct",
-        },
-        {
-          name: "phi-3-small-8k-instruct",
-          publisher: "Microsoft",
-          use: "Chat",
-          category: "text",
-          nvidiaId: "microsoft/phi-3-small-8k-instruct",
-        },
-        {
-          name: "phi-3-small-128k-instruct",
-          publisher: "Microsoft",
-          use: "Chat (long context)",
-          category: "text",
-          nvidiaId: "microsoft/phi-3-small-128k-instruct",
-        },
-        {
-          name: "phi-3-medium-4k-instruct",
-          publisher: "Microsoft",
-          use: "Chat",
-          category: "text",
-          nvidiaId: "microsoft/phi-3-medium-4k-instruct",
-        },
-        {
-          name: "sea-lion-7b-instruct",
-          publisher: "AI Singapore",
-          use: "Southeast Asian languages",
-          category: "text",
-          nvidiaId: "ai-singapore/sea-lion-7b-instruct",
-        },
-        {
-          name: "phi-3-mini-4k-instruct",
-          publisher: "Microsoft",
-          use: "Chat",
-          category: "text",
-          nvidiaId: "microsoft/phi-3-mini-4k-instruct",
-        },
-        {
-          name: "phi-3-mini-128k-instruct",
-          publisher: "Microsoft",
-          use: "Chat (long context)",
-          category: "text",
-          nvidiaId: "microsoft/phi-3-mini-128k-instruct",
-        },
-        {
-          name: "mixtral-8x22b-instruct-v0.1",
-          publisher: "Mistral AI",
-          use: "Advanced reasoning",
-          category: "text",
-          nvidiaId: "mistralai/mixtral-8x22b-instruct-v0.1",
-        },
-        {
-          name: "llama3-70b-instruct",
-          publisher: "Meta",
-          use: "Chat",
-          category: "text",
-          nvidiaId: "meta/llama3-70b-instruct",
-        },
-        {
-          name: "llama3-8b-instruct",
-          publisher: "Meta",
-          use: "Chat",
-          category: "text",
-          nvidiaId: "meta/llama3-8b-instruct",
-        },
-        {
-          name: "rerank-qa-mistral-4b",
-          publisher: "NVIDIA",
-          use: "Ranking / reranking",
-          category: "embedding",
-          nvidiaId: "nvidia/rerank-qa-mistral-4b",
-        },
-        {
-          name: "gemma-7b",
-          publisher: "Google",
-          use: "Chat, text generation",
-          category: "text",
-          nvidiaId: "google/gemma-7b",
-        },
-        {
-          name: "mistral-7b-instruct-v0.2",
-          publisher: "Mistral AI",
-          use: "Chat",
-          category: "text",
-          nvidiaId: "mistralai/mistral-7b-instruct-v0.2",
-        },
-        {
-          name: "mixtral-8x7b-instruct",
-          publisher: "Mistral AI",
-          use: "Advanced reasoning",
-          category: "text",
-          nvidiaId: "mistralai/mixtral-8x7b-instruct",
-        },
-        {
-          name: "llama-3-taiwan-70b-instruct",
-          publisher: "Yen-Ting Lin",
-          use: "Traditional Mandarin",
-          category: "text",
-          nvidiaId: "yentinglin/llama-3-taiwan-70b-instruct",
-        },
-        {
-          name: "llama-3-swallow-70b-instruct-v0.1",
-          publisher: "TokyoTech-LLM",
-          use: "Japanese",
-          category: "text",
-          nvidiaId: "tokyotech-llm/llama-3-swallow-70b-instruct-v0.1",
-        },
-        {
-          name: "jamba-1.5-mini-instruct",
-          publisher: "AI21 Labs",
-          use: "Chat, generative AI",
-          category: "text",
-          nvidiaId: "ai21labs/jamba-1.5-mini-instruct",
-        },
-        {
-          name: "nemotron-mini-4b-instruct",
-          publisher: "NVIDIA",
-          use: "Chat, RAG",
-          category: "text",
-          nvidiaId: "nvidia/nemotron-mini-4b-instruct",
-        },
-        {
-          name: "mistral-nemo-minitron-8b-base",
-          publisher: "NVIDIA",
-          use: "Chat, content generation",
-          category: "text",
-          nvidiaId: "nvidia/mistral-nemo-minitron-8b-base",
-        },
-        {
-          name: "phi-3.5-mini-instruct",
-          publisher: "Microsoft",
-          use: "Chat, edge",
-          category: "text",
-          nvidiaId: "microsoft/phi-3.5-mini-instruct",
-        },
-        {
-          name: "rakutenai-7b-instruct",
-          publisher: "Rakuten",
-          use: "Chat",
-          category: "text",
-          nvidiaId: "rakuten/rakutenai-7b-instruct",
-        },
-        {
-          name: "rakutenai-7b-chat",
-          publisher: "Rakuten",
-          use: "Chat",
-          category: "text",
-          nvidiaId: "rakuten/rakutenai-7b-chat",
-        },
-        {
-          name: "chatglm3-6b",
-          publisher: "THUDM",
-          use: "Chinese/English chat, translation",
-          category: "text",
-          nvidiaId: "thudm/chatglm3-6b",
-        },
-        {
-          name: "baichuan2-13b-chat",
-          publisher: "Baichuan AI",
-          use: "Chinese/English chat",
-          category: "text",
-          nvidiaId: "baichuan-ai/baichuan2-13b-chat",
-        },
-        {
-          name: "gpt-oss-20b",
-          publisher: "OpenAI",
-          use: "Text reasoning, math",
-          category: "text",
-          nvidiaId: "openai/gpt-oss-20b",
-        },
-        {
-          name: "gpt-oss-120b",
-          publisher: "OpenAI",
-          use: "Text reasoning (MoE)",
-          category: "text",
-          nvidiaId: "openai/gpt-oss-120b",
-        },
+      const allModels = Array.isArray(window.CLEX_MODELS)
+        ? window.CLEX_MODELS
+        : [];
 
-        // CODE GENERATION
-        {
-          name: "usdcode",
-          publisher: "NVIDIA",
-          use: "OpenUSD coding",
-          category: "code",
-          nvidiaId: "nvidia/usdcode",
-        },
-        {
-          name: "qwen2.5-coder-32b-instruct",
-          publisher: "Qwen",
-          use: "Code generation, reasoning, fixing",
-          category: "code",
-          nvidiaId: "qwen/qwen2.5-coder-32b-instruct",
-        },
-        {
-          name: "qwen2.5-coder-7b-instruct",
-          publisher: "Qwen",
-          use: "Code completion",
-          category: "code",
-          nvidiaId: "qwen/qwen2.5-coder-7b-instruct",
-        },
-        {
-          name: "mamba-codestral-7b-v0.1",
-          publisher: "Mistral AI",
-          use: "Code completion",
-          category: "code",
-          nvidiaId: "mistralai/mamba-codestral-7b-v0.1",
-        },
-        {
-          name: "starcoder2-7b",
-          publisher: "BigCode",
-          use: "Code completion, Python",
-          category: "code",
-          nvidiaId: "bigcode/starcoder2-7b",
-        },
-        {
-          name: "qwq-32b",
-          publisher: "Qwen",
-          use: "Coding, reasoning",
-          category: "code",
-          nvidiaId: "qwen/qwq-32b",
-        },
-
-        // SPEECH / AUDIO
-        {
-          name: "parakeet-ctc-0.6b-zh-tw",
-          publisher: "NVIDIA",
-          use: "Mandarin Taiwanese English ASR",
-          category: "speech",
-          nvidiaId: "nvidia/parakeet-ctc-0.6b-zh-tw",
-        },
-        {
-          name: "parakeet-ctc-0.6b-zh-cn",
-          publisher: "NVIDIA",
-          use: "Mandarin English ASR",
-          category: "speech",
-          nvidiaId: "nvidia/parakeet-ctc-0.6b-zh-cn",
-        },
-        {
-          name: "parakeet-ctc-0.6b-es",
-          publisher: "NVIDIA",
-          use: "Spanish-English ASR",
-          category: "speech",
-          nvidiaId: "nvidia/parakeet-ctc-0.6b-es",
-        },
-        {
-          name: "parakeet-ctc-0.6b-vi",
-          publisher: "NVIDIA",
-          use: "Vietnamese-English ASR",
-          category: "speech",
-          nvidiaId: "nvidia/parakeet-ctc-0.6b-vi",
-        },
-        {
-          name: "parakeet-tdt-0.6b-v2",
-          publisher: "NVIDIA",
-          use: "English ASR with timestamps",
-          category: "speech",
-          nvidiaId: "nvidia/parakeet-tdt-0.6b-v2",
-        },
-        {
-          name: "parakeet-ctc-1.1b-asr",
-          publisher: "NVIDIA",
-          use: "English ASR",
-          category: "speech",
-          nvidiaId: "nvidia/parakeet-ctc-1.1b-asr",
-        },
-        {
-          name: "parakeet-ctc-0.6b-asr",
-          publisher: "NVIDIA",
-          use: "English ASR",
-          category: "speech",
-          nvidiaId: "nvidia/parakeet-ctc-0.6b-asr",
-        },
-        {
-          name: "parakeet-1.1b-rnnt-multilingual-asr",
-          publisher: "NVIDIA",
-          use: "25-language ASR",
-          category: "speech",
-          nvidiaId: "nvidia/parakeet-1.1b-rnnt-multilingual-asr",
-        },
-        {
-          name: "whisper-large-v3",
-          publisher: "OpenAI",
-          use: "Speech recognition",
-          category: "speech",
-          nvidiaId: "openai/whisper-large-v3",
-        },
-        {
-          name: "canary-1b-asr",
-          publisher: "NVIDIA",
-          use: "Multilingual speech-to-text & translation",
-          category: "speech",
-          nvidiaId: "nvidia/canary-1b-asr",
-        },
-        {
-          name: "phi-4-multimodal-instruct",
-          publisher: "Microsoft",
-          use: "Speech + image reasoning",
-          category: "speech",
-          nvidiaId: "microsoft/phi-4-multimodal-instruct",
-        },
-        {
-          name: "magpie-tts-flow",
-          publisher: "NVIDIA",
-          use: "Text-to-speech",
-          category: "speech",
-          nvidiaId: "nvidia/magpie-tts-flow",
-        },
-      ];
-
-      // ═══════════════════════════════════════════════════════
-      // RENDERING
-      // ═══════════════════════════════════════════════════════
       const modelsGrid = document.getElementById("models-grid");
       const noResults = document.getElementById("no-results");
       const searchInput = document.getElementById("search-input");
@@ -1261,52 +258,20 @@
         return map[category] || category;
       }
 
+      function formatNumber(v) {
+        return typeof v === "number" ? v.toLocaleString() : "Model-specific";
+      }
+
       function getModelMetadata(m) {
-        // Extract params
-        let params = "N/A";
-        const paramMatch = m.name.match(/(\d+(?:\.\d+)?[bm])/i);
-        if (paramMatch) params = paramMatch[0].toUpperCase();
-        else if (m.category === "embedding" || m.category === "speech")
-          params = "N/A";
-
-        // Heuristic context
-        let ctx = "8K";
-        if (m.name.includes("128k")) ctx = "128K";
-        else if (m.name.includes("32k")) ctx = "32K";
-        else if (m.name.includes("16k")) ctx = "16K";
-        else if (
-          m.name.includes("3.1") ||
-          m.name.includes("3.3") ||
-          m.name.includes("turbo") ||
-          m.name.includes("mistral-large") ||
-          m.name.includes("deepseek-v3")
-        )
-          ctx = "128K";
-        else if (m.category === "embedding") ctx = "512";
-
-        // Max output
-        let maxOut = ctx === "128K" ? "4096" : "2048";
-        if (m.category === "embedding" || m.category === "speech")
-          maxOut = "N/A";
-
-        // Price per 1M (mock heuristic)
-        let price = "$0.50";
-        if (
-          m.name.includes("70b") ||
-          m.name.includes("v3") ||
-          m.name.includes("large") ||
-          m.name.includes("405b")
-        )
-          price = "$1.20";
-        if (m.category === "embedding") price = "$0.02";
-
-        // Cutoff
-        let cutoff = "2023";
-        if (m.name.includes("3.3") || m.name.includes("2503"))
-          cutoff = "Dec 2023";
-        else if (m.name.includes("v3") || m.name.includes("2512"))
-          cutoff = "Jan 2024";
-
+        const paramsMatch = (m.id || m.name).match(/(\d+(?:\.\d+)?[bm])/i);
+        const params = paramsMatch ? paramsMatch[0].toUpperCase() : "Unknown";
+        const ctx = formatNumber(m.context_window);
+        const maxOut = formatNumber(m.max_output_tokens);
+        const price =
+          m.input_cost != null || m.output_cost != null
+            ? `$${m.input_cost ?? "?"} / $${m.output_cost ?? "?"}`
+            : "See provider docs";
+        const cutoff = m.knowledge_cutoff || "See provider docs";
         return { params, ctx, maxOut, price, cutoff };
       }
 
@@ -1317,9 +282,10 @@
             activeCategory === "all" || m.category === activeCategory;
           const matchSearch =
             !query ||
-            m.name.toLowerCase().includes(query) ||
-            m.publisher.toLowerCase().includes(query) ||
-            m.use.toLowerCase().includes(query);
+            (m.id || "").toLowerCase().includes(query) ||
+            (m.name || "").toLowerCase().includes(query) ||
+            (m.provider || m.publisher || "").toLowerCase().includes(query) ||
+            (m.description || m.use || "").toLowerCase().includes(query);
           return matchCategory && matchSearch;
         });
 
@@ -1335,27 +301,37 @@
 
         modelsGrid.innerHTML = filtered
           .map((m) => {
-            const logo = getProviderLogo(m.publisher);
+            const provider = m.provider || m.publisher || "Unknown";
+            const modelId = m.id || m.nvidiaId || m.name;
+            const modelDescription = m.description || m.use || "Model-specific";
+            const modelLabel = m.name || modelId;
+            const logo = getProviderLogo(provider);
             const tagClass = getTagClass(m.category);
             const catLabel = getCategoryLabel(m.category);
-            const isChat = !["embedding", "speech", "safety"].includes(
-              m.category,
-            );
+            const capabilities = Array.isArray(m.capabilities)
+              ? m.capabilities
+              : [];
+            const isChat =
+              (capabilities.includes("text") ||
+                ["text", "code", "vision"].includes(m.category)) &&
+              !["embedding", "speech", "safety"].includes(m.category) &&
+              !m.comingSoon;
             const meta = getModelMetadata(m);
 
             return `
-            <div class="model-card flex flex-col h-full" data-model="${m.name}" data-publisher="${m.publisher}" data-nvidia-id="${m.nvidiaId}">
+            <div class="model-card flex flex-col h-full" data-model="${modelId}" data-provider="${provider}">
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center scale-[0.8]" title="${m.publisher}">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center scale-[0.8]" title="${provider}">
                             ${logo.iconHTML}
                         </div>
-                        <span class="text-xs font-medium text-gray-500">${m.publisher}</span>
+                        <span class="text-xs font-medium text-gray-500">${provider}</span>
                     </div>
                     <span class="tag-badge ${tagClass}" title="Model Category: ${catLabel}">${catLabel}</span>
                 </div>
-                <h3 class="text-sm font-semibold text-white mb-2 leading-snug break-all" title="${m.name}">${m.name}</h3>
-                <p class="text-xs text-gray-400 mb-3 leading-relaxed flex-grow">${m.use}</p>
+                <h3 class="text-sm font-semibold text-white mb-1 leading-snug break-all" title="${modelId}">${modelId}</h3>
+                <p class="text-[11px] text-gray-500 mb-2 break-all">${modelLabel}</p>
+                <p class="text-xs text-gray-400 mb-3 leading-relaxed flex-grow">${modelDescription}</p>
                 
                 <div class="grid grid-cols-2 gap-2 mt-auto mb-4 text-[10px] text-gray-400">
                     <div class="flex justify-between items-center bg-white/5 p-1.5 rounded border border-white/5 hover:border-cyan-500/30 transition-colors" title="Number of Parameters. Larger models generally offer better reasoning but may be slower.">
@@ -1384,11 +360,11 @@
                   isChat
                     ? `
                 <button class="try-btn w-full bg-white/5 backdrop-blur-md border border-white/10 text-cyan-400 py-2 rounded-lg text-xs font-semibold hover:bg-white/10 hover:border-cyan-400/40 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] transition-all focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                    onclick="openChat('${m.name}', '${m.publisher}', '${m.nvidiaId}')" aria-label="Try ${m.name}">
+                    onclick="openChat('${modelId}', '${provider}')" aria-label="Try ${modelId}">
                     ⚡ Try it
                 </button>`
                     : `
-                <div class="try-btn text-xs text-gray-500 text-center py-2 font-medium bg-white/5 rounded-lg border border-white/5" aria-label="${m.name} is a specialized model">Specialized model</div>
+                <div class="try-btn text-xs text-gray-500 text-center py-2 font-medium bg-white/5 rounded-lg border border-white/5" aria-label="${modelId} is a specialized model">Use specialized endpoint</div>
                 `
                 }
             </div>
@@ -1419,15 +395,15 @@
       let chatModelId = "";
       let chatHistory = [];
 
-      function openChat(name, publisher, nvidiaId) {
-        chatModelId = nvidiaId;
+      function openChat(modelId, provider) {
+        chatModelId = modelId;
         chatHistory = [];
-        document.getElementById("chat-model-name").textContent = name;
-        document.getElementById("chat-model-publisher").textContent = publisher;
+        document.getElementById("chat-model-name").textContent = modelId;
+        document.getElementById("chat-model-publisher").textContent = provider;
         document.getElementById("chat-messages").innerHTML = `
             <div class="text-center text-gray-600 text-sm py-10">
-                <p>Send a message to start chatting with <span class="text-cyan-400 font-medium">${name}</span></p>
-                <p class="text-xs text-gray-700 mt-1">Powered by NVIDIA API</p>
+                <p>Send a message to start chatting with <span class="text-cyan-400 font-medium">${modelId}</span></p>
+                <p class="text-xs text-gray-700 mt-1">Powered by CLEX API</p>
             </div>
         `;
         document.getElementById("chat-panel").classList.add("open");

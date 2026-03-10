@@ -6,7 +6,7 @@
     <title>Documentation - Clex.in API Reference</title>
     <meta
       name="description"
-      content="Complete API documentation for Clex.in. Learn how to integrate 150+ AI models through a single unified API endpoint."
+      content="Complete API documentation for CLEX. Integrate multiple AI models through one unified API endpoint."
     />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="shared.css" />
@@ -124,63 +124,11 @@
     ></canvas>
 
     <div class="relative z-10 flex flex-col min-h-screen">
-      <!-- Navigation -->
-      <header
-        id="main-header"
-        class="fixed top-0 w-full z-50 transition-all duration-300 py-8"
-      >
-        <div
-          class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 flex items-center justify-between"
-        >
-          <a
-            href="index.html"
-            class="flex items-center gap-1.5 cursor-pointer no-underline"
-          >
-            <span class="text-xl font-bold tracking-widest text-white"
-              >CLEX</span
-            >
-            <div
-              class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)] animate-pulse"
-            ></div>
-          </a>
-          <nav
-            class="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-1 bg-white/5 border border-white/10 rounded-full p-1 backdrop-blur-md"
-          >
-            <a
-              href="index.html"
-              class="px-6 py-2 rounded-full text-gray-300 hover:text-white text-sm font-medium transition-colors"
-              >Platform</a
-            >
-            <a
-              href="models.html"
-              class="px-6 py-2 rounded-full text-gray-300 hover:text-white text-sm font-medium transition-colors"
-              >Models</a
-            >
-            <a
-              href="docs.html"
-              class="px-6 py-2 rounded-full bg-white text-black text-sm font-medium transition-colors"
-              >Docs</a
-            >
-            <a
-              href="playground.html"
-              class="px-6 py-2 rounded-full text-gray-300 hover:text-white text-sm font-medium transition-colors"
-              >Playground</a
-            >
-          </nav>
-          <div class="flex items-center gap-6">
-            <a
-              href="#authentication"
-              class="text-sm font-medium text-gray-300 hover:text-white transition-colors hidden sm:block"
-              >API Keys</a
-            >
-            <a
-              href="#getting-started"
-              class="bg-white/10 border border-white/20 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-white hover:text-black transition-all no-underline"
-              >Get Started</a
-            >
-          </div>
-        </div>
-      </header>
+      <div
+        data-clex-header
+        data-page="docs"
+        data-cta-href="#getting-started"
+      ></div>
 
       <!-- Docs Layout -->
       <div
@@ -236,8 +184,8 @@
               class="text-gray-400 text-lg md:text-xl mb-10 max-w-3xl leading-relaxed"
             >
               Get started with the CLEX unified API in under 60 seconds. Access
-              150+ world-class AI models from NVIDIA, Meta, OpenAI, DeepSeek,
-              and Qwen through a single, lightning-fast endpoint.
+              <span id="docs-model-count" data-model-count-plus>models</span>
+              through a single endpoint with provider routing handled by CLEX.
             </p>
 
             <div class="glass-card rounded-2xl p-8">
@@ -260,8 +208,8 @@
                 <pre><code><span class="tok-comment"># Base URL for all CLEX API calls</span>
 <span class="tok-key">CLEX_BASE_URL</span>=<span class="tok-str">"https://api.clex.in/v1"</span>
 
-<span class="tok-comment"># Your NVIDIA API key (set as environment variable)</span>
-<span class="tok-key">NVIDIA_API_KEY</span>=<span class="tok-str">"nvapi-xxxxxxxxxxxxxxxxxxxx"</span></code></pre>
+<span class="tok-comment"># Your CLEX API key (set as environment variable)</span>
+<span class="tok-key">CLEX_API_KEY</span>=<span class="tok-str">"clex_xxxxxxxxxxxxxxxxxxxx"</span></code></pre>
               </div>
 
               <h3
@@ -281,6 +229,7 @@
                   </button>
                 </div>
                 <pre><code><span class="tok-fn">curl</span> https://api.clex.in/v1/chat/completions \
+  <span class="tok-op">-H</span> <span class="tok-str">"Authorization: Bearer $CLEX_API_KEY"</span> \
   <span class="tok-op">-H</span> <span class="tok-str">"Content-Type: application/json"</span> \
   <span class="tok-op">-d</span> <span class="tok-str">'{
     "model": "meta/llama-3.3-70b-instruct",
@@ -310,7 +259,7 @@
 <span class="tok-fn">npm</span> install openai
 
 <span class="tok-comment"># Run your script</span>
-<span class="tok-key">NVIDIA_API_KEY</span>=<span class="tok-str">"nvapi-xxx"</span> <span class="tok-fn">node</span> app.js
+<span class="tok-key">CLEX_API_KEY</span>=<span class="tok-str">"clex_xxx"</span> <span class="tok-fn">node</span> app.js
 
 <span class="tok-comment"># You are now running on CLEX proxy</span></code></pre>
               </div>
@@ -323,9 +272,8 @@
               Authentication
             </h2>
             <p class="text-gray-400 mb-6">
-              CLEX uses NVIDIA API keys for authentication. The key is
-              configured server-side as an environment variable — your frontend
-              calls don't need to include it.
+              CLEX uses CLEX API keys for authentication. The CLEX routing layer
+              handles upstream provider credentials and normalization.
             </p>
 
             <div class="glass-card rounded-2xl p-6 mb-6">
@@ -339,12 +287,12 @@
                     >1</span
                   >
                   <p class="text-sm text-gray-400">
-                    Get a free API key from
+                    Create a CLEX API key from
                     <a
-                      href="https://build.nvidia.com"
+                      href="https://api.clex.in"
                       target="_blank"
                       class="text-cyan-400 hover:text-cyan-300 underline"
-                      >build.nvidia.com</a
+                      >api.clex.in</a
                     >
                   </p>
                 </div>
@@ -355,7 +303,7 @@
                   >
                   <p class="text-sm text-gray-400">
                     Set it as
-                    <code class="inline-code">NVIDIA_API_KEY</code> environment
+                    <code class="inline-code">CLEX_API_KEY</code> environment
                     variable
                   </p>
                 </div>
@@ -365,8 +313,8 @@
                     >3</span
                   >
                   <p class="text-sm text-gray-400">
-                    The CLEX server automatically includes it in NVIDIA API
-                    requests
+                    CLEX validates your key and routes requests to the selected
+                    provider
                   </p>
                 </div>
               </div>
@@ -374,12 +322,11 @@
 
             <div class="code-block">
               <div class="code-header">
-                <span>Server-side authentication (automatic)</span>
+                <span>API authentication</span>
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
               </div>
-              <pre><code><span class="tok-comment">// The server reads NVIDIA_API_KEY from environment</span>
-<span class="tok-comment">// and injects it into the Authorization header</span>
-<span class="tok-key">Authorization</span>: <span class="tok-str">Bearer nvapi-xxxxxxxxxxxxxxxxxxxx</span></code></pre>
+              <pre><code><span class="tok-comment">// Send your CLEX API key as a Bearer token</span>
+<span class="tok-key">Authorization</span>: <span class="tok-str">Bearer clex_xxxxxxxxxxxxxxxxxxxx</span></code></pre>
             </div>
           </section>
 
@@ -395,8 +342,13 @@
 
             <div class="flex items-center gap-3 mb-6">
               <span class="endpoint-badge post">POST</span>
-              <code class="text-white font-mono text-sm">/api/chat</code>
+              <code class="text-white font-mono text-sm">/v1/chat/completions</code>
             </div>
+            <p class="text-xs text-gray-500">
+              In this docs page, the API Explorer uses local
+              <code class="inline-code">/api/chat</code> as a proxy for
+              <code class="inline-code">https://api.clex.in/v1/chat/completions</code>.
+            </p>
           </section>
 
           <!-- Request Body -->
@@ -423,7 +375,7 @@
                       >
                     </td>
                     <td>
-                      NVIDIA model ID (e.g.
+                      CLEX model ID (e.g.
                       <code class="inline-code"
                         >meta/llama-3.3-70b-instruct</code
                       >)
@@ -453,7 +405,10 @@
                     <td>max_tokens</td>
                     <td class="text-gray-400">integer</td>
                     <td><span class="text-gray-600 text-xs">No</span></td>
-                    <td>Maximum tokens to generate. Default: 1024</td>
+                    <td>
+                      Maximum tokens to generate. Default is model-specific when
+                      omitted.
+                    </td>
                   </tr>
                   <tr>
                     <td>stream</td>
@@ -538,8 +493,9 @@ data: [DONE]</code></pre>
               Available Models
             </h2>
             <p class="text-gray-400 mb-6">
-              CLEX provides access to 150+ models. Browse the full catalog on
-              the
+              CLEX provides access to
+              <span id="docs-model-count-inline" data-model-count-plus>models</span>
+              models. Browse the full catalog on the
               <a
                 href="models.html"
                 class="text-cyan-400 hover:text-cyan-300 underline"
@@ -556,43 +512,7 @@ data: [DONE]</code></pre>
                     <th>Use Case</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td>meta/llama-3.3-70b-instruct</td>
-                    <td class="text-gray-400">Meta</td>
-                    <td class="text-gray-400">Chat, reasoning, math</td>
-                  </tr>
-                  <tr>
-                    <td>deepseek-ai/deepseek-v3.2</td>
-                    <td class="text-gray-400">DeepSeek</td>
-                    <td class="text-gray-400">Reasoning, long context</td>
-                  </tr>
-                  <tr>
-                    <td>qwen/qwen3.5-397b-a17b</td>
-                    <td class="text-gray-400">Qwen</td>
-                    <td class="text-gray-400">Vision, chat, RAG</td>
-                  </tr>
-                  <tr>
-                    <td>mistralai/mistral-large-3-675b-instruct-2512</td>
-                    <td class="text-gray-400">Mistral AI</td>
-                    <td class="text-gray-400">Chat, agentic, VLM</td>
-                  </tr>
-                  <tr>
-                    <td>nvidia/llama-3.3-nemotron-super-49b-v1.5</td>
-                    <td class="text-gray-400">NVIDIA</td>
-                    <td class="text-gray-400">Reasoning, tool calling</td>
-                  </tr>
-                  <tr>
-                    <td>openai/gpt-oss-120b</td>
-                    <td class="text-gray-400">OpenAI</td>
-                    <td class="text-gray-400">Text reasoning (MoE)</td>
-                  </tr>
-                  <tr>
-                    <td>qwen/qwen3-coder-480b-a35b-instruct</td>
-                    <td class="text-gray-400">Qwen</td>
-                    <td class="text-gray-400">Agentic coding</td>
-                  </tr>
-                </tbody>
+                <tbody id="docs-models-table-body"></tbody>
               </table>
             </div>
           </section>
@@ -661,6 +581,7 @@ data: [DONE]</code></pre>
                 </div>
                 <pre><code><span class="tok-kw">import</span> requests
 <span class="tok-kw">import</span> json
+<span class="tok-kw">import</span> os
 
 url = <span class="tok-str">"https://api.clex.in/v1/chat/completions"</span>
 
@@ -674,7 +595,8 @@ payload = {
 }
 
 <span class="tok-comment"># Streaming response</span>
-response = requests.<span class="tok-fn">post</span>(url, json=payload, stream=<span class="tok-kw">True</span>)
+headers = {<span class="tok-str">"Authorization"</span>: <span class="tok-str">f"Bearer {os.environ['CLEX_API_KEY']}"</span>}
+response = requests.<span class="tok-fn">post</span>(url, json=payload, headers=headers, stream=<span class="tok-kw">True</span>)
 
 <span class="tok-kw">for</span> line <span class="tok-kw">in</span> response.iter_lines():
     <span class="tok-kw">if</span> line:
@@ -699,7 +621,10 @@ response = requests.<span class="tok-fn">post</span>(url, json=payload, stream=<
                 </div>
                 <pre><code><span class="tok-kw">const</span> response = <span class="tok-kw">await</span> <span class="tok-fn">fetch</span>(<span class="tok-str">'https://api.clex.in/v1/chat/completions'</span>, {
   <span class="tok-key">method</span>: <span class="tok-str">'POST'</span>,
-  <span class="tok-key">headers</span>: { <span class="tok-str">'Content-Type'</span>: <span class="tok-str">'application/json'</span> },
+  <span class="tok-key">headers</span>: {
+    <span class="tok-str">'Authorization'</span>: <span class="tok-str">'Bearer ' + process.env.CLEX_API_KEY</span>,
+    <span class="tok-str">'Content-Type'</span>: <span class="tok-str">'application/json'</span>
+  },
   <span class="tok-key">body</span>: JSON.<span class="tok-fn">stringify</span>({
     <span class="tok-key">model</span>: <span class="tok-str">'meta/llama-3.3-70b-instruct'</span>,
     <span class="tok-key">messages</span>: [
@@ -747,6 +672,7 @@ response = requests.<span class="tok-fn">post</span>(url, json=payload, stream=<
                 </div>
                 <pre><code><span class="tok-fn">curl</span> <span class="tok-str">https://api.clex.in/v1/chat/completions</span> \
   <span class="tok-op">-X</span> POST \
+  <span class="tok-op">-H</span> <span class="tok-str">"Authorization: Bearer $CLEX_API_KEY"</span> \
   <span class="tok-op">-H</span> <span class="tok-str">"Content-Type: application/json"</span> \
   <span class="tok-op">-d</span> <span class="tok-str">'{
     "model": "meta/llama-3.3-70b-instruct",
@@ -804,10 +730,12 @@ response = requests.<span class="tok-fn">post</span>(url, json=payload, stream=<
                       <input
                         type="text"
                         id="pg-model"
+                        list="pg-model-options"
                         value="meta/llama-3.3-70b-instruct"
                         class="w-full bg-[#02050f]/50 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition-colors"
                         aria-label="Selected Model"
                       />
+                      <datalist id="pg-model-options"></datalist>
                       <p class="text-xs text-gray-500 mt-1">
                         Make sure you have
                         <a
@@ -815,7 +743,7 @@ response = requests.<span class="tok-fn">post</span>(url, json=payload, stream=<
                           class="text-cyan-400 hover:underline"
                           >started the local server</a
                         >
-                        with NVIDIA_API_KEY.
+                        with CLEX_API_KEY (or server-side CLEX key config).
                       </p>
                     </div>
                     <div>
@@ -957,11 +885,11 @@ Explain quantum computing in 2 sentences.</textarea
                     </td>
                     <td class="text-gray-400">
                       <strong class="text-white">Cause:</strong> Missing or
-                      invalid NVIDIA API key.<br /><strong class="text-white"
+                      invalid CLEX API key.<br /><strong class="text-white"
                         >Fix:</strong
                       >
                       Ensure the
-                      <code class="inline-code">NVIDIA_API_KEY</code>
+                      <code class="inline-code">CLEX_API_KEY</code>
                       environment variable is set on the server.
                     </td>
                   </tr>
@@ -1018,7 +946,7 @@ Explain quantum computing in 2 sentences.</textarea
                     </td>
                     <td class="text-gray-400">
                       <strong class="text-white">Cause:</strong> Unhandled
-                      backend exception or NVIDIA API failure.<br /><strong
+                      backend exception or upstream provider failure.<br /><strong
                         class="text-white"
                         >Fix:</strong
                       >
@@ -1059,8 +987,8 @@ Explain quantum computing in 2 sentences.</textarea
           <section id="rate-limits" class="docs-section mb-16">
             <h2 class="text-2xl font-semibold text-white mb-4">Rate Limits</h2>
             <p class="text-gray-400 mb-6">
-              Rate limits are determined by your NVIDIA API tier. The free tier
-              has the following approximate limits:
+              Rate limits are determined by your CLEX plan and current provider
+              capacity. Typical starter limits are:
             </p>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -1128,7 +1056,7 @@ Explain quantum computing in 2 sentences.</textarea
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <a
-                href="#"
+                href="guide-chatbot-ui.html"
                 class="glass-card rounded-2xl p-6 border border-white/5 hover:border-cyan-500/30 transition-all hover:-translate-y-1 block no-underline group cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-500"
               >
                 <h3
@@ -1159,7 +1087,7 @@ Explain quantum computing in 2 sentences.</textarea
               </a>
 
               <a
-                href="#"
+                href="guide-agentic-workflows.html"
                 class="glass-card rounded-2xl p-6 border border-white/5 hover:border-cyan-500/30 transition-all hover:-translate-y-1 block no-underline group cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-500"
               >
                 <h3
@@ -1190,7 +1118,7 @@ Explain quantum computing in 2 sentences.</textarea
               </a>
 
               <a
-                href="#"
+                href="guide-rag-setup.html"
                 class="glass-card rounded-2xl p-6 border border-white/5 hover:border-cyan-500/30 transition-all hover:-translate-y-1 block no-underline group cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-500"
               >
                 <h3
@@ -1199,7 +1127,7 @@ Explain quantum computing in 2 sentences.</textarea
                   RAG Setup
                 </h3>
                 <p class="text-sm text-gray-400 mb-4">
-                  Build retrieval pipelines using NVIDIA embedding endpoints
+                  Build retrieval pipelines using CLEX embedding endpoints
                   alongside conversational LLMs.
                 </p>
                 <span
@@ -1273,34 +1201,10 @@ Explain quantum computing in 2 sentences.</textarea
         </main>
       </div>
 
-      <!-- Footer -->
-      <footer
-        class="w-full py-8 border-t border-white/10 bg-[#02050f]/80 backdrop-blur-md z-20 mt-auto relative"
-      >
-        <div
-          class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 flex flex-wrap justify-center md:justify-between items-center gap-6 text-sm text-gray-400"
-        >
-          <div class="flex items-center gap-2">
-            <div class="w-2 h-2 rounded-full bg-white/20"></div>
-            <span id="copyright-year"></span> clex.in. All rights reserved.
-          </div>
-          <div
-            class="flex flex-wrap justify-center items-center gap-6 font-medium"
-          >
-            <a href="support.html" class="hover:text-cyan-300 transition-colors"
-              >Support</a
-            >
-            <a href="privacy.html" class="hover:text-cyan-300 transition-colors"
-              >Privacy Policy</a
-            >
-            <a href="terms.html" class="hover:text-cyan-300 transition-colors"
-              >Terms of Service</a
-            >
-          </div>
-        </div>
-      </footer>
+      <div data-clex-footer></div>
     </div>
 
+    <script src="models-data.js"></script>
     <script src="shared.js"></script>
     <script>
       // --- Copy to clipboard ---
@@ -1459,6 +1363,36 @@ Explain quantum computing in 2 sentences.</textarea
           if (target) target.scrollIntoView({ behavior: "smooth" });
         });
       });
+
+      // --- Update docs model table and local API explorer options ---
+      if (window.CLEX_MODELS && Array.isArray(window.CLEX_MODELS)) {
+        const models = window.CLEX_MODELS;
+        const tableBody = document.getElementById("docs-models-table-body");
+        const modelOptions = document.getElementById("pg-model-options");
+
+        if (tableBody) {
+          const popular = models
+            .filter((m) => ["text", "code", "vision"].includes(m.category))
+            .slice(0, 8);
+          tableBody.innerHTML = popular
+            .map(
+              (m) => `
+                  <tr>
+                    <td>${m.id}</td>
+                    <td class="text-gray-400">${m.provider}</td>
+                    <td class="text-gray-400">${m.description || "Model-specific capabilities"}</td>
+                  </tr>
+                `,
+            )
+            .join("");
+        }
+
+        if (modelOptions) {
+          modelOptions.innerHTML = models
+            .map((m) => `<option value="${m.id}"></option>`)
+            .join("");
+        }
+      }
     </script>
   </body>
 </html>

@@ -2,7 +2,7 @@
 
 **Live Website Preview:** [https://clex.in](https://clex.in)
 
-Clex.in is a powerful API proxy service that allows developers to access 150+ cutting-edge AI models through a single, unified endpoint. Built for developers with a focus on speed, reliability, and ease of use.
+Clex.in is a unified API proxy that allows developers to access a broad catalog of AI models through one OpenAI-compatible endpoint. Built for developers with a focus on speed, reliability, and ease of use.
 
 ## Features
 
