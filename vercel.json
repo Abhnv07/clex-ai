@@ -20,14 +20,6 @@
     ],
     "routes": [
         {
-            "src": "/playground.html",
-            "headers": {
-                "Cross-Origin-Opener-Policy": "same-origin",
-                "Cross-Origin-Embedder-Policy": "require-corp"
-            },
-            "dest": "/playground.html"
-        },
-        {
             "src": "/api/(.*)",
             "dest": "/server.js"
         },

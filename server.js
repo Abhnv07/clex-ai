@@ -83,13 +83,6 @@ async function requireFirebaseAuth(req, res, next) {
 }
 
 // Serve static files
-// WebContainers require Cross-Origin Isolation (COOP + COEP headers)
-// to enable SharedArrayBuffer. We set these only for the playground page.
-app.get('/playground.html', (req, res, next) => {
-    res.set('Cross-Origin-Opener-Policy', 'same-origin');
-    res.set('Cross-Origin-Embedder-Policy', 'require-corp');
-    next();
-});
 app.use(express.static(path.join(__dirname)));
 
 // ─── Chat Completions Proxy ─────────────────────────────
