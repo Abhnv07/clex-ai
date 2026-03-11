@@ -262,16 +262,37 @@
         return typeof v === "number" ? v.toLocaleString() : "Model-specific";
       }
 
+      function getDisplayValue(displayValue, numericValue, fallback) {
+        if (typeof displayValue === "string" && displayValue.trim()) {
+          return displayValue;
+        }
+        if (typeof numericValue === "number") {
+          return formatNumber(numericValue);
+        }
+        return fallback;
+      }
+
       function getModelMetadata(m) {
-        const paramsMatch = (m.id || m.name).match(/(\d+(?:\.\d+)?[bm])/i);
-        const params = paramsMatch ? paramsMatch[0].toUpperCase() : "Unknown";
-        const ctx = formatNumber(m.context_window);
-        const maxOut = formatNumber(m.max_output_tokens);
+        const params =
+          m.params_display ||
+          ((m.id || m.name).match(/(\d+(?:\.\d+)?[bm])/i)?.[0]?.toUpperCase() ??
+            "Specialized");
+        const ctx = getDisplayValue(
+          m.context_display,
+          m.context_window,
+          "Model-specific",
+        );
+        const maxOut = getDisplayValue(
+          m.max_output_display,
+          m.max_output_tokens,
+          "Model-specific",
+        );
         const price =
-          m.input_cost != null || m.output_cost != null
-            ? `$${m.input_cost ?? "?"} / $${m.output_cost ?? "?"}`
-            : "See provider docs";
-        const cutoff = m.knowledge_cutoff || "See provider docs";
+          m.pricing_display ||
+          (m.input_cost != null || m.output_cost != null
+            ? `$${m.input_cost ?? "?"} / $${m.output_cost ?? "?"} per 1M`
+            : "See provider docs");
+        const cutoff = m.cutoff_display || m.knowledge_cutoff || "Provider specific";
         return { params, ctx, maxOut, price, cutoff };
       }
 
@@ -334,7 +355,7 @@
                 <p class="text-xs text-gray-400 mb-3 leading-relaxed flex-grow">${modelDescription}</p>
                 
                 <div class="grid grid-cols-2 gap-2 mt-auto mb-4 text-[10px] text-gray-400">
-                    <div class="flex justify-between items-center bg-white/5 p-1.5 rounded border border-white/5 hover:border-cyan-500/30 transition-colors" title="Number of Parameters. Larger models generally offer better reasoning but may be slower.">
+                    <div class="flex justify-between items-center bg-white/5 p-1.5 rounded border border-white/5 hover:border-cyan-500/30 transition-colors" title="Parameter scale or model type. Larger values usually indicate more capability, while specialized models may show a task label.">
                         <span class="text-gray-500 font-medium">Params</span>
                         <span class="text-white font-mono">${meta.params}</span>
                     </div>
@@ -346,7 +367,7 @@
                         <span class="text-gray-500 font-medium">Max Out</span>
                         <span class="text-white font-mono">${meta.maxOut}</span>
                     </div>
-                    <div class="flex justify-between items-center bg-white/5 p-1.5 rounded border border-white/5 hover:border-cyan-500/30 transition-colors" title="Cost per 1M Input Tokens (approximate).">
+                    <div class="flex justify-between items-center bg-white/5 p-1.5 rounded border border-white/5 hover:border-cyan-500/30 transition-colors" title="Approximate billing view used across the site. Token models show input/output per 1M, while speech and other specialized models show unit pricing notes.">
                         <span class="text-gray-500 font-medium">Cost/1M</span>
                         <span class="text-emerald-400 font-mono">${meta.price}</span>
                     </div>

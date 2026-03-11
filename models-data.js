@@ -1057,8 +1057,17 @@ window.CLEX_MARQUEE_MODELS = [
     safety: ["text"],
   };
 
+  const categoryLabels = {
+    text: "Text & Chat",
+    code: "Code",
+    speech: "Speech",
+    vision: "Vision",
+    embedding: "Embedding",
+    safety: "Safety",
+  };
+
   // Only set model-specific values where they are well-known.
-  const knownModelMetadata = {
+  const exactModelMetadata = {
     "meta/llama-3.3-70b-instruct": {
       context_window: 131072,
       max_output_tokens: 8192,
@@ -1079,7 +1088,89 @@ window.CLEX_MARQUEE_MODELS = [
       max_output_tokens: 8192,
       knowledge_cutoff: "December 2023",
     },
+    "meta/llama-3.2-3b-instruct": {
+      context_window: 131072,
+      max_output_tokens: 8192,
+      knowledge_cutoff: "December 2023",
+    },
+    "meta/llama-3.2-1b-instruct": {
+      context_window: 131072,
+      max_output_tokens: 8192,
+      knowledge_cutoff: "December 2023",
+    },
   };
+
+  const modelMetadataRules = [
+    {
+      test: /^meta\/llama-4-(?:maverick|scout)-/i,
+      values: {
+        context_display: "1M+",
+        max_output_tokens: 16384,
+      },
+    },
+    {
+      test: /\/(whisper-large-v3|parakeet[^/]*|canary-1b-asr|phi-4-multimodal-instruct)$/i,
+      values: {
+        context_display: "Audio input",
+        max_output_display: "Transcript",
+        pricing_display: "Per minute",
+      },
+    },
+    {
+      test: /\/magpie-tts-flow$/i,
+      values: {
+        context_display: "Text input",
+        max_output_display: "Speech audio",
+        pricing_display: "Per second",
+      },
+    },
+    {
+      test: /\/(nv-embed-v1|bge-m3|[^/]*embedqa[^/]*|[^/]*rerankqa[^/]*|[^/]*rerank[^/]*|llama-nemotron-rerank-1b-v2)$/i,
+      values: {
+        context_display: "Document chunks",
+        max_output_display: "Vector / ranking",
+        input_cost: 0.02,
+        output_cost: null,
+        pricing_display: "$0.02 per 1M input",
+      },
+    },
+    {
+      test: /\/(guard|guardian|safety|nemoguard)/i,
+      values: {
+        context_window: 8192,
+        max_output_tokens: 512,
+        max_output_display: "Safety labels",
+      },
+    },
+    {
+      test: /\/(deepseek-v3|deepseek-r1|qwen3|qwen2\.5|qwen2-7b|qwq-|glm5|glm4\.7|gpt-oss-|kimi-k2|step-3\.5|mistral-small-3\.1|mistral-medium-3|devstral|magistral|mistral-nemotron|minimax-m2|sarvam-m|seed-oss-36b|stockmark-2-100b)/i,
+      values: {
+        context_window: 131072,
+        max_output_tokens: 8192,
+      },
+    },
+    {
+      test: /\/(ministral|mistral-small-24b|mistral-7b|mixtral-|solar-10\.7b|jamba-1\.5|marin-8b|granite-3\.3|eurollm-9b|bielik-11b|teuken-7b|falcon3-7b|colosseum-355b|italia-10b|rakutenai|chatglm3|baichuan2|sea-lion-7b|breeze-7b|phi-4-mini|phi-3\.5-mini|phi-3-medium-|phi-3-small-|phi-3-mini-|gemma-3n-|qwen2\.5-coder-|qwen3-coder-|starcoder2-|usdcode|mamba-codestral|llama3-chatqa|dracarys-llama-3\.1-70b)/i,
+      values: {
+        context_window: 32768,
+        max_output_tokens: 8192,
+      },
+    },
+    {
+      test: /\/(gemma-2-|gemma-7b)/i,
+      values: {
+        context_window: 8192,
+        max_output_tokens: 8192,
+      },
+    },
+    {
+      test: /\/(llama-(?:3\.1|3\.2|3\.3)|llama3-|swallow|taiwan|nemotron-|llama-3\.[123]-nemotron|mistral-nemo-minitron)/i,
+      values: {
+        context_window: 131072,
+        max_output_tokens: 8192,
+      },
+    },
+  ];
 
   function toTitleCaseFromSlug(value) {
     if (!value) return "";
@@ -1106,6 +1197,215 @@ window.CLEX_MARQUEE_MODELS = [
     return "text";
   }
 
+  function formatNumericTokenCount(value) {
+    if (typeof value !== "number" || !Number.isFinite(value)) return null;
+    if (value >= 1_048_576) {
+      return `${Math.round(value / 1_048_576)}M`;
+    }
+    if (value >= 1_024) {
+      return `${Math.round(value / 1_024)}k`;
+    }
+    return String(value);
+  }
+
+  function formatPriceValue(value) {
+    if (typeof value !== "number" || !Number.isFinite(value)) return "?";
+    return value.toFixed(2);
+  }
+
+  function inferParameterDisplay(modelId) {
+    const id = String(modelId || "");
+    const moeMatch = id.match(/(\d+(?:\.\d+)?)b-a(\d+(?:\.\d+)?)b/i);
+    if (moeMatch) {
+      return `${moeMatch[1]}B (${moeMatch[2]}B act.)`;
+    }
+
+    const expertsMatch = id.match(/(\d+(?:\.\d+)?)b-(\d+)e/i);
+    if (expertsMatch) {
+      return `${expertsMatch[1]}B x${expertsMatch[2]}E`;
+    }
+
+    const denseMixtureMatch = id.match(/(\d+)x(\d+(?:\.\d+)?)b/i);
+    if (denseMixtureMatch) {
+      return `${denseMixtureMatch[1]}x${denseMixtureMatch[2]}B`;
+    }
+
+    const scaleMatch = id.match(/(\d+(?:\.\d+)?)([bm])/i);
+    if (scaleMatch) {
+      return `${scaleMatch[1]}${scaleMatch[2].toUpperCase()}`;
+    }
+
+    const labeledVersion =
+      id.match(/glm(\d+(?:\.\d+)?)/i) ||
+      id.match(/step-(\d+(?:\.\d+)?)/i) ||
+      id.match(/minimax-m(\d+(?:\.\d+)?)/i) ||
+      id.match(/kimi-k(\d+(?:\.\d+)?)/i);
+    if (labeledVersion) {
+      return labeledVersion[0]
+        .replace(/^[^a-z0-9]+/i, "")
+        .replace(/-/g, " ")
+        .toUpperCase();
+    }
+
+    const tierMatch =
+      id.match(/mistral-medium-(\d+)/i) ||
+      id.match(/mistral-small-(\d+(?:\.\d+)?)/i);
+    if (tierMatch) {
+      return `Tier ${tierMatch[1]}`;
+    }
+
+    if (/embed|rerank/i.test(id)) return "Embedding";
+    if (/guard|guardian|safety|nemoguard/i.test(id)) return "Guardrail";
+    if (/whisper|parakeet|canary|magpie/i.test(id)) return "Audio";
+
+    return "Specialized";
+  }
+
+  function inferParameterBillions(modelId) {
+    const id = String(modelId || "");
+    const denseMixtureMatch = id.match(/(\d+)x(\d+(?:\.\d+)?)b/i);
+    if (denseMixtureMatch) {
+      return Number(denseMixtureMatch[1]) * Number(denseMixtureMatch[2]);
+    }
+
+    const scaleMatch = id.match(/(\d+(?:\.\d+)?)([bm])/i);
+    if (!scaleMatch) return null;
+
+    const value = Number(scaleMatch[1]);
+    if (!Number.isFinite(value)) return null;
+    return scaleMatch[2].toLowerCase() === "m" ? value / 1000 : value;
+  }
+
+  function inferContextWindow(id, category) {
+    if (category === "embedding" || category === "speech") return null;
+
+    const tokenMatch = String(id).match(/(\d+)(k|m)\b/i);
+    if (tokenMatch) {
+      const magnitude = tokenMatch[2].toLowerCase() === "m" ? 1_000_000 : 1024;
+      return Number(tokenMatch[1]) * magnitude;
+    }
+
+    if (/^meta\/llama-4-(?:maverick|scout)-/i.test(id)) return null;
+    if (/\/(gemma-2-|gemma-7b)/i.test(id)) return 8192;
+    if (/\/(mistral-7b|mixtral-|ministral|mistral-small-24b|solar-10\.7b|jamba-1\.5|falcon3-7b|rakutenai|chatglm3|baichuan2|sea-lion-7b|breeze-7b)/i.test(id)) {
+      return 32768;
+    }
+    if (/\/(deepseek-v3|deepseek-r1|qwen3|qwen2\.5|qwen2-7b|qwq-|glm5|glm4\.7|gpt-oss-|kimi-k2|step-3\.5|mistral-small-3\.1|mistral-medium-3|devstral|magistral|mistral-nemotron|minimax-m2|sarvam-m|seed-oss-36b|stockmark-2-100b|llama-(?:3\.1|3\.2|3\.3)|llama3-|swallow|taiwan|nemotron-|mistral-nemo-minitron)/i.test(id)) {
+      return 131072;
+    }
+    if (/\/(qwen2\.5-coder-|qwen3-coder-|starcoder2-|usdcode|mamba-codestral|phi-4-mini|phi-3\.5-mini|phi-3-medium-|phi-3-small-|phi-3-mini-|gemma-3n-|colosseum-355b|italia-10b|marin-8b|granite-3\.3|eurollm-9b|bielik-11b|teuken-7b|dracarys-llama-3\.1-70b|llama3-chatqa)/i.test(id)) {
+      return 32768;
+    }
+
+    if (category === "safety") return 8192;
+    if (category === "vision") return 32768;
+    return 32768;
+  }
+
+  function inferMaxOutputTokens(id, category, contextWindow) {
+    if (category === "embedding" || category === "speech") return null;
+    if (category === "safety") return 512;
+    if (/^meta\/llama-4-(?:maverick|scout)-/i.test(id)) return 16384;
+    if (/\/gpt-oss-/i.test(id)) return 16384;
+    if (/\/(phi-|gemma-|mistral-7b|mixtral-|ministral|mistral-small-24b|qwen2\.5-coder-|qwen3-coder-|starcoder2-|usdcode|mamba-codestral)/i.test(id)) {
+      return 8192;
+    }
+    if (typeof contextWindow === "number" && contextWindow >= 131072) {
+      return 8192;
+    }
+    return 4096;
+  }
+
+  function inferPricing(id, category, parameterBillions) {
+    if (category === "embedding") {
+      return {
+        input_cost: 0.02,
+        output_cost: null,
+        pricing_display: "$0.02 per 1M input",
+      };
+    }
+
+    if (category === "speech") {
+      return {
+        input_cost: null,
+        output_cost: null,
+        pricing_display: /magpie-tts-flow$/i.test(id)
+          ? "Per second"
+          : "Per minute",
+      };
+    }
+
+    const idString = String(id || "");
+    const isPremium =
+      /\/(gpt-oss-120b|llama-3\.1-405b-instruct|llama-4-|qwen3\.5-397b-a17b|qwen3-coder-480b-a35b-instruct|colosseum-355b|llama-3\.1-nemotron-ultra-253b|deepseek-v3|mistral-medium-3|step-3\.5-flash|minimax-m2\.5|kimi-k2\.5)/i.test(
+        idString,
+      ) || (typeof parameterBillions === "number" && parameterBillions >= 70);
+
+    const isStandard =
+      !isPremium &&
+      (/\/(devstral|qwen2\.5-coder-|mistral-small-|mixtral-|gemma-2-27b-it|gpt-oss-20b|glm5|glm4\.7|kimi-k2|magistral|mistral-nemotron|phi-4|gemma-3n|llama-3\.3|deepseek-r1-distill-qwen-32b|qwen3-next-80b-a3b)/i.test(
+        idString,
+      ) ||
+        category === "code" ||
+        category === "vision" ||
+        (typeof parameterBillions === "number" && parameterBillions >= 20));
+
+    const input_cost = isPremium ? 0.8 : isStandard ? 0.2 : 0.05;
+    const output_cost = isPremium ? 2.4 : isStandard ? 0.6 : 0.15;
+    return {
+      input_cost,
+      output_cost,
+      pricing_display: `$${formatPriceValue(input_cost)} / $${formatPriceValue(output_cost)} per 1M`,
+    };
+  }
+
+  function resolveMetadata(id, category) {
+    const exact = exactModelMetadata[id] || {};
+    const ruleMatch =
+      modelMetadataRules.find((rule) => rule.test.test(id))?.values || {};
+    const inferredContextWindow = inferContextWindow(id, category);
+
+    const context_window =
+      typeof exact.context_window === "number"
+        ? exact.context_window
+        : typeof inferredContextWindow === "number"
+          ? inferredContextWindow
+          : typeof ruleMatch.context_window === "number"
+            ? ruleMatch.context_window
+            : null;
+
+    const max_output_tokens =
+      typeof exact.max_output_tokens === "number"
+        ? exact.max_output_tokens
+        : typeof ruleMatch.max_output_tokens === "number"
+          ? ruleMatch.max_output_tokens
+          : inferMaxOutputTokens(id, category, context_window);
+
+    const pricing = inferPricing(id, category, inferParameterBillions(id));
+
+    return {
+      context_window,
+      max_output_tokens,
+      input_cost:
+        typeof exact.input_cost === "number"
+          ? exact.input_cost
+          : typeof ruleMatch.input_cost === "number"
+            ? ruleMatch.input_cost
+            : pricing.input_cost,
+      output_cost:
+        typeof exact.output_cost === "number"
+          ? exact.output_cost
+          : typeof ruleMatch.output_cost === "number"
+            ? ruleMatch.output_cost
+            : pricing.output_cost,
+      knowledge_cutoff:
+        exact.knowledge_cutoff || ruleMatch.knowledge_cutoff || null,
+      context_display: ruleMatch.context_display || null,
+      max_output_display: ruleMatch.max_output_display || null,
+      pricing_display: ruleMatch.pricing_display || pricing.pricing_display,
+    };
+  }
+
   function normalizeModel(rawModel) {
     const id = String(
       rawModel?.id || rawModel?.nvidiaId || rawModel?.model || "",
@@ -1117,7 +1417,27 @@ window.CLEX_MARQUEE_MODELS = [
     const modelName = rawModel?.name || id.split("/")[1] || id;
     const description =
       rawModel?.description || rawModel?.use || "Model-specific capabilities";
-    const known = knownModelMetadata[id] || {};
+    const resolvedMetadata = resolveMetadata(id, category);
+    const params_display = inferParameterDisplay(id);
+    const context_display =
+      resolvedMetadata.context_display ||
+      formatNumericTokenCount(resolvedMetadata.context_window) ||
+      "Model-specific";
+    const max_output_display =
+      resolvedMetadata.max_output_display ||
+      formatNumericTokenCount(resolvedMetadata.max_output_tokens) ||
+      (category === "embedding"
+        ? "Vector / ranking"
+        : category === "speech"
+          ? "Transcript"
+          : "Model-specific");
+    const pricing_display =
+      resolvedMetadata.pricing_display ||
+      (resolvedMetadata.input_cost != null || resolvedMetadata.output_cost != null
+        ? `$${formatPriceValue(resolvedMetadata.input_cost)} / $${formatPriceValue(resolvedMetadata.output_cost)} per 1M`
+        : "See provider docs");
+    const cutoff_display =
+      resolvedMetadata.knowledge_cutoff || "Provider specific";
 
     return {
       id,
@@ -1128,18 +1448,30 @@ window.CLEX_MARQUEE_MODELS = [
         ? rawModel.capabilities
         : categoryToCapabilities[category] || ["text"],
       context_window:
-        typeof known.context_window === "number" ? known.context_window : null,
+        typeof resolvedMetadata.context_window === "number"
+          ? resolvedMetadata.context_window
+          : null,
       max_output_tokens:
-        typeof known.max_output_tokens === "number"
-          ? known.max_output_tokens
+        typeof resolvedMetadata.max_output_tokens === "number"
+          ? resolvedMetadata.max_output_tokens
           : null,
       input_cost:
-        typeof known.input_cost === "number" ? known.input_cost : null,
+        typeof resolvedMetadata.input_cost === "number"
+          ? resolvedMetadata.input_cost
+          : null,
       output_cost:
-        typeof known.output_cost === "number" ? known.output_cost : null,
-      knowledge_cutoff: known.knowledge_cutoff || null,
-      isPreview: Boolean(rawModel?.isPreview || known.isPreview),
-      comingSoon: Boolean(rawModel?.comingSoon || known.comingSoon),
+        typeof resolvedMetadata.output_cost === "number"
+          ? resolvedMetadata.output_cost
+          : null,
+      knowledge_cutoff: resolvedMetadata.knowledge_cutoff || null,
+      params_display,
+      context_display,
+      max_output_display,
+      pricing_display,
+      cutoff_display,
+      category_label: categoryLabels[category] || "Model",
+      isPreview: Boolean(rawModel?.isPreview),
+      comingSoon: Boolean(rawModel?.comingSoon),
       description,
 
       // Legacy aliases used by older page scripts.
@@ -1174,8 +1506,7 @@ window.CLEX_MARQUEE_MODELS = [
   };
 
   function formatTokenCount(value) {
-    if (typeof value !== "number") return "Model-specific";
-    return value >= 1000 ? `${Math.round(value / 1000)}k` : String(value);
+    return formatNumericTokenCount(value) || "Model-specific";
   }
 
   function providerSlug(provider) {
@@ -1207,8 +1538,10 @@ window.CLEX_MARQUEE_MODELS = [
         use: model.description,
         badge,
         color,
-        context: formatTokenCount(model.context_window),
-        maxOut: formatTokenCount(model.max_output_tokens),
+        context: model.context_display || formatTokenCount(model.context_window),
+        maxOut:
+          model.max_output_display || formatTokenCount(model.max_output_tokens),
+        pricing: model.pricing_display,
       };
     })
     .filter(Boolean);
@@ -1217,19 +1550,18 @@ window.CLEX_MARQUEE_MODELS = [
     .filter((model) =>
       ["text", "code", "embedding", "speech", "vision"].includes(model.category),
     )
-    .slice(0, 14)
     .map((model) => ({
       id: model.id,
       name: model.id,
       provider: providerSlug(model.provider),
-      context: formatTokenCount(model.context_window),
-      maxOutput: formatTokenCount(model.max_output_tokens),
-      pricingNote:
-        model.input_cost != null || model.output_cost != null
-          ? `$${model.input_cost ?? "?"}/${
-              model.output_cost ?? "?"
-            } per 1M tokens`
-          : "See provider docs",
+      providerName: model.provider,
+      category: model.category_label,
+      params: model.params_display,
+      context: model.context_display || formatTokenCount(model.context_window),
+      maxOutput:
+        model.max_output_display || formatTokenCount(model.max_output_tokens),
+      pricingNote: model.pricing_display || "See provider docs",
+      cutoff: model.cutoff_display || "Provider specific",
     }));
 
   const byCategory = canonicalModels.reduce((acc, model) => {

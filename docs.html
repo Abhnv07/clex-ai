@@ -509,6 +509,9 @@ data: [DONE]</code></pre>
                   <tr>
                     <th>Model ID</th>
                     <th>Publisher</th>
+                    <th>Context</th>
+                    <th>Max Output</th>
+                    <th>Pricing</th>
                     <th>Use Case</th>
                   </tr>
                 </thead>
@@ -1371,15 +1374,28 @@ Explain quantum computing in 2 sentences.</textarea
         const modelOptions = document.getElementById("pg-model-options");
 
         if (tableBody) {
-          const popular = models
-            .filter((m) => ["text", "code", "vision"].includes(m.category))
-            .slice(0, 8);
+          const featuredIds = Array.isArray(window.CLEX_TOP_MODELS)
+            ? window.CLEX_TOP_MODELS.map((m) => m.id)
+            : [];
+          const supplementalIds = models
+            .filter((m) => ["code", "vision", "speech"].includes(m.category))
+            .map((m) => m.id);
+          const popularIds = Array.from(
+            new Set([...featuredIds, ...supplementalIds]),
+          ).slice(0, 8);
+          const popular = popularIds
+            .map((id) => models.find((m) => m.id === id))
+            .filter(Boolean);
+
           tableBody.innerHTML = popular
             .map(
               (m) => `
                   <tr>
                     <td>${m.id}</td>
                     <td class="text-gray-400">${m.provider}</td>
+                    <td class="text-gray-400">${m.context_display || "Model-specific"}</td>
+                    <td class="text-gray-400">${m.max_output_display || "Model-specific"}</td>
+                    <td class="text-gray-400">${m.pricing_display || "See provider docs"}</td>
                     <td class="text-gray-400">${m.description || "Model-specific capabilities"}</td>
                   </tr>
                 `,
