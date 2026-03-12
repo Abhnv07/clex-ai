@@ -74,8 +74,9 @@ app.use((req, _res, next) => {
 });
 
 // ─── Dashboard Static Files ────────────────────────────
-// Serve the dashboard SPA from /dashboard
-const dashboardPath = path.join(__dirname, '..', '..', 'dashboard', 'dist');
+// On Vercel, files under public/** are served by the CDN.
+// Keep a local Express fallback so local `npm start` still serves the built dashboard.
+const dashboardPath = path.join(__dirname, '..', 'public', 'dashboard');
 app.use('/dashboard', express.static(dashboardPath));
 
 // ─── API Routes ────────────────────────────────────────

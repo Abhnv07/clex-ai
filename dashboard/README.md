@@ -42,4 +42,4 @@ Important values:
 npm run build
 ```
 
-The production build outputs to `dist/`, which the backend serves at `/dashboard`.
+The production build outputs to `../backend/public/dashboard`, which is what the backend and Vercel serve at `/dashboard`.

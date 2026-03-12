@@ -62,6 +62,8 @@ npm run build
 npm test
 ```
 
+The build also compiles the sibling dashboard into `backend/public/dashboard` so Vercel can serve `/dashboard` as static assets.
+
 ## Production deploy
 
 ```bash
@@ -70,4 +72,4 @@ npx prisma migrate deploy
 NODE_ENV=production npm start
 ```
 
-Build the dashboard separately before starting production so `dashboard/dist` exists for the backend to serve.
+Build output lands in `backend/public/dashboard`, which Vercel can serve directly.

@@ -23,9 +23,26 @@ const { geminiGenerateContent } = require('./lib/providers/gemini');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const isolatedPlaygroundPaths = new Set([
+    '/playground',
+    '/playground.html',
+    '/playground.js',
+    '/playground.css',
+    '/shared.css',
+    '/shared.js'
+]);
 
 // Middleware
 app.disable('x-powered-by');
+
+app.use((req, res, next) => {
+    if (isolatedPlaygroundPaths.has(req.path)) {
+        res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+        res.setHeader('Cross-Origin-Embedder-Policy', 'credentialless');
+        res.setHeader('Origin-Agent-Cluster', '?1');
+    }
+    next();
+});
 
 app.use(helmet({
     // This project serves some inline scripts/styles in static HTML.

@@ -216,6 +216,24 @@ let rotated = false;
 let currentDevice = "desktop";
 let deviceSize = { w: null, h: null };
 
+function getSandboxReadinessIssues() {
+  const issues = [];
+
+  if (!window.isSecureContext) {
+    issues.push("This page must be served over HTTPS or localhost.");
+  }
+
+  if (!window.crossOriginIsolated) {
+    issues.push("This page is not cross-origin isolated yet. It needs COOP/COEP headers.");
+  }
+
+  if (!("SharedArrayBuffer" in window)) {
+    issues.push("This browser session does not expose SharedArrayBuffer.");
+  }
+
+  return issues;
+}
+
 function log(line) {
   logsEl.textContent += (logsEl.textContent.endsWith("\n") ? "" : "\n") + line;
   logsEl.scrollTop = logsEl.scrollHeight;
@@ -348,9 +366,34 @@ async function runCommand(cmd, args) {
   return exitCode;
 }
 
+function logSandboxReadiness() {
+  const issues = getSandboxReadinessIssues();
+  if (!issues.length) {
+    log("Sandbox environment check passed.");
+    return;
+  }
+
+  log("Sandbox environment check failed:");
+  for (const issue of issues) {
+    log(`- ${issue}`);
+  }
+  log("WebContainers need cross-origin isolation. If this is production, redeploy after the COOP/COEP header changes.");
+}
+
+logSandboxReadiness();
+
 bootBtn.addEventListener("click", async () => {
   if (wc) return;
   logsEl.textContent = "";
+  logSandboxReadiness();
+
+  const readinessIssues = getSandboxReadinessIssues();
+  if (readinessIssues.length) {
+    bootBtn.disabled = false;
+    bootBtn.innerHTML = `<span class="w-2 h-2 rounded-full bg-black/70"></span> Boot Sandbox`;
+    return;
+  }
+
   log("Booting WebContainer...");
   bootBtn.disabled = true;
   bootBtn.textContent = "Booting...";
