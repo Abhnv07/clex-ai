@@ -75,24 +75,27 @@
             border-radius: 50%;
             pointer-events: none;
             mix-blend-mode: screen;
-            filter: blur(120px);
             z-index: 0;
         }
 
         .orb-1 {
             width: 40vw;
             height: 40vw;
-            background: rgba(6, 108, 130, 0.12);
-            top: 0;
-            left: -5%;
+            background: rgba(8, 145, 178, 0.2);
+            top: 25%;
+            left: 25%;
+            filter: blur(120px);
+            animation: orbpulse 6s ease-in-out infinite;
         }
 
         .orb-2 {
-            width: 30vw;
-            height: 30vw;
-            background: rgba(16, 85, 60, 0.09);
-            bottom: 10%;
-            right: 0;
+            width: 50vw;
+            height: 50vw;
+            background: rgba(6, 78, 59, 0.1);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            filter: blur(150px);
         }
 
         .orb-3 {
@@ -154,15 +157,13 @@
         }
 
         @keyframes pulse {
+            0%, 100% { opacity: 1 }
+            50% { opacity: 0.4 }
+        }
 
-            0%,
-            100% {
-                opacity: 1
-            }
-
-            50% {
-                opacity: 0.4
-            }
+        @keyframes orbpulse {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.15); }
         }
 
         .nav-links {
@@ -891,10 +892,12 @@
 </head>
 
 <body>
-    <!-- Orbs -->
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
+    <!-- Background -->
+    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+    <canvas id="ascii-canvas" class="fixed inset-0 z-0 pointer-events-none" style="opacity:0.55"></canvas>
 
     <!-- Nav -->
     <nav>
@@ -1260,6 +1263,58 @@ console.log(res.choices[0].message.content);`
         checkStatus();
         loadModelCount();
         setInterval(checkStatus, 30000);
+
+        // ── ASCII Canvas (matches clex.in) ──
+        (function () {
+            const canvas = document.getElementById('ascii-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const chars = ['0', '1', '{', '}', '/', '<', '>', '*', 'A', 'I'];
+            const fontSize = 14;
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            const noise = (x, y, t) =>
+                Math.sin(x * 0.08 + t) * Math.cos(y * 0.08 + t * 0.8) +
+                Math.sin(y * 0.12 - t * 0.4) * Math.cos(x * 0.12 + t * 0.5);
+
+            function render(time) {
+                const t = time * 0.0005;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.font = `bold ${fontSize}px monospace`;
+                ctx.textAlign = 'center';
+
+                const cols = Math.floor(canvas.width / fontSize);
+                const rows = Math.floor(canvas.height / fontSize);
+                const cx = canvas.width * 0.75;
+                const cy = canvas.height * 0.5;
+
+                for (let i = 0; i < cols; i++) {
+                    for (let j = 0; j < rows; j++) {
+                        const x = i * fontSize + fontSize / 2;
+                        const y = j * fontSize + fontSize / 2;
+                        const dx = x - cx;
+                        const dy = y - cy;
+                        const dist = Math.hypot(dx, dy);
+                        const n = noise(i * 0.5, j * 0.5, t);
+                        let intensity = (dist < 300 ? 1 - dist / 300 : 0) + n * 0.3;
+                        if (intensity > 0.1) {
+                            const char = chars[Math.floor(Math.abs(n * 10)) % chars.length];
+                            const alpha = Math.min(1, intensity * 0.5);
+                            ctx.fillStyle = `rgba(34,211,238,${alpha})`;
+                            ctx.fillText(char, x, y);
+                        }
+                    }
+                }
+                requestAnimationFrame(render);
+            }
+            requestAnimationFrame(render);
+        })();
     </script>
 </body>
 
