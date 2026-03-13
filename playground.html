@@ -4,9 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Playground - Clex.in</title>
-  <meta name="description"
-    content="Build in a browser sandbox with live preview and test CLEX chat completions with shared model routing." />
+  <title>Playground — CLEX</title>
+  <meta name="description" content="Build in a browser sandbox with live preview and test CLEX chat completions with shared model routing." />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="shared.css" />
   <link rel="stylesheet" href="playground.css" />
@@ -21,15 +20,7 @@
 </head>
 
 <body class="min-h-screen relative">
-  <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-    <div class="absolute top-1/4 left-1/4 w-[40vw] h-[40vw] bg-cyan-900/15 rounded-full blur-[120px] mix-blend-screen">
-    </div>
-    <div
-      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[55vw] h-[55vw] bg-emerald-900/10 rounded-full blur-[150px] mix-blend-screen">
-    </div>
-  </div>
-
-  <canvas id="ascii-canvas" class="fixed inset-0 z-0 pointer-events-none"></canvas>
+  <canvas id="particle-canvas"></canvas>
 
   <div class="relative z-10 flex flex-col min-h-screen">
     <div data-clex-header data-page="playground"></div>
@@ -38,15 +29,11 @@
       <div class="flex flex-col gap-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <div
-              class="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full px-3 py-1 mb-3">
-              <div class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></div>
-              <span class="text-xs text-cyan-300 font-semibold">Builder (Experimental)</span>
-            </div>
-            <h1 class="text-2xl sm:text-3xl font-semibold text-white leading-tight">
-              Playground
+            <p class="label-caps mb-3">Builder (Experimental)</p>
+            <h1 class="text-2xl sm:text-3xl text-white leading-tight display-serif">
+              <span class="display-serif-italic" style="color:#c9a96e">Playground</span>
             </h1>
-            <p class="text-gray-400 text-sm sm:text-base mt-2 max-w-2xl">
+            <p class="text-[#888] text-sm sm:text-base mt-2 max-w-2xl">
               Build in a local in-browser sandbox, preview on multiple
               devices, and test CLEX chat completions in one place.
             </p>
@@ -67,7 +54,7 @@
                 Workspace
               </div>
               <select id="template-select"
-                class="bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs text-gray-200 outline-none focus:border-cyan-500/50">
+                class="bg-white/[0.03] border border-white/[0.06] rounded-lg px-2 py-1 text-xs text-gray-200 outline-none focus:border-[#c9a96e]/30">
                 <option value="static">Static (HTML/CSS/JS)</option>
                 <option value="vite-react">Vite + React</option>
                 <option value="vue">Vite + Vue</option>
@@ -77,17 +64,17 @@
             </div>
             <div class="p-4 flex flex-col gap-3">
               <button id="boot-btn"
-                class="bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-2.5 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:shadow-[0_0_25px_rgba(34,211,238,0.5)] flex justify-center items-center gap-2">
+                class="bg-[#c9a96e] hover:bg-[#d4b87a] text-black font-bold py-2.5 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(201,169,110,0.2)] hover:shadow-[0_0_25px_rgba(201,169,110,0.3)] flex justify-center items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-black/70"></span>
                 Boot Sandbox
               </button>
               <button id="install-btn"
-                class="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold py-2.5 px-4 rounded-xl transition-all flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] text-white font-semibold py-2.5 px-4 rounded-xl transition-all flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled>
                 npm install
               </button>
               <button id="run-btn"
-                class="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold py-2.5 px-4 rounded-xl transition-all flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] text-white font-semibold py-2.5 px-4 rounded-xl transition-all flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled>
                 npm run dev
               </button>
@@ -107,7 +94,7 @@
           <div class="lg:col-span-5 glass-card rounded-2xl overflow-hidden flex flex-col min-h-[520px]">
             <div class="px-4 py-3 border-b border-white/8 flex items-center justify-between gap-2">
               <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+                <div class="w-1.5 h-1.5 rounded-full bg-[#c9a96e] shadow-[0_0_6px_rgba(201,169,110,0.5)]"></div>
                 <div class="text-xs font-bold text-gray-400 uppercase tracking-wider" id="active-file-label">
                   Editor
                 </div>
@@ -127,7 +114,7 @@
           <div class="lg:col-span-4 glass-card rounded-2xl overflow-hidden flex flex-col min-h-[520px]">
             <div class="px-4 py-3 border-b border-white/8 flex items-center justify-between gap-2 flex-wrap">
               <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></div>
+                <div class="w-1.5 h-1.5 rounded-full bg-[#c9a96e] shadow-[0_0_6px_rgba(201,169,110,0.5)]"></div>
                 <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">
                   Preview
                 </div>
@@ -148,9 +135,9 @@
               </div>
               <div class="flex items-center gap-2">
                 <input id="custom-w" type="number" min="240" max="1600" placeholder="W"
-                  class="w-20 bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs text-gray-200 outline-none focus:border-cyan-500/50" />
+                  class="w-20 bg-white/[0.03] border border-white/[0.06] rounded-lg px-2 py-1 text-xs text-gray-200 outline-none focus:border-[#c9a96e]/30" />
                 <input id="custom-h" type="number" min="240" max="1600" placeholder="H"
-                  class="w-20 bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs text-gray-200 outline-none focus:border-cyan-500/50" />
+                  class="w-20 bg-white/[0.03] border border-white/[0.06] rounded-lg px-2 py-1 text-xs text-gray-200 outline-none focus:border-[#c9a96e]/30" />
                 <button id="apply-custom" class="pg-device-btn">Apply</button>
               </div>
             </div>
@@ -180,7 +167,7 @@ Boot the sandbox to see logs...
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div class="glass-card rounded-2xl overflow-hidden flex flex-col min-h-[420px]">
               <div class="px-4 py-3 border-b border-white/8 flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></div>
+                <div class="w-1.5 h-1.5 rounded-full bg-[#c9a96e] shadow-[0_0_6px_rgba(201,169,110,0.5)]"></div>
                 <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">AI Code Assistant</div>
               </div>
               <div class="p-4 flex flex-col gap-3 flex-1">
@@ -189,9 +176,9 @@ Boot the sandbox to see logs...
                 </div>
                 <div class="flex gap-2">
                   <input id="ai-chat-input" type="text" placeholder="Ask AI about your code..."
-                    class="flex-1 bg-[#02050f]/50 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition-colors placeholder-gray-600" />
+                    class="flex-1 bg-[#050505]/50 border border-white/[0.06] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#c9a96e]/30 transition-colors placeholder-[#444]" />
                   <button id="ai-chat-send"
-                    class="bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-2 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(34,211,238,0.25)] disabled:opacity-50"
+                    class="bg-[#c9a96e] hover:bg-[#d4b87a] text-black font-bold py-2 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(201,169,110,0.2)] disabled:opacity-50"
                     disabled>Send</button>
                 </div>
                 <div class="flex gap-2 flex-wrap">
@@ -224,7 +211,7 @@ Boot the sandbox to see logs...
               </div>
             </div>
             <button id="run-compare"
-              class="bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-2 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(34,211,238,0.25)] disabled:opacity-50 disabled:cursor-not-allowed"
+              class="bg-[#c9a96e] hover:bg-[#d4b87a] text-black font-bold py-2 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(201,169,110,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
               disabled>
               Run Request
             </button>
@@ -235,7 +222,7 @@ Boot the sandbox to see logs...
               <div>
                 <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Prompt</label>
                 <textarea id="compare-prompt" rows="7"
-                  class="w-full bg-[#02050f]/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition-colors placeholder-gray-600 resize-none"
+                  class="w-full bg-[#050505]/50 border border-white/[0.06] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#c9a96e]/30 transition-colors placeholder-[#444] resize-none"
                   placeholder="Describe what you want the model to do..."></textarea>
                 <p class="text-xs text-gray-500 mt-2">
                   Keys entered here are sent only with this request to the
@@ -250,7 +237,7 @@ Boot the sandbox to see logs...
                   <label for="provider-filter"
                     class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Provider</label>
                   <select id="provider-filter"
-                    class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-gray-200 outline-none focus:border-cyan-500/50">
+                    class="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2 text-xs text-gray-200 outline-none focus:border-[#c9a96e]/30">
                     <option value="all">All providers</option>
                   </select>
                 </div>
@@ -258,7 +245,7 @@ Boot the sandbox to see logs...
                   <label for="capability-filter"
                     class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Capability</label>
                   <select id="capability-filter"
-                    class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-gray-200 outline-none focus:border-cyan-500/50">
+                    class="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2 text-xs text-gray-200 outline-none focus:border-[#c9a96e]/30">
                     <option value="all">All capabilities</option>
                     <option value="text">Text</option>
                     <option value="code">Code</option>
@@ -271,7 +258,7 @@ Boot the sandbox to see logs...
                   <label for="model-input"
                     class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Model ID</label>
                   <input id="model-input" list="model-options"
-                    class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-gray-200 outline-none focus:border-cyan-500/50"
+                    class="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2 text-xs text-gray-200 outline-none focus:border-[#c9a96e]/30"
                     placeholder="meta/llama-3.3-70b-instruct" />
                   <datalist id="model-options"></datalist>
                 </div>
@@ -280,7 +267,7 @@ Boot the sandbox to see logs...
                     class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">CLEX API key (optional
                     in local mode)</label>
                   <input id="clex-api-key" type="password"
-                    class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-gray-200 outline-none focus:border-cyan-500/50"
+                    class="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2 text-xs text-gray-200 outline-none focus:border-[#c9a96e]/30"
                     placeholder="clex_xxxxxxxxxxxxxxxxxxxx" />
                   <p class="text-xs text-gray-500 mt-1">
                     Leave blank to use server-side CLEX key configuration.

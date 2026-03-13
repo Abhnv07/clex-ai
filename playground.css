@@ -12,14 +12,14 @@
 .pg-device-btn:hover {
   color: white;
   background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(34, 211, 238, 0.35);
+  border-color: rgba(201, 169, 110, 0.25);
 }
 
 .pg-device-btn.active {
   color: #fff;
-  background: rgba(34, 211, 238, 0.12);
-  border-color: rgba(34, 211, 238, 0.5);
-  box-shadow: 0 0 18px rgba(34, 211, 238, 0.18);
+  background: rgba(201, 169, 110, 0.08);
+  border-color: rgba(201, 169, 110, 0.3);
+  box-shadow: 0 0 18px rgba(201, 169, 110, 0.1);
 }
 
 .pg-preview-wrap {
@@ -38,9 +38,9 @@
 .pg-preview-iframe {
   width: 100%;
   height: 520px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 0.9rem;
-  background: #02050f;
+  background: #050505;
 }
 
 /* Editor container sizing */

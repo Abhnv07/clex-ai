@@ -18,16 +18,16 @@
     </script>
     <script defer src="/_vercel/insights/script.js"></script>
   </head>
-  <body class="min-h-screen relative grid-bg">
-    <canvas id="ascii-canvas" class="fixed inset-0 z-0 pointer-events-none"></canvas>
+  <body class="min-h-screen relative">
+    <canvas id="particle-canvas"></canvas>
     <div class="relative z-10 flex flex-col min-h-screen">
       <div data-clex-header data-page="docs"></div>
 
       <main class="flex-1 max-w-[900px] mx-auto w-full px-6 md:px-10 pt-36 pb-20">
         <section class="glass-card rounded-2xl p-8 md:p-10">
-          <p class="text-xs text-cyan-300 uppercase tracking-widest font-bold mb-3">Guide</p>
-          <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">Build a Chatbot UI</h1>
-          <p class="text-gray-300 leading-relaxed mb-6">
+          <p class="label-caps mb-3">Guide</p>
+          <h1 class="text-3xl md:text-4xl text-white mb-4 display-serif">Build a <span class="display-serif-italic" style="color:#c9a96e">Chatbot UI</span></h1>
+          <p class="text-[#888] leading-relaxed mb-6">
             This guide walks through a minimal OpenAI-compatible chat UI, token streaming, and retry handling with
             <code class="inline-code">POST /v1/chat/completions</code>.
           </p>
@@ -37,7 +37,7 @@
             <p>3. Stream Server-Sent Events and append delta tokens to the assistant bubble.</p>
             <p>4. Add error/retry states and a fallback model for resilience.</p>
           </div>
-          <a href="docs.html#tutorials" class="inline-flex mt-8 text-cyan-300 hover:text-cyan-200 no-underline">Back to Docs</a>
+          <a href="docs.html#tutorials" class="inline-flex mt-8 text-[#c9a96e] hover:text-[#e0c9a0] no-underline">Back to Docs</a>
         </section>
       </main>
 

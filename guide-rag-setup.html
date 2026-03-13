@@ -18,16 +18,16 @@
     </script>
     <script defer src="/_vercel/insights/script.js"></script>
   </head>
-  <body class="min-h-screen relative grid-bg">
-    <canvas id="ascii-canvas" class="fixed inset-0 z-0 pointer-events-none"></canvas>
+  <body class="min-h-screen relative">
+    <canvas id="particle-canvas"></canvas>
     <div class="relative z-10 flex flex-col min-h-screen">
       <div data-clex-header data-page="docs"></div>
 
       <main class="flex-1 max-w-[900px] mx-auto w-full px-6 md:px-10 pt-36 pb-20">
         <section class="glass-card rounded-2xl p-8 md:p-10">
-          <p class="text-xs text-cyan-300 uppercase tracking-widest font-bold mb-3">Guide</p>
-          <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">RAG Setup</h1>
-          <p class="text-gray-300 leading-relaxed mb-6">
+          <p class="label-caps mb-3">Guide</p>
+          <h1 class="text-3xl md:text-4xl text-white mb-4 display-serif">RAG <span class="display-serif-italic" style="color:#c9a96e">Setup</span></h1>
+          <p class="text-[#888] leading-relaxed mb-6">
             Build a simple retrieval pipeline that embeds documents, indexes vectors, and injects top-k context into
             CLEX chat completions.
           </p>
@@ -37,7 +37,7 @@
             <p>3. At query time, embed the user prompt and fetch top-k chunks.</p>
             <p>4. Compose a grounded prompt and stream final response from a chat model.</p>
           </div>
-          <a href="docs.html#tutorials" class="inline-flex mt-8 text-cyan-300 hover:text-cyan-200 no-underline">Back to Docs</a>
+          <a href="docs.html#tutorials" class="inline-flex mt-8 text-[#c9a96e] hover:text-[#e0c9a0] no-underline">Back to Docs</a>
         </section>
       </main>
 
