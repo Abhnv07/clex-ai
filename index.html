@@ -743,12 +743,22 @@
         const container = document.getElementById("ai-bubbles-container");
         if (!container) return;
 
+        // Force container to wrap to allow multiple rows
+        container.className = "flex flex-wrap justify-center gap-6 max-w-4xl mx-auto";
+
         const bubbleProviders = [
           { name: "DeepSeek", color: "#4f5bd5", key: "DeepSeek AI" },
           { name: "Meta", color: "#0081FB", key: "Meta" },
           { name: "OpenAI", color: "#ffffff", key: "OpenAI" },
           { name: "Google", color: "#4285F4", key: "Google" },
           { name: "Mistral", color: "#FF7000", key: "Mistral AI" },
+          { name: "Anthropic", color: "#fca311", key: "Anthropic" },
+          { name: "NVIDIA", color: "#76b900", key: "NVIDIA" },
+          { name: "Qwen", color: "#8a2be2", key: "Qwen" },
+          { name: "Moonshot", color: "#ff6b6b", key: "Moonshotai" },
+          { name: "Z.ai", color: "#4ecdc4", key: "Z.ai" },
+          { name: "Minimax", color: "#ff9f1c", key: "Minimaxai" },
+          { name: "Stepfun", color: "#2ab7ca", key: "Stepfun-ai" }
         ];
 
         bubbleProviders.forEach((bp) => {
