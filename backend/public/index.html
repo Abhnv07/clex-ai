@@ -1,421 +1,1385 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CLEX API — Developer Platform</title>
-    <meta name="description" content="The CLEX unified AI API. Access hundreds of models through one OpenAI-compatible endpoint." />
+    <meta name="description"
+        content="The CLEX unified AI API. Access hundreds of models through one OpenAI-compatible endpoint. View endpoints, check status, and get started in seconds." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/png" href="https://clex.in/favicon.png" />
+    
+    <!-- Tailwind CSS for layout utility classes like fixed inset-0 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://clex.in/shared.css" />
+
     <style>
-      /* Hero entrance animations */
-      @keyframes heroFadeUp {
-        from { opacity: 0; transform: translateY(40px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      @keyframes heroPulseIn {
-        0% { opacity: 0; transform: scale(0.8); }
-        60% { transform: scale(1.05); }
-        100% { opacity: 1; transform: scale(1); }
-      }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-      .hero-badge { animation: heroFadeUp 0.8s ease-out 0.1s both; }
-      .hero-h1 { animation: heroFadeUp 0.8s ease-out 0.3s both; }
-      .hero-desc { animation: heroFadeUp 0.8s ease-out 0.5s both; }
-      .hero-code { animation: heroFadeUp 0.8s ease-out 0.7s both; }
-      .hero-btns { animation: heroFadeUp 0.8s ease-out 0.9s both; }
-      .stat-1 { animation: heroPulseIn 0.6s ease-out 0.6s both; }
-      .stat-2 { animation: heroPulseIn 0.6s ease-out 0.8s both; }
-      .stat-3 { animation: heroPulseIn 0.6s ease-out 1s both; }
+        :root {
+            --bg: #050505;
+            --cyan: #c9a96e; /* Re-mapped default cyan to gold for theme consistency */
+            --emerald: #34d399;
+            --purple: #a855f7;
+            --border: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(201, 169, 110, 0.25);
+            --glass: rgba(255, 255, 255, 0.02);
+            --glass-hover: rgba(255, 255, 255, 0.05);
+            --text-muted: #6b7280;
+            --text-mid: #9ca3af;
+        }
 
-      /* Code tabs */
-      .code-tab { cursor: pointer; transition: all 0.25s; }
-      .code-tab.active { color: white; background: rgba(201,169,110,0.1); border-color: rgba(201,169,110,0.25); }
-      .code-tab:not(.active):hover { color: #9ca3af; }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
 
-      /* Endpoint cards */
-      .endpoint-card {
-        display: flex; align-items: center; gap: 1rem;
-        padding: 1rem 1.25rem; border-radius: 1rem;
-        background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
-        transition: all 0.3s;
-      }
-      .endpoint-card:hover {
-        background: rgba(255,255,255,0.04); border-color: rgba(201,169,110,0.15);
-        transform: translateY(-2px);
-      }
+        ::selection {
+            background: rgba(201, 169, 110, 0.25);
+        }
 
-      /* Flow cards */
-      .flow-card {
-        background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
-        border-radius: 1.25rem; padding: 1.5rem 1.25rem; text-align: center;
-        min-width: 130px; transition: all 0.4s;
-      }
-      .flow-card:hover { background: rgba(255,255,255,0.05); border-color: rgba(201,169,110,0.15); transform: translateY(-4px); }
-      .flow-card-clex { border-color: rgba(201,169,110,0.25); box-shadow: 0 0 30px rgba(201,169,110,0.08); }
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
 
-      /* Provider chips */
-      .provider-chip {
-        display: inline-flex; align-items: center; gap: 0.5rem;
-        background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
-        border-radius: 9999px; padding: 0.45rem 0.9rem;
-        font-size: 0.78rem; font-weight: 500; color: white; transition: all 0.35s;
-      }
-      .provider-chip:hover { background: rgba(255,255,255,0.05); border-color: rgba(201,169,110,0.15); transform: translateY(-2px); }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
 
-      /* Why cards */
-      .why-card {
-        background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
-        border-radius: 1.25rem; padding: 2rem; text-align: left; transition: all 0.4s;
-      }
-      .why-card:hover { background: rgba(255,255,255,0.04); border-color: rgba(201,169,110,0.12); transform: translateY(-3px); }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+        }
 
-      @media (max-width: 640px) {
-        .flow-arrow-wrap { display: none; }
-      }
+        /* ── Orbs ── */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            z-index: 0;
+        }
+
+        .orb-1 {
+            width: 40vw;
+            height: 40vw;
+            background: rgba(8, 145, 178, 0.2);
+            top: 25%;
+            left: 25%;
+            filter: blur(120px);
+            animation: orbpulse 6s ease-in-out infinite;
+        }
+
+        .orb-2 {
+            width: 50vw;
+            height: 50vw;
+            background: rgba(6, 78, 59, 0.1);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            filter: blur(150px);
+        }
+
+        .orb-3 {
+            width: 20vw;
+            height: 20vw;
+            background: rgba(88, 28, 160, 0.07);
+            top: 40%;
+            left: 55%;
+        }
+
+        /* ── Layout ── */
+        .wrap {
+            position: relative;
+            z-index: 10;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ── Nav ── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 1px solid var(--border);
+            background: rgba(2, 5, 15, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 900;
+            font-size: 1.25rem;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-logo-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--cyan);
+            box-shadow: 0 0 8px var(--cyan);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1 }
+            50% { opacity: 0.4 }
+        }
+
+        @keyframes orbpulse {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.15); }
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            padding: 0.45rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--text-mid);
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .nav-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--border);
+        }
+
+        .nav-link.cta {
+            background: linear-gradient(135deg, #ffffff, #e2e8f0);
+            color: #0f172a;
+            font-weight: 600;
+            border: none;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.2);
+        }
+
+        /* ── Hero ── */
+        .hero {
+            padding: 2rem 0 4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(201, 169, 110, 0.05);
+            border: 1px solid rgba(201, 169, 110, 0.2);
+            border-radius: 9999px;
+            padding: 0.4rem 1rem;
+            margin-bottom: 2rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: rgba(201, 169, 110, 0.85);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            animation: fadeUp 0.6s ease-out both;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--emerald);
+            box-shadow: 0 0 6px var(--emerald);
+            flex-shrink: 0;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-dot.degraded {
+            background: #f59e0b;
+            box-shadow: 0 0 6px #f59e0b;
+        }
+
+        .status-dot.error {
+            background: #ef4444;
+            box-shadow: 0 0 6px #ef4444;
+            animation: none;
+        }
+
+        .hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(3.5rem, 8vw, 6rem);
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            animation: fadeUp 0.7s ease-out 0.1s both;
+        }
+
+        .gradient-text {
+            color: #c9a96e;
+            font-style: italic;
+            font-family: 'Outfit', serif;
+            animation: breathe 4s ease-in-out infinite;
+        }
+        @keyframes breathe {
+            0%, 100% {
+                opacity: 0.6;
+                text-shadow: 0 0 15px rgba(201,169,110,0.2);
+            }
+            50% {
+                opacity: 1;
+                text-shadow: 0 0 35px rgba(201,169,110,0.5);
+            }
+        }
+
+        .hero-sub {
+            color: var(--text-mid);
+            font-size: 1.05rem;
+            max-width: 560px;
+            line-height: 1.75;
+            margin-bottom: 2.5rem;
+            animation: fadeUp 0.7s ease-out 0.2s both;
+        }
+
+        .hero-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 3.5rem;
+            animation: fadeUp 0.7s ease-out 0.3s both;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-white {
+            background: linear-gradient(135deg, #fff, #e2e8f0);
+            color: #0f172a;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.12), 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-white:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.22), 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            backdrop-filter: blur(8px);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--border-hover);
+            background: rgba(201, 169, 110, 0.06);
+            transform: translateY(-2px);
+        }
+
+        .btn-cyan {
+            background: linear-gradient(135deg, rgba(201, 169, 110, 0.15), rgba(52, 211, 153, 0.1));
+            color: var(--cyan);
+            border: 1px solid rgba(201, 169, 110, 0.25);
+        }
+
+        .btn-cyan:hover {
+            background: linear-gradient(135deg, rgba(201, 169, 110, 0.25), rgba(52, 211, 153, 0.15));
+            box-shadow: 0 0 20px rgba(201, 169, 110, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* ── Base URL chip ── */
+        .base-url-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 0.7rem 1.2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--text-mid);
+            animation: fadeUp 0.7s ease-out 0.4s both;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .base-url-chip:hover {
+            border-color: var(--border-hover);
+            background: rgba(201, 169, 110, 0.04);
+        }
+
+        .base-url-chip span.url {
+            color: var(--cyan);
+        }
+
+        .chip-copy {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            margin-left: 0.25rem;
+            transition: color 0.2s;
+        }
+
+        .base-url-chip:hover .chip-copy {
+            color: var(--cyan);
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        /* ── Section ── */
+        section {
+            padding: 4rem 0;
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            padding: 0.35rem 0.9rem;
+            border-radius: 9999px;
+            margin-bottom: 1rem;
+        }
+
+        .section-label.cyan {
+            background: rgba(201, 169, 110, 0.06);
+            color: rgba(201, 169, 110, 0.8);
+            border: 1px solid rgba(201, 169, 110, 0.15);
+        }
+
+        .section-label.emerald {
+            background: rgba(52, 211, 153, 0.06);
+            color: rgba(52, 211, 153, 0.8);
+            border: 1px solid rgba(52, 211, 153, 0.15);
+        }
+
+        .section-label.purple {
+            background: rgba(168, 85, 247, 0.06);
+            color: rgba(168, 85, 247, 0.8);
+            border: 1px solid rgba(168, 85, 247, 0.15);
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-sub {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ── Stats row ── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 4rem;
+        }
+
+        .stat-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 1.25rem;
+            padding: 1.75rem 1.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            filter: blur(40px);
+            transition: all 0.5s;
+        }
+
+        .stat-card.cyan-card::before {
+            background: rgba(201, 169, 110, 0.1);
+        }
+
+        .stat-card.emerald-card::before {
+            background: rgba(52, 211, 153, 0.1);
+        }
+
+        .stat-card.purple-card::before {
+            background: rgba(168, 85, 247, 0.1);
+        }
+
+        .stat-card:hover {
+            background: var(--glass-hover);
+            transform: translateY(-4px);
+        }
+
+        .stat-card:hover.cyan-card {
+            border-color: rgba(201, 169, 110, 0.25);
+            box-shadow: 0 16px 48px -12px rgba(201, 169, 110, 0.1);
+        }
+
+        .stat-card:hover.emerald-card {
+            border-color: rgba(52, 211, 153, 0.25);
+            box-shadow: 0 16px 48px -12px rgba(52, 211, 153, 0.1);
+        }
+
+        .stat-card:hover.purple-card {
+            border-color: rgba(168, 85, 247, 0.25);
+            box-shadow: 0 16px 48px -12px rgba(168, 85, 247, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2.25rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value.cyan {
+            color: #67e8f9;
+        }
+
+        .stat-value.emerald {
+            color: var(--emerald);
+        }
+
+        .stat-value.purple {
+            color: #c084fc;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+        }
+
+        /* ── Endpoints ── */
+        .endpoints-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .endpoint-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            color: inherit;
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .endpoint-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            border-radius: 0 2px 2px 0;
+            transition: opacity 0.3s;
+            opacity: 0;
+        }
+
+        .endpoint-card:hover {
+            background: var(--glass-hover);
+            border-color: var(--border-hover);
+            transform: translateX(4px);
+        }
+
+        .endpoint-card:hover::before {
+            opacity: 1;
+        }
+
+        .endpoint-card.get::before {
+            background: var(--cyan);
+        }
+
+        .endpoint-card.post::before {
+            background: var(--emerald);
+        }
+
+        .endpoint-card.mixed::before {
+            background: var(--purple);
+        }
+
+        .method-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 0.3rem 0.65rem;
+            border-radius: 0.4rem;
+            min-width: 48px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .method-badge.get {
+            background: rgba(201, 169, 110, 0.08);
+            color: var(--cyan);
+            border: 1px solid rgba(201, 169, 110, 0.15);
+        }
+
+        .method-badge.post {
+            background: rgba(52, 211, 153, 0.08);
+            color: var(--emerald);
+            border: 1px solid rgba(52, 211, 153, 0.15);
+        }
+
+        .method-badge.del {
+            background: rgba(239, 68, 68, 0.08);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.15);
+        }
+
+        .method-badge.multi {
+            background: rgba(168, 85, 247, 0.08);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.15);
+            font-size: 0.58rem;
+        }
+
+        .endpoint-path {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: white;
+            font-weight: 500;
+            flex-shrink: 0;
+            min-width: 220px;
+        }
+
+        .endpoint-desc {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .endpoint-auth {
+            margin-left: auto;
+            flex-shrink: 0;
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+        }
+
+        .endpoint-auth.public {
+            background: rgba(52, 211, 153, 0.06);
+            color: rgba(52, 211, 153, 0.7);
+            border: 1px solid rgba(52, 211, 153, 0.12);
+        }
+
+        .endpoint-auth.authed {
+            background: rgba(251, 191, 36, 0.06);
+            color: rgba(251, 191, 36, 0.7);
+            border: 1px solid rgba(251, 191, 36, 0.12);
+        }
+
+        /* ── Code block ── */
+        .code-card {
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid var(--border);
+            border-radius: 1.25rem;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+
+        .code-card:hover {
+            border-color: rgba(201, 169, 110, 0.15);
+        }
+
+        .code-tabs {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.65rem 1.25rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-tabs-left {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .tab-pill {
+            font-size: 0.72rem;
+            font-weight: 500;
+            padding: 0.3rem 0.8rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.25s;
+            color: var(--text-muted);
+            background: transparent;
+            border: 1px solid transparent;
+        }
+
+        .tab-pill.active {
+            color: white;
+            background: rgba(201, 169, 110, 0.1);
+            border-color: rgba(201, 169, 110, 0.25);
+        }
+
+        .tab-pill:not(.active):hover {
+            color: var(--text-mid);
+        }
+
+        .copy-btn {
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 0.3rem 0.75rem;
+            border-radius: 0.4rem;
+            cursor: pointer;
+            transition: all 0.25s;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(201, 169, 110, 0.3);
+            color: white;
+        }
+
+        .code-body {
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .code-body pre {
+            margin: 0;
+        }
+
+        .code-body code {
+            font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.8rem;
+            line-height: 1.9;
+            color: #d1d5db;
+        }
+
+        .s {
+            color: #86efac;
+        }
+
+        /* string */
+        .k {
+            color: #7dd3fc;
+        }
+
+        /* keyword/command */
+        .c {
+            color: #9ca3af;
+        }
+
+        /* flag */
+        .p {
+            color: #c084fc;
+        }
+
+        /* property */
+        .n {
+            color: #fde68a;
+        }
+
+        /* number */
+
+        /* ── SDK Cards ── */
+        .sdk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+        }
+
+        .sdk-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sdk-card:hover {
+            background: var(--glass-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px -15px rgba(201, 169, 110, 0.1);
+        }
+
+        .sdk-icon {
+            font-size: 1.75rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .sdk-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+        }
+
+        .sdk-code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--cyan);
+            background: rgba(201, 169, 110, 0.05);
+            border: 1px solid rgba(201, 169, 110, 0.1);
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            margin-top: 0.6rem;
+            white-space: nowrap;
+            overflow: auto;
+        }
+
+        /* ── Footer ── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2.5rem 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        footer a {
+            color: var(--text-mid);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        footer a:hover {
+            color: var(--cyan);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        /* ── Divider ── */
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 0;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+
+            .endpoint-card {
+                flex-wrap: wrap;
+            }
+
+            .endpoint-path {
+                min-width: unset;
+            }
+
+            .endpoint-auth {
+                margin-left: 0;
+                margin-top: 0.25rem;
+            }
+
+            .nav-links .btn-ghost {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* ── How It Works – Flow Cards ── */
+        .flow-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 1.25rem;
+            padding: 1.5rem 1.25rem;
+            text-align: center;
+            min-width: 130px;
+            transition: all 0.4s;
+        }
+        .flow-card:hover {
+            background: var(--glass-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-4px);
+        }
+        .flow-card-clex {
+            border-color: rgba(201, 169, 110, 0.25);
+            box-shadow: 0 0 30px rgba(201, 169, 110, 0.08);
+        }
+        .flow-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ── Provider Chips ── */
+        .provider-flow-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.6rem;
+        }
+        .provider-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 9999px;
+            padding: 0.45rem 0.9rem;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: white;
+            transition: all 0.35s;
+            animation: fadeUp 0.5s ease-out both;
+        }
+        .provider-chip:hover {
+            background: var(--glass-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+        .pchip-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .pchip-tag {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* ── Why Cards ── */
+        .why-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            transition: all 0.4s;
+        }
+        .why-card:hover {
+            background: var(--glass-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-4px);
+        }
+
+        @media (max-width: 640px) {
+            .flow-arrow { display: none; }
+        }
     </style>
-  </head>
+</head>
 
-  <body class="min-h-screen relative">
-    <!-- 3D Particle Wave Background -->
-    <canvas id="particle-canvas"></canvas>
-
-    <div class="relative z-10 flex flex-col min-h-screen">
-      <div data-clex-header data-page="api"></div>
-
-      <!-- ═══════════════ HERO ═══════════════ -->
-      <main class="flex-1 flex flex-col justify-center max-w-[1400px] mx-auto w-full px-6 md:px-12 lg:px-16 pt-40 pb-24">
-        <div class="text-center max-w-4xl mx-auto z-10">
-
-          <!-- Status Badge -->
-          <div class="hero-badge inline-flex items-center gap-2 bg-white/[0.03] border border-white/[0.06] rounded-full px-4 py-1.5 text-xs font-semibold tracking-wider uppercase mb-8">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]" id="status-dot-visual"></span>
-            <span id="status-text" class="text-[#888]">Checking status…</span>
-          </div>
-
-          <h1 class="hero-h1 mb-8">
-            <span class="display-serif text-[3.5rem] sm:text-[5rem] lg:text-[6.5rem] text-white block leading-[1.05] breathe">The CLEX API.</span>
-            <span class="display-serif-italic text-[3.5rem] sm:text-[5rem] lg:text-[6.5rem] block leading-[1.05]" style="color:#c9a96e">One Endpoint.</span>
-          </h1>
-
-          <p class="hero-desc text-[#888] text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10">
-            One unified, OpenAI-compatible endpoint for hundreds of AI models.
-            Drop-in replacement for your existing SDK. No vendor lock-in.
-          </p>
-
-          <!-- Code Preview -->
-          <div class="hero-code mb-10 max-w-lg mx-auto">
-            <div class="code-block" style="background:rgba(0,0,0,0.4); border-color:rgba(255,255,255,0.04)">
-              <pre class="text-center"><code><span style="color:#555">base_url</span> = <span style="color:#c9a96e">"https://api.clex.in/v1"</span>
-<span style="color:#444"># That's it. Use any OpenAI SDK.</span></code></pre>
-            </div>
-          </div>
-
-          <!-- CTA Buttons -->
-          <div class="hero-btns flex flex-wrap justify-center gap-4 mb-16">
-            <a href="https://clex.in/docs.html" class="btn-primary no-underline">
-              Read the Docs
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
-            <a href="/dashboard" class="btn-secondary no-underline">Dashboard</a>
-            <a href="https://clex.in/login.html" class="btn-secondary no-underline" style="border-color:rgba(201,169,110,0.2);color:#c9a96e">
-              Get API Key →
-            </a>
-          </div>
-        </div>
-
-        <!-- Stat Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mt-8 z-10">
-          <div class="stat-1 glass-card p-8 rounded-2xl stat-card group relative overflow-hidden border border-white/[0.04] breathe-border transition-all duration-500 hover:-translate-y-1">
-            <h3 id="stat-models" class="text-4xl font-light text-white tracking-tight mb-2 display-serif breathe">—</h3>
-            <p class="text-[#555] font-semibold text-xs tracking-[0.2em] uppercase">AI Models</p>
-          </div>
-          <div class="stat-2 glass-card p-8 rounded-2xl stat-card group relative overflow-hidden border border-white/[0.04] breathe-border transition-all duration-500 hover:-translate-y-1" style="animation-delay:1s">
-            <h3 id="stat-status" class="text-4xl font-light text-white tracking-tight mb-2 display-serif breathe" style="animation-delay:1s">Checking</h3>
-            <p class="text-[#555] font-semibold text-xs tracking-[0.2em] uppercase">API Status</p>
-          </div>
-          <div class="stat-3 glass-card p-8 rounded-2xl stat-card group relative overflow-hidden border border-white/[0.04] breathe-border transition-all duration-500 hover:-translate-y-1" style="animation-delay:2s">
-            <h3 class="text-4xl font-light text-white tracking-tight mb-2 display-serif breathe" style="animation-delay:2s">v1</h3>
-            <p class="text-[#555] font-semibold text-xs tracking-[0.2em] uppercase">API Version</p>
-          </div>
-        </div>
-      </main>
-
-      <!-- ═══════════════ HOW IT WORKS ═══════════════ -->
-      <section class="max-w-[1400px] mx-auto w-full px-6 md:px-12 lg:px-16 py-24 z-10 relative border-t border-white/[0.03]">
-        <div class="text-center mb-16">
-          <p class="label-caps mb-4">How It Works</p>
-          <h2 class="text-3xl md:text-4xl text-white mb-3 display-serif">
-            One Protocol, <span class="display-serif-italic" style="color:#c9a96e">Every Provider</span>
-          </h2>
-          <p class="text-[#555] text-base max-w-xl mx-auto">
-            CLEX speaks the <strong class="text-[#c9a96e]">OpenAI API format</strong> — the industry standard.
-            Your app sends a single request; CLEX routes it to the best provider behind the scenes.
-          </p>
-        </div>
-
-        <!-- Flow Diagram -->
-        <div class="flex items-center justify-center gap-4 flex-wrap mb-16">
-          <div class="flow-card">
-            <div class="text-2xl mb-2">💻</div>
-            <div class="font-bold text-sm text-white mb-1">Your App</div>
-            <div class="text-[0.7rem] text-[#555]">Any language, any SDK</div>
-          </div>
-          <div class="flow-arrow-wrap text-[#c9a96e]">
-            <svg width="40" height="20" viewBox="0 0 40 20" fill="none">
-              <path d="M2 10h32m0 0l-8-7m8 7l-8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <div class="text-[0.6rem] font-mono mt-0.5 text-center">OpenAI format</div>
-          </div>
-          <div class="flow-card flow-card-clex">
-            <div class="text-2xl mb-2">⚡</div>
-            <div class="font-bold text-sm text-[#c9a96e] mb-1">CLEX API</div>
-            <div class="text-[0.7rem] text-[#555]">Smart routing engine</div>
-          </div>
-          <div class="flow-arrow-wrap text-[#c9a96e]">
-            <svg width="40" height="20" viewBox="0 0 40 20" fill="none">
-              <path d="M2 10h32m0 0l-8-7m8 7l-8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <div class="text-[0.6rem] font-mono mt-0.5 text-center">Routes to best</div>
-          </div>
-          <div class="flow-card">
-            <div class="text-2xl mb-2">🤖</div>
-            <div class="font-bold text-sm text-white mb-1">AI Providers</div>
-            <div class="text-[0.7rem] text-[#555]">GPT, Claude, Gemini…</div>
-          </div>
-        </div>
-
-        <!-- Provider Chips -->
-        <div class="flex flex-wrap justify-center gap-2 mb-16">
-          <div class="provider-chip"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> OpenAI <span class="text-[0.65rem] text-[#555]">GPT-5</span></div>
-          <div class="provider-chip"><span class="w-2 h-2 rounded-full bg-amber-400"></span> Anthropic <span class="text-[0.65rem] text-[#555]">Claude</span></div>
-          <div class="provider-chip"><span class="w-2 h-2 rounded-full bg-blue-400"></span> Google <span class="text-[0.65rem] text-[#555]">Gemini</span></div>
-          <div class="provider-chip"><span class="w-2 h-2 rounded-full bg-green-400"></span> NVIDIA <span class="text-[0.65rem] text-[#555]">NIM</span></div>
-          <div class="provider-chip"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Meta <span class="text-[0.65rem] text-[#555]">Llama</span></div>
-          <div class="provider-chip"><span class="w-2 h-2 rounded-full bg-orange-400"></span> Mistral <span class="text-[0.65rem] text-[#555]">Large</span></div>
-          <div class="provider-chip"><span class="w-2 h-2 rounded-full bg-indigo-400"></span> DeepSeek <span class="text-[0.65rem] text-[#555]">R1</span></div>
-          <div class="provider-chip"><span class="w-2 h-2 rounded-full bg-purple-400"></span> Qwen <span class="text-[0.65rem] text-[#555]">Max</span></div>
-        </div>
-
-        <!-- Why Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <div class="why-card">
-            <div class="w-10 h-10 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mb-6">
-              <svg class="w-5 h-5 text-[#c9a96e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <h3 class="text-lg font-medium text-white mb-3">Drop-in Compatible</h3>
-            <p class="text-[#555] text-sm leading-relaxed">Change your base URL and API key. Keep your existing OpenAI SDK code exactly as it is.</p>
-          </div>
-          <div class="why-card">
-            <div class="w-10 h-10 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mb-6">
-              <svg class="w-5 h-5 text-[#c9a96e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <h3 class="text-lg font-medium text-white mb-3">Smart Model Routing</h3>
-            <p class="text-[#555] text-sm leading-relaxed">CLEX routes your request to the optimal provider. Automatic fallbacks if a model is unavailable.</p>
-          </div>
-          <div class="why-card">
-            <div class="w-10 h-10 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mb-6">
-              <svg class="w-5 h-5 text-[#c9a96e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-            </div>
-            <h3 class="text-lg font-medium text-white mb-3">Unified Response Format</h3>
-            <p class="text-[#555] text-sm leading-relaxed">Every provider returns the same OpenAI-compatible JSON format. No parsing differences.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ═══════════════ ENDPOINTS ═══════════════ -->
-      <section class="max-w-[1400px] mx-auto w-full px-6 md:px-12 lg:px-16 py-24 z-10 relative border-t border-white/[0.03]">
-        <div class="text-center mb-16">
-          <p class="label-caps mb-4">API Reference</p>
-          <h2 class="text-3xl md:text-4xl text-white mb-3 display-serif">
-            Available <span class="display-serif-italic" style="color:#c9a96e">Endpoints</span>
-          </h2>
-          <p class="text-[#555] text-base max-w-xl mx-auto">All endpoints follow the OpenAI API specification.</p>
-        </div>
-
-        <div class="max-w-3xl mx-auto space-y-3 mb-16">
-          <div class="endpoint-card">
-            <span class="text-xs font-bold tracking-wider px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">GET</span>
-            <code class="text-sm font-mono text-white flex-1">/v1/chat/completions</code>
-            <span class="text-xs text-[#555]">Chat with AI models</span>
-          </div>
-          <div class="endpoint-card">
-            <span class="text-xs font-bold tracking-wider px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">POST</span>
-            <code class="text-sm font-mono text-white flex-1">/v1/chat/completions</code>
-            <span class="text-xs text-[#555]">Create chat completion</span>
-          </div>
-          <div class="endpoint-card">
-            <span class="text-xs font-bold tracking-wider px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">GET</span>
-            <code class="text-sm font-mono text-white flex-1">/v1/models</code>
-            <span class="text-xs text-[#555]">List all models</span>
-          </div>
-          <div class="endpoint-card">
-            <span class="text-xs font-bold tracking-wider px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">GET</span>
-            <code class="text-sm font-mono text-white flex-1">/v1/health</code>
-            <span class="text-xs text-[#555]">Health check</span>
-          </div>
-          <div class="endpoint-card">
-            <span class="text-xs font-bold tracking-wider px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">GET</span>
-            <code class="text-sm font-mono text-white flex-1">/v1/metrics</code>
-            <span class="text-xs text-[#555]">Usage metrics</span>
-          </div>
-        </div>
-
-        <!-- Code Examples -->
-        <div class="max-w-3xl mx-auto">
-          <div class="rounded-2xl overflow-hidden border border-white/[0.04]" style="background:rgba(0,0,0,0.4)">
-            <div class="flex items-center justify-between px-5 py-3 border-b border-white/[0.04]">
-              <div class="flex gap-2">
-                <button onclick="switchTab(this,'curl')" class="code-tab active text-xs font-medium px-3 py-1.5 rounded-full border border-transparent">cURL</button>
-                <button onclick="switchTab(this,'python')" class="code-tab text-xs font-medium px-3 py-1.5 rounded-full border border-transparent text-[#555]">Python</button>
-                <button onclick="switchTab(this,'node')" class="code-tab text-xs font-medium px-3 py-1.5 rounded-full border border-transparent text-[#555]">Node.js</button>
-              </div>
-              <button onclick="copyCode()" id="copy-code-btn" class="text-[0.68rem] font-semibold px-3 py-1 rounded-md bg-white/[0.04] border border-white/[0.06] text-[#555] hover:text-white hover:border-[#c9a96e]/30 transition-all cursor-pointer">Copy</button>
-            </div>
-            <div class="p-5 overflow-x-auto">
-              <pre id="code-curl" class="text-sm leading-relaxed" style="font-family:'JetBrains Mono',monospace"><code><span style="color:#c9a96e">curl</span> <span style="color:#d1d5db">https://api.clex.in/v1/chat/completions</span> \
-  <span style="color:#888">-H</span> <span style="color:#a78bfa">"Content-Type: application/json"</span> \
-  <span style="color:#888">-H</span> <span style="color:#a78bfa">"Authorization: Bearer YOUR_API_KEY"</span> \
-  <span style="color:#888">-d</span> <span style="color:#a78bfa">'{"model":"meta/llama-3.3-70b-instruct","messages":[{"role":"user","content":"Hello!"}]}'</span></code></pre>
-              <pre id="code-python" class="text-sm leading-relaxed" style="font-family:'JetBrains Mono',monospace;display:none"><code><span style="color:#c9a96e">from</span> openai <span style="color:#c9a96e">import</span> OpenAI
-
-client = OpenAI(
-  base_url=<span style="color:#a78bfa">"https://api.clex.in/v1"</span>,
-  api_key=<span style="color:#a78bfa">"YOUR_API_KEY"</span>,
-)
-response = client.chat.completions.create(
-  model=<span style="color:#a78bfa">"meta/llama-3.3-70b-instruct"</span>,
-  messages=[{<span style="color:#a78bfa">"role"</span>: <span style="color:#a78bfa">"user"</span>, <span style="color:#a78bfa">"content"</span>: <span style="color:#a78bfa">"Hello!"</span>}],
-)
-<span style="color:#c9a96e">print</span>(response.choices[0].message.content)</code></pre>
-              <pre id="code-node" class="text-sm leading-relaxed" style="font-family:'JetBrains Mono',monospace;display:none"><code><span style="color:#c9a96e">import</span> OpenAI <span style="color:#c9a96e">from</span> <span style="color:#a78bfa">"openai"</span>;
-
-<span style="color:#c9a96e">const</span> client = <span style="color:#c9a96e">new</span> OpenAI({
-  baseURL: <span style="color:#a78bfa">"https://api.clex.in/v1"</span>,
-  apiKey: <span style="color:#a78bfa">"YOUR_API_KEY"</span>,
-});
-<span style="color:#c9a96e">const</span> res = <span style="color:#c9a96e">await</span> client.chat.completions.create({
-  model: <span style="color:#a78bfa">"meta/llama-3.3-70b-instruct"</span>,
-  messages: [{ role: <span style="color:#a78bfa">"user"</span>, content: <span style="color:#a78bfa">"Hello!"</span> }],
-});
-console.log(res.choices[0].message.content);</code></pre>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ═══════════════ CTA ═══════════════ -->
-      <section class="max-w-[1400px] mx-auto w-full px-6 md:px-12 lg:px-16 py-24 z-10 relative border-t border-white/[0.03]">
-        <div class="text-center">
-          <p class="label-caps mb-4">Ready to Build?</p>
-          <h2 class="text-3xl md:text-4xl text-white mb-4 display-serif">
-            Ship AI-powered products <span class="display-serif-italic" style="color:#c9a96e">in under 60 seconds</span>
-          </h2>
-          <p class="text-[#555] text-base max-w-lg mx-auto mb-10">No credit card required. Start with the free tier.</p>
-          <div class="flex flex-wrap justify-center gap-4">
-            <a href="https://clex.in/login.html" class="btn-primary no-underline">
-              Start Building — Free
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
-            <a href="https://clex.in/docs.html" class="btn-secondary no-underline">Read the Docs</a>
-          </div>
-        </div>
-      </section>
-
-      <div data-clex-footer></div>
+<body>
+    <!-- Background -->
+    <div style="position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden">
+        <!-- 3D Particle Canvas -->
+        <canvas id="particle-canvas" style="position:absolute;inset:0;width:100%;height:100%;z-index:1"></canvas>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
     </div>
 
-    <script src="https://clex.in/shared.js"></script>
+    <div class="relative z-10 flex flex-col min-h-screen">
+        <div data-clex-header data-page="api"></div>
+
+        <div class="wrap" style="position:relative; z-index:10; max-width:1400px; margin:0 auto;">
+            <!-- Hero -->
+            <main class="flex-1 flex flex-col justify-center w-full px-6 md:px-12 lg:px-16 pt-32 pb-24 cursor-glow-area" style="min-height: 80vh;">
+                <div class="text-center max-w-4xl mx-auto z-10 relative">
+                    <div class="hero-badge">
+                        <div class="status-dot" id="status-dot"></div>
+                        <span id="status-text">Checking status…</span>
+                    </div>
+
+                    <h1 class="hero-h1 mb-8" style="animation: fadeUp 0.7s ease-out 0.1s both;">
+                        <span class="display-serif text-[3.5rem] sm:text-[5rem] lg:text-[6.5rem] text-white block leading-[1.05] breathe">The</span>
+                        <span class="display-serif-italic text-[3.5rem] sm:text-[5rem] lg:text-[6.5rem] block leading-[1.05]" style="color:#c9a96e">CLEX API.</span>
+                    </h1>
+                    
+                    <p class="hero-desc text-[#888] text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10" style="animation: fadeUp 0.7s ease-out 0.2s both;">
+                        One unified, OpenAI-compatible endpoint for hundreds of AI models.<br>
+                        Drop-in replacement for your existing SDK. No vendor lock-in.
+                    </p>
+
+                    <div class="hero-btns flex flex-wrap justify-center gap-4 mb-16" style="animation: fadeUp 0.7s ease-out 0.3s both;">
+                        <a href="https://clex.in/docs.html" class="btn-primary no-underline text-white" style="border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); padding:0.6rem 1.25rem; border-radius:999px; font-weight:500;">
+                            Read the Docs
+                        </a>
+                        <a href="/dashboard" class="btn-secondary no-underline text-white" style="border:1px solid rgba(255,255,255,0.1); background:transparent; padding:0.6rem 1.25rem; border-radius:999px; font-weight:500;">
+                            Dashboard
+                        </a>
+                        <a href="https://clex.in/login.html" class="btn-primary no-underline" style="background:var(--cyan); color:#000; padding:0.6rem 1.25rem; border-radius:999px; font-weight:600;">
+                            Get API Key →
+                        </a>
+                    </div>
+
+                    <div class="base-url-chip mx-auto" onclick="copyBaseUrl(this)" title="Click to copy">
+                        <span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:0.08em">Base URL</span>
+                        <span class="url">https://api.clex.in/v1</span>
+                        <span class="chip-copy">Copy</span>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card cyan-card">
+                <div class="stat-value cyan" id="stat-models">—</div>
+                <div class="stat-label">AI Models</div>
+            </div>
+            <div class="stat-card emerald-card">
+                <div class="stat-value emerald" id="stat-status">Checking</div>
+                <div class="stat-label">API Status</div>
+            </div>
+            <div class="stat-card purple-card">
+                <div class="stat-value purple">v1</div>
+                <div class="stat-label">API Version</div>
+            </div>
+        </div>
+
+        <hr class="divider" />
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!-- HOW IT WORKS — Visual Protocol Explainer                  -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <section>
+            <div style="margin-bottom:2rem;text-align:center">
+                <div class="section-label cyan" style="margin:0 auto 1rem">How It Works</div>
+                <h2 class="section-title" style="font-size:2rem">One Protocol, Every Provider</h2>
+                <p class="section-sub" style="max-width:600px;margin:0.5rem auto 0">
+                    CLEX speaks the <strong style="color:var(--cyan)">OpenAI API format</strong> — the industry standard.
+                    Your app sends a single request; CLEX routes it to the right AI provider behind the scenes.
+                </p>
+            </div>
+
+            <!-- Animated Flow Diagram -->
+            <div style="position:relative;margin:3rem auto;max-width:800px">
+                <!-- YOUR APP -->
+                <div style="display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap">
+                    <!-- Step 1: Your App -->
+                    <div class="flow-card" style="animation:fadeUp 0.6s ease-out both">
+                        <div style="font-size:1.5rem;margin-bottom:0.5rem">💻</div>
+                        <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.25rem">Your App</div>
+                        <div style="font-size:0.72rem;color:var(--text-muted)">Any language, any SDK</div>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="flow-arrow" style="animation:fadeUp 0.6s ease-out 0.15s both">
+                        <svg width="40" height="20" viewBox="0 0 40 20" fill="none">
+                            <path d="M2 10h32m0 0l-8-7m8 7l-8 7" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <animate attributeName="stroke-dashoffset" from="60" to="0" dur="1.5s" fill="freeze"/>
+                            </path>
+                        </svg>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--cyan);margin-top:2px">OpenAI format</div>
+                    </div>
+
+                    <!-- Step 2: CLEX -->
+                    <div class="flow-card flow-card-clex" style="animation:fadeUp 0.6s ease-out 0.3s both">
+                        <div style="font-size:1.5rem;margin-bottom:0.5rem">⚡</div>
+                        <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.25rem;color:var(--cyan)">CLEX API</div>
+                        <div style="font-size:0.72rem;color:var(--text-muted)">Smart routing layer</div>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="flow-arrow" style="animation:fadeUp 0.6s ease-out 0.45s both">
+                        <svg width="40" height="20" viewBox="0 0 40 20" fill="none">
+                            <path d="M2 10h32m0 0l-8-7m8 7l-8 7" stroke="var(--emerald)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <animate attributeName="stroke-dashoffset" from="60" to="0" dur="1.5s" fill="freeze"/>
+                            </path>
+                        </svg>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--emerald);margin-top:2px">Routes to best</div>
+                    </div>
+
+                    <!-- Step 3: Providers -->
+                    <div class="flow-card" style="animation:fadeUp 0.6s ease-out 0.6s both">
+                        <div style="font-size:1.5rem;margin-bottom:0.5rem">🌐</div>
+                        <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.25rem">AI Providers</div>
+                        <div style="font-size:0.72rem;color:var(--text-muted)">GPT, Claude, Gemini...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Provider Grid with animated entrance -->
+            <div style="margin-top:3rem">
+                <div style="text-align:center;margin-bottom:1.5rem">
+                    <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted)">
+                        Providers routed through CLEX
+                    </div>
+                </div>
+                <div class="provider-flow-grid">
+                    <div class="provider-chip" style="animation-delay:0s"><span class="pchip-dot" style="background:#10a37f"></span>OpenAI<span class="pchip-tag">GPT-4o</span></div>
+                    <div class="provider-chip" style="animation-delay:0.08s"><span class="pchip-dot" style="background:#d97706"></span>Anthropic<span class="pchip-tag">Claude 3.5</span></div>
+                    <div class="provider-chip" style="animation-delay:0.16s"><span class="pchip-dot" style="background:#4285f4"></span>Google<span class="pchip-tag">Gemini</span></div>
+                    <div class="provider-chip" style="animation-delay:0.24s"><span class="pchip-dot" style="background:#76b900"></span>NVIDIA NIM<span class="pchip-tag">Llama, Qwen</span></div>
+                    <div class="provider-chip" style="animation-delay:0.32s"><span class="pchip-dot" style="background:#0066ff"></span>Meta<span class="pchip-tag">Llama 3.3</span></div>
+                    <div class="provider-chip" style="animation-delay:0.40s"><span class="pchip-dot" style="background:#ff6b35"></span>Mistral<span class="pchip-tag">Large 2</span></div>
+                    <div class="provider-chip" style="animation-delay:0.48s"><span class="pchip-dot" style="background:#6366f1"></span>DeepSeek<span class="pchip-tag">R1, V3</span></div>
+                    <div class="provider-chip" style="animation-delay:0.56s"><span class="pchip-dot" style="background:#8b5cf6"></span>Qwen<span class="pchip-tag">2.5-72B</span></div>
+                </div>
+            </div>
+
+            <!-- Why OpenAI Format? -->
+            <div style="margin-top:3rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem">
+                <div class="why-card">
+                    <div style="font-size:1.25rem;margin-bottom:0.6rem">🔌</div>
+                    <div style="font-weight:600;font-size:0.88rem;margin-bottom:0.35rem">Drop-in Compatible</div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6">
+                        Already using the OpenAI SDK? Change <strong>two lines</strong> — base URL and API key. Everything else stays the same.
+                    </div>
+                </div>
+                <div class="why-card">
+                    <div style="font-size:1.25rem;margin-bottom:0.6rem">🔀</div>
+                    <div style="font-weight:600;font-size:0.88rem;margin-bottom:0.35rem">Smart Model Routing</div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6">
+                        Each model ID (like <code style="color:var(--cyan);font-size:0.72rem">meta/llama-3.3-70b</code>) is automatically routed to the optimal upstream provider.
+                    </div>
+                </div>
+                <div class="why-card">
+                    <div style="font-size:1.25rem;margin-bottom:0.6rem">📊</div>
+                    <div style="font-weight:600;font-size:0.88rem;margin-bottom:0.35rem">Unified Response Format</div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6">
+                        No matter which provider handles the request, you always get back a clean OpenAI-format JSON response with <code style="color:var(--cyan);font-size:0.72rem">choices[0].message</code>.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="divider" />
+        <section>
+            <div style="margin-bottom:2rem">
+                <div class="section-label cyan">Endpoints</div>
+                <h2 class="section-title">API Reference</h2>
+                <p class="section-sub">All routes are prefixed with <code
+                        style="font-family:'JetBrains Mono',monospace;color:var(--cyan);font-size:0.82rem">https://api.clex.in</code>
+                </p>
+            </div>
+
+            <div class="endpoints-grid">
+                <div class="endpoint-card get">
+                    <span class="method-badge get">GET</span>
+                    <span class="endpoint-path">/v1/health</span>
+                    <span class="endpoint-desc">Service health check — returns status, uptime, and version</span>
+                    <span class="endpoint-auth public">Public</span>
+                </div>
+                <div class="endpoint-card get">
+                    <span class="method-badge get">GET</span>
+                    <span class="endpoint-path">/v1/models</span>
+                    <span class="endpoint-desc">List all available AI models across every provider</span>
+                    <span class="endpoint-auth public">Public</span>
+                </div>
+                <div class="endpoint-card post">
+                    <span class="method-badge post">POST</span>
+                    <span class="endpoint-path">/v1/chat/completions</span>
+                    <span class="endpoint-desc">OpenAI-compatible chat completions with streaming support</span>
+                    <span class="endpoint-auth authed">API Key</span>
+                </div>
+                <div class="endpoint-card mixed">
+                    <span class="method-badge multi">GET · POST · DEL</span>
+                    <span class="endpoint-path">/v1/keys</span>
+                    <span class="endpoint-desc">List, create, and revoke your API keys</span>
+                    <span class="endpoint-auth authed">Firebase Auth</span>
+                </div>
+                <div class="endpoint-card get">
+                    <span class="method-badge get">GET</span>
+                    <span class="endpoint-path">/v1/usage</span>
+                    <span class="endpoint-desc">Token usage and cost breakdown for your account</span>
+                    <span class="endpoint-auth authed">Firebase Auth</span>
+                </div>
+                <div class="endpoint-card get">
+                    <span class="method-badge get">GET</span>
+                    <span class="endpoint-path">/v1/analytics</span>
+                    <span class="endpoint-desc">Detailed analytics — model usage, latency, error rates</span>
+                    <span class="endpoint-auth authed">Firebase Auth</span>
+                </div>
+            </div>
+        </section>
+
+        <hr class="divider" />
+
+        <!-- Quick Start -->
+        <section>
+            <div style="margin-bottom:2rem">
+                <div class="section-label emerald">Quick Start</div>
+                <h2 class="section-title">Start in 30 seconds</h2>
+                <p class="section-sub">Drop-in replacement for the OpenAI SDK. Change two lines.</p>
+            </div>
+
+            <div class="code-card">
+                <div class="code-tabs">
+                    <div class="code-tabs-left">
+                        <button class="tab-pill active" onclick="switchTab(this, 'curl')">cURL</button>
+                        <button class="tab-pill" onclick="switchTab(this, 'python')">Python</button>
+                        <button class="tab-pill" onclick="switchTab(this, 'node')">Node.js</button>
+                    </div>
+                    <button class="copy-btn" id="copy-code-btn" onclick="copyCode()">Copy</button>
+                </div>
+                <div class="code-body">
+                    <pre id="code-curl"><code><span class="k">curl</span> https://api.clex.in/v1/chat/completions \
+  <span class="c">-H</span> <span class="s">"Content-Type: application/json"</span> \
+  <span class="c">-H</span> <span class="s">"Authorization: Bearer YOUR_API_KEY"</span> \
+  <span class="c">-d</span> <span class="s">'{</span>
+    <span class="p">"model"</span><span class="s">:</span> <span class="s">"meta/llama-3.3-70b-instruct"</span><span class="s">,</span>
+    <span class="p">"messages"</span><span class="s">: [{ "role": "user", "content": "Hello!" }],</span>
+    <span class="p">"stream"</span><span class="s">:</span> <span class="n">false</span>
+  <span class="s">}'</span></code></pre>
+
+                    <pre id="code-python" style="display:none"><code><span class="c"># pip install openai</span>
+<span class="k">from</span> openai <span class="k">import</span> OpenAI
+
+client = OpenAI(
+  base_url=<span class="s">"https://api.clex.in/v1"</span>,
+  api_key=<span class="s">"YOUR_API_KEY"</span>,
+)
+
+response = client.chat.completions.create(
+  model=<span class="s">"meta/llama-3.3-70b-instruct"</span>,
+  messages=[{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: <span class="s">"Hello!"</span>}],
+)
+<span class="k">print</span>(response.choices[<span class="n">0</span>].message.content)</code></pre>
+
+                    <pre id="code-node" style="display:none"><code><span class="c">// npm install openai</span>
+<span class="k">import</span> OpenAI <span class="k">from</span> <span class="s">"openai"</span><span class="k">;</span>
+
+<span class="k">const</span> client = <span class="k">new</span> OpenAI({
+  baseURL: <span class="s">"https://api.clex.in/v1"</span>,
+  apiKey: <span class="s">"YOUR_API_KEY"</span>,
+});
+
+<span class="k">const</span> res = <span class="k">await</span> client.chat.completions.create({
+  model: <span class="s">"meta/llama-3.3-70b-instruct"</span>,
+  messages: [{ role: <span class="s">"user"</span>, content: <span class="s">"Hello!"</span> }],
+});
+console.log(res.choices[<span class="n">0</span>].message.content);</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="divider" />
+
+        <!-- SDK Compatibility -->
+        <section>
+            <div style="margin-bottom:2rem">
+                <div class="section-label purple">Compatibility</div>
+                <h2 class="section-title">Works with your stack</h2>
+                <p class="section-sub">Any SDK that speaks OpenAI's protocol works out of the box.</p>
+            </div>
+            <div class="sdk-grid">
+                <div class="sdk-card">
+                    <div class="sdk-icon">🐍</div>
+                    <div class="sdk-name">Python</div>
+                    <div style="font-size:0.8rem;color:var(--text-muted)">Official OpenAI SDK</div>
+                    <div class="sdk-code">pip install openai</div>
+                </div>
+                <div class="sdk-card">
+                    <div class="sdk-icon">🟨</div>
+                    <div class="sdk-name">JavaScript / TypeScript</div>
+                    <div style="font-size:0.8rem;color:var(--text-muted)">OpenAI Node SDK</div>
+                    <div class="sdk-code">npm install openai</div>
+                </div>
+                <div class="sdk-card">
+                    <div class="sdk-icon">🦀</div>
+                    <div class="sdk-name">Rust</div>
+                    <div style="font-size:0.8rem;color:var(--text-muted)">async-openai crate</div>
+                    <div class="sdk-code">async-openai</div>
+                </div>
+                <div class="sdk-card">
+                    <div class="sdk-icon">💻</div>
+                    <div class="sdk-name">cURL / HTTP</div>
+                    <div style="font-size:0.8rem;color:var(--text-muted)">Any HTTP client</div>
+                    <div class="sdk-code">fetch · axios · httpx</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="https://clex.in">Platform</a>
+            <a href="https://clex.in/docs.html">Documentation</a>
+            <a href="https://clex.in/models.html">Models</a>
+            <a href="https://clex.in/pricing.html">Pricing</a>
+            <a href="https://clex.in/support.html">Support</a>
+            <a href="https://clex.in/privacy.html">Privacy</a>
+            <a href="https://api.clex.in/v1/health">Health</a>
+        </div>
+        <p>© 2026 CLEX · <a href="https://clex.in">clex.in</a> · Built for developers</p>
+    </footer>
+
+    </div>
+
     <script>
-      // ── Live Status ──
-      async function checkStatus() {
-        const dotVisual = document.getElementById('status-dot-visual');
-        const text = document.getElementById('status-text');
-        const statStatus = document.getElementById('stat-status');
-        try {
-          const ctrl = new AbortController();
-          const t = setTimeout(() => ctrl.abort(), 9000);
-          const res = await fetch('/v1/health', { signal: ctrl.signal });
-          clearTimeout(t);
-          if (res.ok) {
-            dotVisual.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]';
-            text.textContent = 'ALL SYSTEMS OPERATIONAL';
-            text.className = 'text-emerald-400';
-            statStatus.textContent = 'Healthy';
-          } else {
-            dotVisual.className = 'w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.8)]';
-            text.textContent = 'PARTIALLY DEGRADED';
-            text.className = 'text-amber-400';
-            statStatus.textContent = 'Degraded';
-          }
-        } catch (e) {
-          if (e.name === 'AbortError') {
-            dotVisual.className = 'w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.8)]';
-            text.textContent = 'Warming Up…';
-            text.className = 'text-amber-400';
-            statStatus.textContent = 'Starting';
-          } else {
-            dotVisual.className = 'w-1.5 h-1.5 rounded-full bg-red-400 shadow-[0_0_6px_rgba(239,68,68,0.8)]';
-            text.textContent = 'Status Unavailable';
-            text.className = 'text-red-400';
-            statStatus.textContent = 'Unknown';
-          }
+        // ── Live Status ──
+        async function checkStatus() {
+            const dot = document.getElementById('status-dot');
+            const text = document.getElementById('status-text');
+            const statStatus = document.getElementById('stat-status');
+            try {
+                const ctrl = new AbortController();
+                const t = setTimeout(() => ctrl.abort(), 9000);
+                const res = await fetch('/v1/health', { signal: ctrl.signal });
+                clearTimeout(t);
+                if (res.ok) {
+                    dot.className = 'status-dot';
+                    text.textContent = 'ALL SYSTEMS OPERATIONAL';
+                    statStatus.textContent = 'Healthy';
+                } else {
+                    dot.className = 'status-dot degraded';
+                    text.textContent = 'PARTIALLY DEGRADED';
+                    statStatus.textContent = 'Degraded';
+                }
+            } catch (e) {
+                if (e.name === 'AbortError') {
+                    dot.className = 'status-dot degraded';
+                    text.textContent = 'Warming Up… (retry in 30s)';
+                    statStatus.textContent = 'Starting';
+                } else {
+                    dot.className = 'status-dot error';
+                    text.textContent = 'Status Unavailable';
+                    statStatus.textContent = 'Unknown';
+                }
+            }
         }
-      }
 
-      // ── Model Count ──
-      async function loadModelCount() {
-        try {
-          const ctrl = new AbortController();
-          const t = setTimeout(() => ctrl.abort(), 9000);
-          const res = await fetch('/v1/models', { signal: ctrl.signal });
-          clearTimeout(t);
-          if (!res.ok) return;
-          const data = await res.json();
-          const count = data?.data?.length || data?.models?.length || 0;
-          if (count > 0) animateCount(document.getElementById('stat-models'), count);
-        } catch { }
-      }
+        // ── Model Count ──
+        async function loadModelCount() {
+            try {
+                const ctrl = new AbortController();
+                const t = setTimeout(() => ctrl.abort(), 9000);
+                const res = await fetch('/v1/models', { signal: ctrl.signal });
+                clearTimeout(t);
+                if (!res.ok) return;
+                const data = await res.json();
+                const count = data?.data?.length || data?.models?.length || 0;
+                if (count > 0) animateCount(document.getElementById('stat-models'), count);
+            } catch { }
+        }
 
-      function animateCount(el, target) {
-        let current = 0;
-        const step = Math.ceil(target / 40);
-        const timer = setInterval(() => {
-          current = Math.min(current + step, target);
-          el.textContent = current + '+';
-          if (current >= target) clearInterval(timer);
-        }, 30);
-      }
+        function animateCount(el, target) {
+            let current = 0;
+            const step = Math.ceil(target / 40);
+            const timer = setInterval(() => {
+                current = Math.min(current + step, target);
+                el.textContent = current + '+';
+                if (current >= target) clearInterval(timer);
+            }, 30);
+        }
 
-      // ── Code Tabs ──
-      let activeTab = 'curl';
-      function switchTab(btn, tab) {
-        activeTab = tab;
-        document.querySelectorAll('.code-tab').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        ['curl', 'python', 'node'].forEach(t => {
-          document.getElementById('code-' + t).style.display = t === tab ? 'block' : 'none';
-        });
-      }
+        // ── Code Tabs ──
+        let activeTab = 'curl';
+        function switchTab(btn, tab) {
+            activeTab = tab;
+            document.querySelectorAll('.tab-pill').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            ['curl', 'python', 'node'].forEach(t => {
+                document.getElementById('code-' + t).style.display = t === tab ? 'block' : 'none';
+            });
+        }
 
-      // ── Copy Code ──
-      const rawCode = {
-        curl: `curl https://api.clex.in/v1/chat/completions \\
+        // ── Copy code ──
+        const rawCode = {
+            curl: `curl https://api.clex.in/v1/chat/completions \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
-  -d '{"model":"meta/llama-3.3-70b-instruct","messages":[{"role":"user","content":"Hello!"}]}'`,
-        python: `from openai import OpenAI
+  -d '{"model":"meta/llama-3.3-70b-instruct","messages":[{"role":"user","content":"Hello!"}],"stream":false}'`,
+            python: `from openai import OpenAI
 
 client = OpenAI(
   base_url="https://api.clex.in/v1",
@@ -426,7 +1390,7 @@ response = client.chat.completions.create(
   messages=[{"role": "user", "content": "Hello!"}],
 )
 print(response.choices[0].message.content)`,
-        node: `import OpenAI from "openai";
+            node: `import OpenAI from "openai";
 
 const client = new OpenAI({
   baseURL: "https://api.clex.in/v1",
@@ -437,20 +1401,31 @@ const res = await client.chat.completions.create({
   messages: [{ role: "user", content: "Hello!" }],
 });
 console.log(res.choices[0].message.content);`
-      };
+        };
 
-      function copyCode() {
-        navigator.clipboard.writeText(rawCode[activeTab]).then(() => {
-          const btn = document.getElementById('copy-code-btn');
-          btn.textContent = 'Copied!';
-          setTimeout(() => btn.textContent = 'Copy', 2000);
-        });
-      }
+        function copyCode() {
+            navigator.clipboard.writeText(rawCode[activeTab]).then(() => {
+                const btn = document.getElementById('copy-code-btn');
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
 
-      // ── Init ──
-      checkStatus();
-      loadModelCount();
-      setInterval(checkStatus, 30000);
+        // ── Copy base URL ──
+        function copyBaseUrl(el) {
+            navigator.clipboard.writeText('https://api.clex.in/v1').then(() => {
+                const chip = el.querySelector('.chip-copy');
+                chip.textContent = 'Copied!';
+                setTimeout(() => chip.textContent = 'Copy', 2000);
+            });
+        }
+
+        // ── Init ──
+        checkStatus();
+        loadModelCount();
+        setInterval(checkStatus, 30000);
     </script>
-  </body>
+    <script src="../shared.js"></script>
+</body>
+
 </html>
