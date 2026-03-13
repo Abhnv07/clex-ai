@@ -887,6 +887,87 @@
                 font-size: 2.5rem;
             }
         }
+
+        /* ── How It Works – Flow Cards ── */
+        .flow-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 1.25rem;
+            padding: 1.5rem 1.25rem;
+            text-align: center;
+            min-width: 130px;
+            transition: all 0.4s;
+        }
+        .flow-card:hover {
+            background: var(--glass-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-4px);
+        }
+        .flow-card-clex {
+            border-color: rgba(201, 169, 110, 0.25);
+            box-shadow: 0 0 30px rgba(201, 169, 110, 0.08);
+        }
+        .flow-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ── Provider Chips ── */
+        .provider-flow-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.6rem;
+        }
+        .provider-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 9999px;
+            padding: 0.45rem 0.9rem;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: white;
+            transition: all 0.35s;
+            animation: fadeUp 0.5s ease-out both;
+        }
+        .provider-chip:hover {
+            background: var(--glass-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+        .pchip-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .pchip-tag {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* ── Why Cards ── */
+        .why-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            transition: all 0.4s;
+        }
+        .why-card:hover {
+            background: var(--glass-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-4px);
+        }
+
+        @media (max-width: 640px) {
+            .flow-arrow { display: none; }
+        }
     </style>
 </head>
 
@@ -980,7 +1061,112 @@
 
         <hr class="divider" />
 
-        <!-- Endpoints -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!-- HOW IT WORKS — Visual Protocol Explainer                  -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <section>
+            <div style="margin-bottom:2rem;text-align:center">
+                <div class="section-label cyan" style="margin:0 auto 1rem">How It Works</div>
+                <h2 class="section-title" style="font-size:2rem">One Protocol, Every Provider</h2>
+                <p class="section-sub" style="max-width:600px;margin:0.5rem auto 0">
+                    CLEX speaks the <strong style="color:var(--cyan)">OpenAI API format</strong> — the industry standard.
+                    Your app sends a single request; CLEX routes it to the right AI provider behind the scenes.
+                </p>
+            </div>
+
+            <!-- Animated Flow Diagram -->
+            <div style="position:relative;margin:3rem auto;max-width:800px">
+                <!-- YOUR APP -->
+                <div style="display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap">
+                    <!-- Step 1: Your App -->
+                    <div class="flow-card" style="animation:fadeUp 0.6s ease-out both">
+                        <div style="font-size:1.5rem;margin-bottom:0.5rem">💻</div>
+                        <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.25rem">Your App</div>
+                        <div style="font-size:0.72rem;color:var(--text-muted)">Any language, any SDK</div>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="flow-arrow" style="animation:fadeUp 0.6s ease-out 0.15s both">
+                        <svg width="40" height="20" viewBox="0 0 40 20" fill="none">
+                            <path d="M2 10h32m0 0l-8-7m8 7l-8 7" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <animate attributeName="stroke-dashoffset" from="60" to="0" dur="1.5s" fill="freeze"/>
+                            </path>
+                        </svg>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--cyan);margin-top:2px">OpenAI format</div>
+                    </div>
+
+                    <!-- Step 2: CLEX -->
+                    <div class="flow-card flow-card-clex" style="animation:fadeUp 0.6s ease-out 0.3s both">
+                        <div style="font-size:1.5rem;margin-bottom:0.5rem">⚡</div>
+                        <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.25rem;color:var(--cyan)">CLEX API</div>
+                        <div style="font-size:0.72rem;color:var(--text-muted)">Smart routing layer</div>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="flow-arrow" style="animation:fadeUp 0.6s ease-out 0.45s both">
+                        <svg width="40" height="20" viewBox="0 0 40 20" fill="none">
+                            <path d="M2 10h32m0 0l-8-7m8 7l-8 7" stroke="var(--emerald)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <animate attributeName="stroke-dashoffset" from="60" to="0" dur="1.5s" fill="freeze"/>
+                            </path>
+                        </svg>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--emerald);margin-top:2px">Routes to best</div>
+                    </div>
+
+                    <!-- Step 3: Providers -->
+                    <div class="flow-card" style="animation:fadeUp 0.6s ease-out 0.6s both">
+                        <div style="font-size:1.5rem;margin-bottom:0.5rem">🌐</div>
+                        <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.25rem">AI Providers</div>
+                        <div style="font-size:0.72rem;color:var(--text-muted)">GPT, Claude, Gemini...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Provider Grid with animated entrance -->
+            <div style="margin-top:3rem">
+                <div style="text-align:center;margin-bottom:1.5rem">
+                    <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted)">
+                        Providers routed through CLEX
+                    </div>
+                </div>
+                <div class="provider-flow-grid">
+                    <div class="provider-chip" style="animation-delay:0s"><span class="pchip-dot" style="background:#10a37f"></span>OpenAI<span class="pchip-tag">GPT-4o</span></div>
+                    <div class="provider-chip" style="animation-delay:0.08s"><span class="pchip-dot" style="background:#d97706"></span>Anthropic<span class="pchip-tag">Claude 3.5</span></div>
+                    <div class="provider-chip" style="animation-delay:0.16s"><span class="pchip-dot" style="background:#4285f4"></span>Google<span class="pchip-tag">Gemini</span></div>
+                    <div class="provider-chip" style="animation-delay:0.24s"><span class="pchip-dot" style="background:#76b900"></span>NVIDIA NIM<span class="pchip-tag">Llama, Qwen</span></div>
+                    <div class="provider-chip" style="animation-delay:0.32s"><span class="pchip-dot" style="background:#0066ff"></span>Meta<span class="pchip-tag">Llama 3.3</span></div>
+                    <div class="provider-chip" style="animation-delay:0.40s"><span class="pchip-dot" style="background:#ff6b35"></span>Mistral<span class="pchip-tag">Large 2</span></div>
+                    <div class="provider-chip" style="animation-delay:0.48s"><span class="pchip-dot" style="background:#6366f1"></span>DeepSeek<span class="pchip-tag">R1, V3</span></div>
+                    <div class="provider-chip" style="animation-delay:0.56s"><span class="pchip-dot" style="background:#8b5cf6"></span>Qwen<span class="pchip-tag">2.5-72B</span></div>
+                </div>
+            </div>
+
+            <!-- Why OpenAI Format? -->
+            <div style="margin-top:3rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem">
+                <div class="why-card">
+                    <div style="font-size:1.25rem;margin-bottom:0.6rem">🔌</div>
+                    <div style="font-weight:600;font-size:0.88rem;margin-bottom:0.35rem">Drop-in Compatible</div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6">
+                        Already using the OpenAI SDK? Change <strong>two lines</strong> — base URL and API key. Everything else stays the same.
+                    </div>
+                </div>
+                <div class="why-card">
+                    <div style="font-size:1.25rem;margin-bottom:0.6rem">🔀</div>
+                    <div style="font-weight:600;font-size:0.88rem;margin-bottom:0.35rem">Smart Model Routing</div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6">
+                        Each model ID (like <code style="color:var(--cyan);font-size:0.72rem">meta/llama-3.3-70b</code>) is automatically routed to the optimal upstream provider.
+                    </div>
+                </div>
+                <div class="why-card">
+                    <div style="font-size:1.25rem;margin-bottom:0.6rem">📊</div>
+                    <div style="font-weight:600;font-size:0.88rem;margin-bottom:0.35rem">Unified Response Format</div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6">
+                        No matter which provider handles the request, you always get back a clean OpenAI-format JSON response with <code style="color:var(--cyan);font-size:0.72rem">choices[0].message</code>.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="divider" />
         <section>
             <div style="margin-bottom:2rem">
                 <div class="section-label cyan">Endpoints</div>

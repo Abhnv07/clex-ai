@@ -8,7 +8,10 @@ const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { z } = require('zod');
-const admin = require('firebase-admin');
+
+// firebase-admin is optional – only needed if REQUIRE_AUTH=true
+let admin;
+try { admin = require('firebase-admin'); } catch (_) { admin = null; }
 require('dotenv').config();
 const {
     setSSEHeaders,
@@ -73,7 +76,7 @@ app.use('/api', apiLimiter);
 let firebaseReady = false;
 try {
     const svcJson = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
-    if (svcJson) {
+    if (admin && svcJson) {
         const serviceAccount = JSON.parse(svcJson);
         admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
         firebaseReady = true;
