@@ -24,14 +24,14 @@ export default function Sidebar() {
   return (
     <aside className="dashboard-sidebar glass-card sticky top-28 overflow-hidden rounded-[28px] p-4">
       <div className="mb-5 border-b border-white/6 px-2 pb-5">
-        <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1">
-          <Activity size={12} className="text-cyan-300" />
-          <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-cyan-200">
+        <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#c9a96e]/20 bg-[#c9a96e]/10 px-3 py-1">
+          <Activity size={12} className="text-[#c9a96e]" />
+          <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#c9a96e]">
             Developer Control
           </span>
         </div>
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-emerald-400 shadow-[0_0_18px_rgba(34,211,238,0.25)]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#c9a96e] to-[#d4b87a] shadow-[0_0_18px_rgba(201,169,110,0.25)]">
             <span className="text-sm font-extrabold text-black">C</span>
           </div>
           <div>
@@ -59,7 +59,7 @@ export default function Sidebar() {
 
       <div className="mt-6 rounded-2xl border border-white/6 bg-white/[0.03] p-4">
         <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-gray-500">
-          <ShieldCheck size={13} className="text-emerald-300" />
+          <ShieldCheck size={13} className="text-[#c9a96e]" />
           Session
         </div>
         <div className="text-sm font-medium text-white">{user?.displayName || 'CLEX developer'}</div>

@@ -3,11 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Documentation - Clex.in API Reference</title>
-    <meta
-      name="description"
-      content="Complete API documentation for CLEX. Integrate multiple AI models through one unified API endpoint."
-    />
+    <title>Documentation — CLEX</title>
+    <meta name="description" content="Complete API documentation for CLEX. Integrate multiple AI models through one unified API endpoint." />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="shared.css" />
     <style>
@@ -16,12 +13,12 @@
       }
 
       .inline-code {
-        background: rgba(34, 211, 238, 0.08);
-        color: #22d3ee;
+        background: rgba(201, 169, 110, 0.08);
+        color: #c9a96e;
         padding: 0.15rem 0.45rem;
         border-radius: 0.3rem;
         font-size: 0.82rem;
-        font-family: "SF Mono", "Fira Code", monospace;
+        font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
       }
 
       .endpoint-badge {
@@ -36,9 +33,9 @@
       }
 
       .endpoint-badge.post {
-        background: rgba(52, 211, 153, 0.1);
-        border: 1px solid rgba(52, 211, 153, 0.25);
-        color: #34d399;
+        background: rgba(201, 169, 110, 0.08);
+        border: 1px solid rgba(201, 169, 110, 0.2);
+        color: #c9a96e;
       }
 
       .param-table {
@@ -52,7 +49,7 @@
         font-size: 0.7rem;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        color: #6b7280;
+        color: #555;
         border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       }
 
@@ -60,12 +57,12 @@
         padding: 0.75rem 1rem;
         font-size: 0.85rem;
         border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        color: #d1d5db;
+        color: #aaa;
       }
 
       .param-table td:first-child {
-        color: #22d3ee;
-        font-family: monospace;
+        color: #c9a96e;
+        font-family: "JetBrains Mono", monospace;
         font-size: 0.82rem;
       }
 
@@ -75,7 +72,7 @@
 
       /* syntax highlight tokens */
       .tok-key {
-        color: #7dd3fc;
+        color: #c9a96e;
       }
 
       .tok-str {
@@ -87,7 +84,7 @@
       }
 
       .tok-comment {
-        color: #4b5563;
+        color: #333;
         font-style: italic;
       }
 
@@ -96,11 +93,11 @@
       }
 
       .tok-fn {
-        color: #67e8f9;
+        color: #e0c9a0;
       }
 
       .tok-op {
-        color: #9ca3af;
+        color: #666;
       }
     </style>
 
@@ -114,20 +111,7 @@
   </head>
 
   <body class="min-h-screen relative">
-    <!-- Background -->
-    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-      <div
-        class="absolute top-1/4 left-1/4 w-[40vw] h-[40vw] bg-cyan-900/20 rounded-full blur-[120px] mix-blend-screen"
-      ></div>
-      <div
-        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50vw] h-[50vw] bg-emerald-900/10 rounded-full blur-[150px] mix-blend-screen"
-      ></div>
-    </div>
-
-    <canvas
-      id="ascii-canvas"
-      class="fixed inset-0 z-0 pointer-events-none"
-    ></canvas>
+    <canvas id="particle-canvas"></canvas>
 
     <div class="relative z-10 flex flex-col min-h-screen">
       <div
@@ -137,17 +121,11 @@
       ></div>
 
       <!-- Docs Layout -->
-      <div
-        class="flex flex-1 max-w-[1600px] mx-auto w-full px-6 md:px-12 lg:px-20 pt-32 pb-20 gap-12"
-      >
+      <div class="flex flex-1 max-w-[1400px] mx-auto w-full px-6 md:px-12 lg:px-16 pt-32 pb-20 gap-12">
         <!-- Sidebar -->
         <aside class="hidden lg:block w-56 flex-shrink-0">
           <nav class="docs-sidebar">
-            <div
-              class="text-xs font-bold text-gray-600 uppercase tracking-widest mb-4 px-1"
-            >
-              Documentation
-            </div>
+            <div class="text-xs font-bold text-[#555] uppercase tracking-widest mb-4 px-1">Documentation</div>
             <a href="#getting-started" class="active">Getting Started</a>
             <a href="#authentication">Authentication</a>
             <a href="#chat-completions">Chat Completions</a>
@@ -160,8 +138,8 @@
             <a href="#rate-limits">Rate Limits</a>
             <a href="#tutorials">Tutorials & Guides</a>
             <a href="#changelog">API Changelog</a>
-            <div class="mt-6 pt-4 border-t border-white/5">
-              <a href="https://api.clex.in/dashboard" target="_blank" class="text-cyan-400 text-xs font-bold uppercase tracking-wider hover:text-cyan-300 flex items-center gap-1.5 px-1">Dashboard &rarr;</a>
+            <div class="mt-6 pt-4 border-t border-white/[0.04]">
+              <a href="https://api.clex.in/dashboard" target="_blank" class="text-[#c9a96e] text-xs font-bold uppercase tracking-wider hover:text-[#e0c9a0] flex items-center gap-1.5 px-1">Dashboard &rarr;</a>
             </div>
           </nav>
         </aside>
@@ -170,28 +148,11 @@
         <main class="flex-1 min-w-0 docs-content">
           <!-- Getting Started -->
           <section id="getting-started" class="docs-section mb-16">
-            <div
-              class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full px-3 py-1 mb-6"
-            >
-              <div
-                class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"
-              ></div>
-              <span class="text-xs text-emerald-300 font-semibold"
-                >Quick Start</span
-              >
-            </div>
-            <h1
-              class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6 tracking-tight"
-            >
-              API
-              <span
-                class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-teal-300 to-emerald-300 glow-pulse"
-                >Documentation</span
-              >
+            <p class="label-caps mb-6">Quick Start</p>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-6 display-serif">
+              API <span class="display-serif-italic" style="color:#c9a96e">Documentation</span>
             </h1>
-            <p
-              class="text-gray-400 text-lg md:text-xl mb-10 max-w-3xl leading-relaxed"
-            >
+            <p class="text-[#888] text-lg md:text-xl mb-10 max-w-3xl leading-relaxed">
               Get started with the CLEX unified API in under 60 seconds. Access
               <span id="docs-model-count" data-model-count-plus>models</span>
               through a single endpoint with provider routing handled by CLEX.
@@ -202,7 +163,7 @@
                 class="text-lg font-medium text-white mb-6 flex items-center gap-3"
               >
                 <span
-                  class="w-8 h-8 rounded-lg bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center text-cyan-400 text-sm font-bold shadow-[0_0_10px_rgba(34,211,238,0.1)]"
+                  class="w-8 h-8 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-[#c9a96e] text-sm font-bold"
                   >1</span
                 >
                 Set your base URL and API key
@@ -220,8 +181,8 @@
 <span class="tok-comment"># Your CLEX API key (set as environment variable)</span>
 <span class="tok-key">CLEX_API_KEY</span>=<span class="tok-str">"clex_xxxxxxxxxxxxxxxxxxxx"</span></code></pre>
               </div>
-              <p class="mt-3 text-xs text-gray-500 leading-relaxed">
-                <span class="text-cyan-300 font-semibold">Note:</span>
+              <p class="mt-3 text-xs text-[#555] leading-relaxed">
+                <span class="text-[#c9a96e] font-semibold">Note:</span>
                 <code class="inline-code">https://api.clex.in/v1</code> is the
                 API base URL for your SDK or HTTP client. It is not a browser
                 page.
@@ -229,7 +190,7 @@
                   href="https://api.clex.in"
                   target="_blank"
                   rel="noreferrer"
-                  class="text-cyan-400 hover:text-cyan-300 underline"
+                  class="text-[#c9a96e] hover:text-[#e0c9a0] underline"
                   >Open the dashboard</a
                 >
                 to create keys and manage access.
@@ -239,7 +200,7 @@
                 class="text-lg font-medium text-white mb-6 mt-10 flex items-center gap-3"
               >
                 <span
-                  class="w-8 h-8 rounded-lg bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_0_10px_rgba(34,211,238,0.1)] flex items-center justify-center text-cyan-400 text-sm font-bold"
+                  class="w-8 h-8 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-[#c9a96e] text-sm font-bold"
                   >2</span
                 >
                 Make your first API call
@@ -261,8 +222,8 @@
     ]
   }'</span></code></pre>
               </div>
-              <p class="mt-3 text-xs text-gray-500 leading-relaxed">
-                <span class="text-cyan-300 font-semibold">Important:</span>
+              <p class="mt-3 text-xs text-[#555] leading-relaxed">
+                <span class="text-[#c9a96e] font-semibold">Important:</span>
                 <code class="inline-code">/v1/chat/completions</code> expects a
                 <code class="inline-code">POST</code> request with JSON. If you
                 open it directly in a browser tab, it will not behave like a
@@ -273,7 +234,7 @@
                 class="text-lg font-medium text-white mb-6 mt-10 flex items-center gap-3"
               >
                 <span
-                  class="w-8 h-8 rounded-lg bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_0_10px_rgba(34,211,238,0.1)] flex items-center justify-center text-cyan-400 text-sm font-bold"
+                  class="w-8 h-8 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-[#c9a96e] text-sm font-bold"
                   >3</span
                 >
                 Integrate into your app
@@ -298,10 +259,8 @@
 
           <!-- Authentication -->
           <section id="authentication" class="docs-section mb-16">
-            <h2 class="text-2xl font-semibold text-white mb-4">
-              Authentication
-            </h2>
-            <p class="text-gray-400 mb-6">
+            <h2 class="text-2xl text-white mb-4 display-serif">Authentication</h2>
+            <p class="text-[#888] mb-6">
               CLEX uses CLEX API keys for authentication. The CLEX routing layer
               handles upstream provider credentials and normalization.
             </p>
@@ -313,7 +272,7 @@
               <div class="flex flex-col gap-3">
                 <div class="flex items-start gap-3">
                   <span
-                    class="w-6 h-6 rounded-md bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_0_10px_rgba(34,211,238,0.1)] flex items-center justify-center text-cyan-400 text-xs font-bold flex-shrink-0 mt-0.5"
+                    class="w-6 h-6 rounded-md bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-[#c9a96e] text-xs font-bold flex-shrink-0 mt-0.5"
                     >1</span
                   >
                   <p class="text-sm text-gray-400">
@@ -321,14 +280,14 @@
                     <a
                       href="https://api.clex.in"
                       target="_blank"
-                      class="text-cyan-400 hover:text-cyan-300 underline"
+                      class="text-[#c9a96e] hover:text-[#e0c9a0] underline"
                       >api.clex.in</a
                     >
                   </p>
                 </div>
                 <div class="flex items-start gap-3">
                   <span
-                    class="w-6 h-6 rounded-md bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_0_10px_rgba(34,211,238,0.1)] flex items-center justify-center text-cyan-400 text-xs font-bold flex-shrink-0 mt-0.5"
+                    class="w-6 h-6 rounded-md bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-[#c9a96e] text-xs font-bold flex-shrink-0 mt-0.5"
                     >2</span
                   >
                   <p class="text-sm text-gray-400">
@@ -339,7 +298,7 @@
                 </div>
                 <div class="flex items-start gap-3">
                   <span
-                    class="w-6 h-6 rounded-md bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_0_10px_rgba(34,211,238,0.1)] flex items-center justify-center text-cyan-400 text-xs font-bold flex-shrink-0 mt-0.5"
+                    class="w-6 h-6 rounded-md bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-[#c9a96e] text-xs font-bold flex-shrink-0 mt-0.5"
                     >3</span
                   >
                   <p class="text-sm text-gray-400">
@@ -362,10 +321,8 @@
 
           <!-- Chat Completions -->
           <section id="chat-completions" class="docs-section mb-16">
-            <h2 class="text-2xl font-semibold text-white mb-4">
-              Chat Completions
-            </h2>
-            <p class="text-gray-400 mb-6">
+            <h2 class="text-2xl text-white mb-4 display-serif">Chat Completions</h2>
+            <p class="text-[#888] mb-6">
               The primary endpoint for generating AI responses. Compatible with
               the OpenAI chat completions format.
             </p>
@@ -374,29 +331,23 @@
               <span class="endpoint-badge post">POST</span>
               <code class="text-white font-mono text-sm">/v1/chat/completions</code>
             </div>
-            <p class="text-xs text-gray-500">
+            <p class="text-xs text-[#555]">
               In this docs page, the API Explorer uses local
               <code class="inline-code">/api/chat</code> as a proxy for
               <code class="inline-code">https://api.clex.in/v1/chat/completions</code>.
             </p>
-            <p class="text-xs text-gray-500 mt-2">
+            <p class="text-xs text-[#555] mt-2">
               Use
               <code class="inline-code">https://api.clex.in/v1/chat/completions</code>
               from code, cURL, Postman, or the OpenAI SDK. For browser
               navigation and API keys, go to
-              <a
-                href="https://api.clex.in"
-                target="_blank"
-                rel="noreferrer"
-                class="text-cyan-400 hover:text-cyan-300 underline"
-                >api.clex.in</a
-              >.
+              <a href="https://api.clex.in" target="_blank" rel="noreferrer" class="text-[#c9a96e] hover:text-[#e0c9a0] underline">api.clex.in</a>.
             </p>
           </section>
 
           <!-- Request Body -->
           <section id="request-body" class="docs-section mb-16">
-            <h2 class="text-2xl font-semibold text-white mb-4">Request Body</h2>
+            <h2 class="text-2xl text-white mb-4 display-serif">Request Body</h2>
 
             <div class="glass-card rounded-2xl overflow-hidden">
               <table class="param-table">
@@ -472,10 +423,8 @@
 
           <!-- Response Format -->
           <section id="response-format" class="docs-section mb-16">
-            <h2 class="text-2xl font-semibold text-white mb-4">
-              Response Format
-            </h2>
-            <p class="text-gray-400 mb-6">
+            <h2 class="text-2xl text-white mb-4 display-serif">Response Format</h2>
+            <p class="text-[#888] mb-6">
               Responses follow the OpenAI-compatible format. When streaming is
               enabled (default), responses arrive as Server-Sent Events.
             </p>
@@ -509,8 +458,8 @@
 
           <!-- Streaming -->
           <section id="streaming" class="docs-section mb-16">
-            <h2 class="text-2xl font-semibold text-white mb-4">Streaming</h2>
-            <p class="text-gray-400 mb-6">
+            <h2 class="text-2xl text-white mb-4 display-serif">Streaming</h2>
+            <p class="text-[#888] mb-6">
               Streaming uses Server-Sent Events (SSE). Each event contains a
               JSON object with the incremental token. The stream is terminated
               by a <code class="inline-code">data: [DONE]</code> event.
@@ -532,16 +481,14 @@ data: [DONE]</code></pre>
 
           <!-- Available Models -->
           <section id="models-list" class="docs-section mb-16">
-            <h2 class="text-2xl font-semibold text-white mb-4">
-              Available Models
-            </h2>
-            <p class="text-gray-400 mb-6">
+            <h2 class="text-2xl text-white mb-4 display-serif">Available Models</h2>
+            <p class="text-[#888] mb-6">
               CLEX provides access to
               <span id="docs-model-count-inline" data-model-count-plus>models</span>
               models. Browse the full catalog on the
               <a
                 href="models.html"
-                class="text-cyan-400 hover:text-cyan-300 underline"
+                class="text-[#c9a96e] hover:text-[#e0c9a0] underline"
                 >Models page</a
               >. Popular picks:
             </p>
@@ -565,9 +512,7 @@ data: [DONE]</code></pre>
 
           <!-- Code Examples -->
           <section id="code-examples" class="docs-section mb-16">
-            <h2 class="text-2xl font-semibold text-white mb-4">
-              Code Examples
-            </h2>
+            <h2 class="text-2xl text-white mb-4 display-serif">Code Examples</h2>
 
             <!-- Language Tabs -->
             <div
@@ -744,21 +689,19 @@ response = requests.<span class="tok-fn">post</span>(url, json=payload, headers=
               tabindex="0"
             >
               <div
-                class="glass-card rounded-2xl p-6 border border-cyan-500/30 shadow-[0_0_20px_rgba(34,211,238,0.1)]"
+                class="glass-card rounded-2xl p-6 border border-white/[0.06]"
               >
                 <div
-                  class="flex justify-between items-center mb-4 border-b border-white/10 pb-4"
+                  class="flex justify-between items-center mb-4 border-b border-white/[0.06] pb-4"
                 >
                   <h3
                     class="text-lg font-bold text-white flex items-center gap-2"
                   >
-                    <div
-                      class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"
-                    ></div>
+                    <div class="w-1.5 h-1.5 rounded-full bg-[#c9a96e] shadow-[0_0_6px_rgba(201,169,110,0.5)]"></div>
                     API Explorer
                   </h3>
                   <div
-                    class="text-xs text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 rounded-md"
+                    class="text-xs text-[#c9a96e] border border-[#c9a96e]/20 bg-[#c9a96e]/5 px-2 py-1 rounded-md"
                   >
                     Live
                   </div>
@@ -778,7 +721,7 @@ response = requests.<span class="tok-fn">post</span>(url, json=payload, headers=
                         id="pg-model"
                         list="pg-model-options"
                         value="meta/llama-3.3-70b-instruct"
-                        class="w-full bg-[#02050f]/50 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition-colors"
+                        class="w-full bg-[#050505]/50 border border-white/[0.06] rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-[#c9a96e]/30 transition-colors"
                         aria-label="Selected Model"
                       />
                       <datalist id="pg-model-options"></datalist>
@@ -786,7 +729,7 @@ response = requests.<span class="tok-fn">post</span>(url, json=payload, headers=
                         Make sure you have
                         <a
                           href="#getting-started"
-                          class="text-cyan-400 hover:underline"
+                          class="text-[#c9a96e] hover:underline"
                           >started the local server</a
                         >
                         with CLEX_API_KEY (or server-side CLEX key config).
@@ -801,7 +744,7 @@ response = requests.<span class="tok-fn">post</span>(url, json=payload, headers=
                       <textarea
                         id="pg-system"
                         rows="2"
-                        class="w-full bg-[#02050f]/50 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition-colors placeholder-gray-600 resize-none"
+                        class="w-full bg-[#050505]/50 border border-white/[0.06] rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-[#c9a96e]/30 transition-colors placeholder-[#333] resize-none"
                         placeholder="You are a helpful assistant..."
                         aria-label="System Prompt"
                       ></textarea>
@@ -815,7 +758,7 @@ response = requests.<span class="tok-fn">post</span>(url, json=payload, headers=
                       <textarea
                         id="pg-user"
                         rows="3"
-                        class="w-full bg-[#02050f]/50 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition-colors placeholder-gray-600 resize-none"
+                        class="w-full bg-[#050505]/50 border border-white/[0.06] rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-[#c9a96e]/30 transition-colors placeholder-[#333] resize-none"
                         placeholder="Say hello to the world of AI..."
                         aria-label="User Message"
                       >
@@ -824,7 +767,7 @@ Explain quantum computing in 2 sentences.</textarea
                     </div>
                     <button
                       id="pg-run-btn"
-                      class="bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-2.5 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:shadow-[0_0_25px_rgba(34,211,238,0.5)] flex justify-center items-center gap-2 mt-2"
+                      class="bg-[#c9a96e] hover:bg-[#d4b87a] text-black font-bold py-2.5 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(201,169,110,0.2)] hover:shadow-[0_0_25px_rgba(201,169,110,0.3)] flex justify-center items-center gap-2 mt-2"
                     >
                       <svg
                         class="w-4 h-4"
@@ -848,7 +791,7 @@ Explain quantum computing in 2 sentences.</textarea
                       >Response</label
                     >
                     <div
-                      class="flex-1 bg-[#02050f] border border-white/10 rounded-xl p-4 overflow-y-auto max-h-[350px] font-mono text-sm relative"
+                      class="flex-1 bg-[#050505] border border-white/[0.06] rounded-xl p-4 overflow-y-auto max-h-[350px] font-mono text-sm relative"
                       aria-live="polite"
                     >
                       <div
@@ -868,10 +811,8 @@ Explain quantum computing in 2 sentences.</textarea
 
           <!-- Error Handling -->
           <section id="error-handling" class="docs-section mb-16">
-            <h2 class="text-2xl font-semibold text-white mb-4">
-              Error Handling
-            </h2>
-            <p class="text-gray-400 mb-6">
+            <h2 class="text-2xl text-white mb-4 display-serif">Error Handling</h2>
+            <p class="text-[#888] mb-6">
               Errors return a standardized JSON object containing an
               <code class="inline-code">error</code> field with descriptive
               information, helping developers debug integrations quickly.
@@ -907,7 +848,7 @@ Explain quantum computing in 2 sentences.</textarea
                       400 Bad Request
                     </td>
                     <td>
-                      <code class="inline-code text-cyan-400"
+                      <code class="inline-code"
                         >invalid_request_error</code
                       >
                     </td>
@@ -926,7 +867,7 @@ Explain quantum computing in 2 sentences.</textarea
                       401 Unauthorized
                     </td>
                     <td>
-                      <code class="inline-code text-cyan-400"
+                      <code class="inline-code"
                         >authentication_error</code
                       >
                     </td>
@@ -945,7 +886,7 @@ Explain quantum computing in 2 sentences.</textarea
                       404 Not Found
                     </td>
                     <td>
-                      <code class="inline-code text-cyan-400"
+                      <code class="inline-code"
                         >model_not_found</code
                       >
                     </td>
@@ -958,7 +899,7 @@ Explain quantum computing in 2 sentences.</textarea
                       Verify the model exact string from the
                       <a
                         href="models.html"
-                        class="text-cyan-400 hover:underline"
+                        class="text-[#c9a96e] hover:underline"
                         >catalog</a
                       >.
                     </td>
@@ -968,7 +909,7 @@ Explain quantum computing in 2 sentences.</textarea
                       429 Rate Limit
                     </td>
                     <td>
-                      <code class="inline-code text-cyan-400"
+                      <code class="inline-code"
                         >rate_limit_exceeded</code
                       >
                     </td>
@@ -987,7 +928,7 @@ Explain quantum computing in 2 sentences.</textarea
                       500 Server Error
                     </td>
                     <td>
-                      <code class="inline-code text-cyan-400"
+                      <code class="inline-code"
                         >internal_server_error</code
                       >
                     </td>
@@ -1001,7 +942,7 @@ Explain quantum computing in 2 sentences.</textarea
                       check
                       <a
                         href="support.html"
-                        class="text-cyan-400 hover:underline"
+                        class="text-[#c9a96e] hover:underline"
                         >Support</a
                       >.
                     </td>
@@ -1011,7 +952,7 @@ Explain quantum computing in 2 sentences.</textarea
                       503 Unavailable
                     </td>
                     <td>
-                      <code class="inline-code text-cyan-400"
+                      <code class="inline-code"
                         >service_unavailable</code
                       >
                     </td>
@@ -1032,36 +973,24 @@ Explain quantum computing in 2 sentences.</textarea
 
           <!-- Rate Limits -->
           <section id="rate-limits" class="docs-section mb-16">
-            <h2 class="text-2xl font-semibold text-white mb-4">Rate Limits</h2>
-            <p class="text-gray-400 mb-6">
+            <h2 class="text-2xl text-white mb-4 display-serif">Rate Limits</h2>
+            <p class="text-[#888] mb-6">
               Rate limits are determined by your CLEX plan and current provider
               capacity. Typical starter limits are:
             </p>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="glass-card rounded-xl p-6 text-center">
-                <h3 class="text-3xl font-light text-cyan-300 mb-2">50</h3>
-                <p
-                  class="text-xs text-gray-400 uppercase tracking-wider font-medium"
-                >
-                  Requests / minute
-                </p>
+                <h3 class="text-3xl font-light text-[#c9a96e] mb-2">50</h3>
+                <p class="text-xs text-[#555] uppercase tracking-wider font-medium">Requests / minute</p>
               </div>
               <div class="glass-card rounded-xl p-6 text-center">
-                <h3 class="text-3xl font-light text-emerald-300 mb-2">10K</h3>
-                <p
-                  class="text-xs text-gray-400 uppercase tracking-wider font-medium"
-                >
-                  Tokens / minute
-                </p>
+                <h3 class="text-3xl font-light text-[#c9a96e] mb-2">10K</h3>
+                <p class="text-xs text-[#555] uppercase tracking-wider font-medium">Tokens / minute</p>
               </div>
               <div class="glass-card rounded-xl p-6 text-center">
-                <h3 class="text-3xl font-light text-white mb-2">1000</h3>
-                <p
-                  class="text-xs text-gray-400 uppercase tracking-wider font-medium"
-                >
-                  Requests / day
-                </p>
+                <h3 class="text-3xl font-light text-[#c9a96e] mb-2">1000</h3>
+                <p class="text-xs text-[#555] uppercase tracking-wider font-medium">Requests / day</p>
               </div>
             </div>
 
@@ -1071,19 +1000,19 @@ Explain quantum computing in 2 sentences.</textarea
               </h4>
               <ul class="text-sm text-gray-400 space-y-2">
                 <li class="flex items-start gap-2">
-                  <span class="text-cyan-400">•</span> Implement exponential
+                  <span class="text-[#c9a96e]">•</span> Implement exponential
                   backoff on 429 errors
                 </li>
                 <li class="flex items-start gap-2">
-                  <span class="text-cyan-400">•</span> Cache responses when
+                  <span class="text-[#c9a96e]">•</span> Cache responses when
                   possible
                 </li>
                 <li class="flex items-start gap-2">
-                  <span class="text-cyan-400">•</span> Use streaming for long
+                  <span class="text-[#c9a96e]">•</span> Use streaming for long
                   responses to improve UX
                 </li>
                 <li class="flex items-start gap-2">
-                  <span class="text-cyan-400">•</span> Set appropriate
+                  <span class="text-[#c9a96e]">•</span> Set appropriate
                   <code class="inline-code">max_tokens</code> to avoid wasting
                   quota
                 </li>
@@ -1093,10 +1022,8 @@ Explain quantum computing in 2 sentences.</textarea
 
           <!-- Tutorials & Guides -->
           <section id="tutorials" class="docs-section mb-16">
-            <h2 class="text-2xl font-semibold text-white mb-4">
-              Tutorials & Guides
-            </h2>
-            <p class="text-gray-400 mb-6">
+            <h2 class="text-2xl text-white mb-4 display-serif">Tutorials & Guides</h2>
+            <p class="text-[#888] mb-6">
               Kickstart your production workflow with these step-by-step
               onboarding guides.
             </p>
@@ -1104,10 +1031,10 @@ Explain quantum computing in 2 sentences.</textarea
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <a
                 href="guide-chatbot-ui.html"
-                class="glass-card rounded-2xl p-6 border border-white/5 hover:border-cyan-500/30 transition-all hover:-translate-y-1 block no-underline group cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                class="glass-card rounded-2xl p-6 border border-white/[0.04] hover:border-[#c9a96e]/20 transition-all hover:-translate-y-1 block no-underline group cursor-pointer focus:outline-none"
               >
                 <h3
-                  class="text-lg font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors"
+                  class="text-lg font-bold text-white mb-2 group-hover:text-[#c9a96e] transition-colors"
                 >
                   Build a Chatbot UI
                 </h3>
@@ -1116,7 +1043,7 @@ Explain quantum computing in 2 sentences.</textarea
                   back to the client.
                 </p>
                 <span
-                  class="text-xs font-semibold text-cyan-400 uppercase tracking-widest flex items-center gap-1"
+                  class="text-xs font-semibold text-[#c9a96e] uppercase tracking-widest flex items-center gap-1"
                   >Read Guide
                   <svg
                     class="w-4 h-4"
@@ -1135,10 +1062,10 @@ Explain quantum computing in 2 sentences.</textarea
 
               <a
                 href="guide-agentic-workflows.html"
-                class="glass-card rounded-2xl p-6 border border-white/5 hover:border-cyan-500/30 transition-all hover:-translate-y-1 block no-underline group cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                class="glass-card rounded-2xl p-6 border border-white/[0.04] hover:border-[#c9a96e]/20 transition-all hover:-translate-y-1 block no-underline group cursor-pointer focus:outline-none"
               >
                 <h3
-                  class="text-lg font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors"
+                  class="text-lg font-bold text-white mb-2 group-hover:text-[#c9a96e] transition-colors"
                 >
                   Agentic Workflows
                 </h3>
@@ -1147,7 +1074,7 @@ Explain quantum computing in 2 sentences.</textarea
                   tool-calling flows.
                 </p>
                 <span
-                  class="text-xs font-semibold text-cyan-400 uppercase tracking-widest flex items-center gap-1"
+                  class="text-xs font-semibold text-[#c9a96e] uppercase tracking-widest flex items-center gap-1"
                   >Read Guide
                   <svg
                     class="w-4 h-4"
@@ -1166,10 +1093,10 @@ Explain quantum computing in 2 sentences.</textarea
 
               <a
                 href="guide-rag-setup.html"
-                class="glass-card rounded-2xl p-6 border border-white/5 hover:border-cyan-500/30 transition-all hover:-translate-y-1 block no-underline group cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                class="glass-card rounded-2xl p-6 border border-white/[0.04] hover:border-[#c9a96e]/20 transition-all hover:-translate-y-1 block no-underline group cursor-pointer focus:outline-none"
               >
                 <h3
-                  class="text-lg font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors"
+                  class="text-lg font-bold text-white mb-2 group-hover:text-[#c9a96e] transition-colors"
                 >
                   RAG Setup
                 </h3>
@@ -1178,7 +1105,7 @@ Explain quantum computing in 2 sentences.</textarea
                   alongside conversational LLMs.
                 </p>
                 <span
-                  class="text-xs font-semibold text-cyan-400 uppercase tracking-widest flex items-center gap-1"
+                  class="text-xs font-semibold text-[#c9a96e] uppercase tracking-widest flex items-center gap-1"
                   >Read Guide
                   <svg
                     class="w-4 h-4"
@@ -1199,10 +1126,8 @@ Explain quantum computing in 2 sentences.</textarea
 
           <!-- API Changelog -->
           <section id="changelog" class="docs-section mb-16">
-            <h2 class="text-2xl font-semibold text-white mb-4">
-              API Changelog & Versioning
-            </h2>
-            <p class="text-gray-400 mb-6">
+            <h2 class="text-2xl text-white mb-4 display-serif">API Changelog & Versioning</h2>
+            <p class="text-[#888] mb-6">
               CLEX endpoints follow semantic versioning. Breaking changes will
               always be introduced under a new version prefix (e.g.
               <code class="inline-code">/v2/chat/completions</code>). Below are
@@ -1212,9 +1137,9 @@ Explain quantum computing in 2 sentences.</textarea
             <div class="relative border-l border-white/10 ml-4 space-y-8 pb-4">
               <div class="relative pl-6">
                 <div
-                  class="absolute w-3 h-3 bg-cyan-400 rounded-full -left-[6.5px] top-1.5 shadow-[0_0_10px_rgba(34,211,238,0.5)]"
+                  class="absolute w-3 h-3 bg-[#c9a96e] rounded-full -left-[6.5px] top-1.5 shadow-[0_0_10px_rgba(201,169,110,0.4)]"
                 ></div>
-                <time class="block text-xs font-mono text-cyan-400 mb-1"
+                <time class="block text-xs font-mono text-[#c9a96e] mb-1"
                   >March 2026</time
                 >
                 <h4 class="text-base font-bold text-white mb-2">
@@ -1229,7 +1154,7 @@ Explain quantum computing in 2 sentences.</textarea
 
               <div class="relative pl-6">
                 <div
-                  class="absolute w-3 h-3 bg-[#02050f] border-2 border-white/20 rounded-full -left-[6.5px] top-1.5"
+                  class="absolute w-3 h-3 bg-[#050505] border-2 border-white/20 rounded-full -left-[6.5px] top-1.5"
                 ></div>
                 <time class="block text-xs font-mono text-gray-500 mb-1"
                   >February 2026</time

@@ -133,8 +133,8 @@ export default function Analytics() {
       />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Requests" value={formatCompactNumber(overview.total_requests)} icon={<span className="text-black">R</span>} color="cyan" />
-        <StatCard label="Tokens" value={formatCompactNumber(overview.total_tokens)} subValue={`${formatCompactNumber(overview.prompt_tokens)} in / ${formatCompactNumber(overview.completion_tokens)} out`} icon={<span className="text-black">T</span>} color="emerald" />
+        <StatCard label="Requests" value={formatCompactNumber(overview.total_requests)} icon={<span className="text-black">R</span>} color="gold" />
+        <StatCard label="Tokens" value={formatCompactNumber(overview.total_tokens)} subValue={`${formatCompactNumber(overview.prompt_tokens)} in / ${formatCompactNumber(overview.completion_tokens)} out`} icon={<span className="text-black">T</span>} color="gold" />
         <StatCard label="Spend" value={formatUsd(overview.total_cost)} subValue={`Projected ${formatUsd(projectedMonthlyCost)} / mo`} icon={<span className="text-black">$</span>} color="purple" />
         <StatCard label="Avg Latency" value={`${overview.avg_duration_ms}ms`} subValue={`${overview.error_rate.toFixed(2)}% error rate`} icon={<span className="text-black">L</span>} color="amber" />
       </div>
@@ -211,7 +211,7 @@ export default function Analytics() {
                       </div>
                       <div className="h-2 overflow-hidden rounded-full bg-white/5">
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-emerald-400"
+                          className="h-full rounded-full bg-gradient-to-r from-[#c9a96e] to-[#d4b87a]"
                           style={{ width: `${(model.requests / total) * 100}%` }}
                         />
                       </div>

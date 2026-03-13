@@ -89,7 +89,7 @@ export default function ApiKeys() {
   return (
     <div className="space-y-6">
       <PageIntro
-        tone="cyan"
+        tone="gold"
         eyebrow="API Keys"
         title="Create, reveal once, revoke fast."
         description="Dashboard key management now stays inside the same CLEX visual shell as the public site, while the backend keeps the one-time raw key reveal."
@@ -140,7 +140,7 @@ export default function ApiKeys() {
           ) : (
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-300">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#c9a96e]/10 text-[#c9a96e]">
                   <Check size={18} />
                 </div>
                 <div>
@@ -154,11 +154,11 @@ export default function ApiKeys() {
                   One-time secret
                 </div>
                 <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-                  <code className="flex-1 break-all rounded-xl border border-white/10 bg-black/35 px-4 py-3 text-sm text-cyan-300">
+                  <code className="flex-1 break-all rounded-xl border border-white/10 bg-black/35 px-4 py-3 text-sm text-[#c9a96e]">
                     {createdKey}
                   </code>
                   <button type="button" className="btn-secondary flex items-center justify-center gap-2" onClick={() => void handleCopy(createdKey)}>
-                    {copied ? <Check size={15} className="text-emerald-300" /> : <Copy size={15} />}
+                    {copied ? <Check size={15} className="text-[#c9a96e]" /> : <Copy size={15} />}
                     {copied ? 'Copied' : 'Copy key'}
                   </button>
                 </div>
@@ -185,7 +185,7 @@ export default function ApiKeys() {
               {keys.map((key) => (
                 <div key={key.id} className="flex flex-col gap-4 px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
                   <div className="flex min-w-0 items-start gap-4">
-                    <div className={`mt-1 h-2.5 w-2.5 rounded-full ${key.status === 'active' ? 'bg-emerald-400' : key.status === 'expired' ? 'bg-amber-400' : 'bg-gray-500'}`} />
+                    <div className={`mt-1 h-2.5 w-2.5 rounded-full ${key.status === 'active' ? 'bg-[#c9a96e]' : key.status === 'expired' ? 'bg-amber-400' : 'bg-gray-500'}`} />
                     <div className="min-w-0">
                       <div className="text-sm font-medium text-white">{key.name}</div>
                       <div className="mt-1 break-all font-mono text-xs text-gray-500">
@@ -202,7 +202,7 @@ export default function ApiKeys() {
                     </div>
                     <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] ${
                       key.status === 'active'
-                        ? 'bg-emerald-500/10 text-emerald-300'
+                        ? 'bg-[#c9a96e]/10 text-[#c9a96e]'
                         : key.status === 'expired'
                           ? 'bg-amber-500/10 text-amber-300'
                           : 'bg-gray-500/10 text-gray-300'

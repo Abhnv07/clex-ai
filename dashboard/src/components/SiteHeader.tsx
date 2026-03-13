@@ -37,7 +37,7 @@ export default function SiteHeader() {
       <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 md:px-12 lg:px-20">
         <a href="https://clex.in/" className="flex items-center gap-1.5 no-underline">
           <span className="text-xl font-bold tracking-widest text-white">CLEX</span>
-          <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
+          <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#c9a96e] shadow-[0_0_10px_rgba(201,169,110,0.8)]" />
         </a>
 
         <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-md lg:flex">
@@ -57,7 +57,7 @@ export default function SiteHeader() {
           ) : user ? (
             <>
               <div className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-gray-300 sm:flex">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                <span className="h-1.5 w-1.5 rounded-full bg-[#c9a96e]" />
                 <span>{user.email || 'Signed in'}</span>
               </div>
               <Link

@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 
-type Tone = 'cyan' | 'emerald' | 'violet' | 'amber';
+type Tone = 'gold' | 'emerald' | 'violet' | 'amber';
 
 const toneClasses: Record<Tone, { badge: string; dot: string }> = {
-  cyan: {
-    badge: 'bg-cyan-500/10 border-cyan-500/30 text-cyan-200',
-    dot: 'bg-cyan-300',
+  gold: {
+    badge: 'bg-[#c9a96e]/10 border-[#c9a96e]/30 text-[#c9a96e]',
+    dot: 'bg-[#c9a96e]',
   },
   emerald: {
     badge: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200',

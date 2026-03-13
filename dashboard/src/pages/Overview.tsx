@@ -104,18 +104,18 @@ export default function Overview() {
   return (
     <div className="space-y-6">
       <PageIntro
-        tone="emerald"
+        tone="gold"
         eyebrow="Overview"
         title="One view for keys, costs, and request health."
         description="This mirrors the CLEX site shell, but every metric on this screen comes from the authenticated backend instead of placeholder dashboard data."
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-6">
-        <StatCard label="Total Requests" value={formatCompactNumber(overview.total_requests)} icon={<Activity size={18} className="text-black" />} color="cyan" />
-        <StatCard label="Total Tokens" value={formatCompactNumber(overview.total_tokens)} subValue={`${formatCompactNumber(overview.prompt_tokens)} in / ${formatCompactNumber(overview.completion_tokens)} out`} icon={<Zap size={18} className="text-black" />} color="emerald" />
+        <StatCard label="Total Requests" value={formatCompactNumber(overview.total_requests)} icon={<Activity size={18} className="text-black" />} color="gold" />
+        <StatCard label="Total Tokens" value={formatCompactNumber(overview.total_tokens)} subValue={`${formatCompactNumber(overview.prompt_tokens)} in / ${formatCompactNumber(overview.completion_tokens)} out`} icon={<Zap size={18} className="text-black" />} color="gold" />
         <StatCard label="Spend" value={formatUsd(overview.total_cost)} icon={<DollarSign size={18} className="text-black" />} color="purple" />
         <StatCard label="Active Keys" value={overview.active_api_keys} icon={<KeyRound size={18} className="text-black" />} color="amber" />
-        <StatCard label="Avg Latency" value={`${overview.avg_duration_ms}ms`} icon={<Clock3 size={18} className="text-black" />} color="cyan" />
+        <StatCard label="Avg Latency" value={`${overview.avg_duration_ms}ms`} icon={<Clock3 size={18} className="text-black" />} color="gold" />
         <StatCard label="Error Rate" value={`${overview.error_rate.toFixed(2)}%`} icon={<AlertTriangle size={18} className="text-black" />} color="amber" />
       </div>
 
@@ -156,7 +156,7 @@ export default function Overview() {
                       <div className="mt-1 text-xs text-gray-500">{timeAgo(request.created_at)}</div>
                     </div>
                     <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] ${
-                      request.status < 300 ? 'bg-emerald-500/10 text-emerald-300' : request.status < 500 ? 'bg-amber-500/10 text-amber-300' : 'bg-red-500/10 text-red-300'
+                      request.status < 300 ? 'bg-[#c9a96e]/10 text-[#c9a96e]' : request.status < 500 ? 'bg-amber-500/10 text-amber-300' : 'bg-red-500/10 text-red-300'
                     }`}>
                       {request.status}
                     </span>
@@ -192,7 +192,7 @@ export default function Overview() {
                   </div>
                   <div className="h-2 overflow-hidden rounded-full bg-white/5">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-emerald-400"
+                      className="h-full rounded-full bg-gradient-to-r from-[#c9a96e] to-[#d4b87a]"
                       style={{ width: `${width}%` }}
                     />
                   </div>
