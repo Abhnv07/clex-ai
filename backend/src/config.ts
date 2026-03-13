@@ -29,7 +29,7 @@ const envSchema = z.object({
 
 export const config = envSchema.parse(process.env);
 
-export const requiredEnvironmentVariables = [] as const;
+export const requiredEnvironmentVariables = ['DATABASE_URL'] as const;
 
 export type ConfigKey = keyof typeof config;
 type RequiredEnvironmentVariable = typeof requiredEnvironmentVariables[number];
