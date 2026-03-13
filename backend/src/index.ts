@@ -83,6 +83,11 @@ app.use((req, _res, next) => {
   next();
 });
 
+// ─── Static Files from public/ ─────────────────────────
+// Serve all files (shared.css, shared.js, etc.) from public/ at the root level
+const publicPath = path.join(__dirname, '..', 'public');
+app.use(express.static(publicPath));
+
 // ─── Dashboard Static Files ────────────────────────────
 // On Vercel, files under public/** are served by the CDN.
 // Keep a local Express fallback so local `npm start` still serves the built dashboard.
