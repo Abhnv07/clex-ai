@@ -7,7 +7,40 @@ import { logger } from '../utils/logger';
 const router = Router();
 router.use(firebaseAuth);
 
-// GET /v1/analytics – Get aggregated analytics
+/**
+ * @swagger
+ * /v1/analytics:
+ *   get:
+ *     summary: Get aggregated analytics
+ *     description: Returns daily usage breakdown, totals, top models, active keys, and recent requests for the authenticated user.
+ *     tags: [Analytics]
+ *     security:
+ *       - FirebaseAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: days
+ *         schema:
+ *           type: integer
+ *           default: 30
+ *           minimum: 1
+ *           maximum: 90
+ *         description: Number of days to look back
+ *     responses:
+ *       200:
+ *         description: Aggregated analytics data
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       429:
+ *         description: Rate limit exceeded
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.get('/', async (req: Request, res: Response) => {
   try {
     const days = Math.min(90, Math.max(1, parseInt(req.query.days as string) || 30));

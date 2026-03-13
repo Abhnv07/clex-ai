@@ -7,7 +7,76 @@ import { logger } from '../utils/logger';
 const router = Router();
 router.use(firebaseAuth);
 
-// GET /v1/usage – Get request logs (paginated)
+/**
+ * @swagger
+ * /v1/usage:
+ *   get:
+ *     summary: Get request logs (paginated)
+ *     description: Returns paginated request logs for the authenticated user. Supports filtering by model, status, and date range.
+ *     tags: [Usage]
+ *     security:
+ *       - FirebaseAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 50
+ *           maximum: 100
+ *       - in: query
+ *         name: model
+ *         schema:
+ *           type: string
+ *         description: Filter by model ID
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: integer
+ *         description: Filter by HTTP status code
+ *       - in: query
+ *         name: from
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         description: Start of date range
+ *       - in: query
+ *         name: to
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         description: End of date range
+ *     responses:
+ *       200:
+ *         description: Paginated usage logs
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/UsageLog'
+ *                 pagination:
+ *                   $ref: '#/components/schemas/Pagination'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       429:
+ *         description: Rate limit exceeded
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.get('/', async (req: Request, res: Response) => {
   try {
     const page = Math.max(1, parseInt(req.query.page as string) || 1);

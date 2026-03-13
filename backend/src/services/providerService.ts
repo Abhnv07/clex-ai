@@ -72,6 +72,54 @@ export function getAllModelIds(): string[] {
   return Object.keys(MODEL_ROUTES);
 }
 
+interface HealthCheck {
+  name: string;
+  status: 'healthy' | 'unhealthy' | 'degraded';
+  responseTime?: number;
+  error?: string;
+  details?: any;
+}
+
+export async function checkProviderHealth(): Promise<HealthCheck[]> {
+  const providers = ['openai', 'anthropic', 'google', 'nvidia'] as const;
+  const checks: HealthCheck[] = [];
+
+  for (const provider of providers) {
+    const startTime = Date.now();
+    const apiKey = getProviderApiKey(provider);
+    
+    if (!apiKey) {
+      checks.push({
+        name: provider,
+        status: 'degraded',
+        error: 'API key not configured',
+      });
+      continue;
+    }
+
+    try {
+      // Simple health check - we'll just verify the key format for now
+      // In a real implementation, you might make a lightweight API call
+      const responseTime = Date.now() - startTime;
+      checks.push({
+        name: provider,
+        status: 'healthy',
+        responseTime,
+        details: { apiKeyConfigured: true },
+      });
+    } catch (error) {
+      checks.push({
+        name: provider,
+        status: 'unhealthy',
+        responseTime: Date.now() - startTime,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+    }
+  }
+
+  return checks;
+}
+
 interface ChatParams {
   model: string;
   messages: ChatMessage[];

@@ -1,0 +1,20 @@
+name = "modihin-temp-mail"
+main = "functions/[[path]].ts"
+compatibility_date = "2025-01-01"
+
+[site]
+bucket = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "modihin-temp-mail"
+database_id = "REPLACE_WITH_YOUR_D1_ID"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "REPLACE_WITH_YOUR_RATE_LIMIT_KV_ID"
+
+[[kv_namespaces]]
+binding = "SESSION_KV"
+id = "REPLACE_WITH_YOUR_SESSION_KV_ID"
+

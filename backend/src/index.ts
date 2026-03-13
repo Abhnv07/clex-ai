@@ -13,6 +13,9 @@ import { logger } from './utils/logger';
 import { requestIdMiddleware } from './middleware/requestId';
 import { errorHandler } from './middleware/errorHandler';
 import { requireConfiguration } from './middleware/requireConfiguration';
+import { perUserRateLimit, tokenQuotaCheck, recordUsage } from './middleware/rateLimit';
+import { securityMiddleware, chatCompletionSecurity, apiKeySecurity, analyticsSecurity } from './middleware/security';
+import { cache } from './utils/cache';
 
 import healthRouter from './routes/health';
 import modelsRouter from './routes/models';
@@ -20,6 +23,9 @@ import chatRouter from './routes/chat';
 import keysRouter from './routes/keys';
 import usageRouter from './routes/usage';
 import analyticsRouter from './routes/analytics';
+import metricsRouter from './routes/metrics';
+import projectsRouter from './routes/projects';
+import docsRouter from './routes/docs';
 
 const app = express();
 
@@ -44,6 +50,9 @@ app.use(cors({
 
 app.use(express.json({ limit: '2mb' }));
 app.use(requestIdMiddleware);
+
+// Apply global security middleware
+app.use(securityMiddleware);
 
 // ─── Rate Limiting ─────────────────────────────────────
 const apiLimiter = rateLimit({
@@ -95,8 +104,11 @@ export function getRootResponse() {
       endpoints: {
         health: 'GET /v1/health',
         models: 'GET /v1/models',
+        metrics: 'GET /v1/metrics',
+        docs: 'GET /docs',
         chat: 'POST /v1/chat/completions',
         keys: 'GET|POST|DELETE /v1/keys',
+        projects: 'GET|POST|PATCH|DELETE /v1/projects',
         usage: 'GET /v1/usage',
         analytics: 'GET /v1/analytics',
       },
@@ -122,14 +134,25 @@ app.get('/', (req, res) => {
 
 app.use('/v1/health', healthRouter);
 app.use('/v1/models', modelsRouter);
+app.use('/v1/metrics', metricsRouter);
+app.use('/docs', docsRouter);
+
+// Apply rate limiting and usage tracking to protected routes
+app.use('/v1/chat/completions', ...chatCompletionSecurity, perUserRateLimit, tokenQuotaCheck, recordUsage);
+app.use('/v1/keys', ...apiKeySecurity, perUserRateLimit, recordUsage);
+app.use('/v1/usage', ...analyticsSecurity, perUserRateLimit, recordUsage);
+app.use('/v1/analytics', ...analyticsSecurity, perUserRateLimit, recordUsage);
+app.use('/v1/projects', ...analyticsSecurity, perUserRateLimit, recordUsage);
+
 app.use(
-  ['/v1/chat/completions', '/v1/keys', '/v1/usage', '/v1/analytics'],
+  ['/v1/chat/completions', '/v1/keys', '/v1/usage', '/v1/analytics', '/v1/projects'],
   requireConfiguration(['DATABASE_URL']),
 );
 app.use('/v1/chat/completions', chatRouter);
 app.use('/v1/keys', keysRouter);
 app.use('/v1/usage', usageRouter);
 app.use('/v1/analytics', analyticsRouter);
+app.use('/v1/projects', projectsRouter);
 
 // ─── Dashboard SPA Fallback ───────────────────────────
 app.get('/dashboard/*', (_req, res) => {
@@ -141,6 +164,11 @@ app.use(errorHandler);
 
 // ─── Start Server ──────────────────────────────────────
 if (require.main === module) {
+  // Initialize cache connection
+  cache.connect().catch(error => {
+    logger.warn({ err: error }, 'Failed to connect to Redis cache - operating without cache');
+  });
+
   app.listen(config.PORT, () => {
     logger.info(`
   ╔═══════════════════════════════════════════╗
@@ -152,10 +180,13 @@ if (require.main === module) {
   ║  Endpoints:                               ║
   ║  • GET  /v1/health                        ║
   ║  • GET  /v1/models                        ║
+  ║  • GET  /v1/metrics                       ║
+  ║  • GET  /docs                             ║
   ║  • POST /v1/chat/completions              ║
   ║  • POST /v1/keys                          ║
   ║  • GET  /v1/usage                         ║
   ║  • GET  /v1/analytics                     ║
+  ║  • CRUD /v1/projects                      ║
   ║                                           ║
   ║  Dashboard: /dashboard                    ║
   ║                                           ║

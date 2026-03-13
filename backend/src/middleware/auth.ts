@@ -24,9 +24,11 @@ export async function apiKeyAuth(req: Request, res: Response, next: NextFunction
   }
 
   try {
-    // Find all active (non-revoked, non-expired) keys and check hash
+    // Optimized lookup: use key prefix to narrow candidates before bcrypt
+    const keyPrefix = rawKey.slice(0, 12);
     const candidates = await prisma.apiKey.findMany({
       where: {
+        keyPrefix,
         revokedAt: null,
         OR: [
           { expiresAt: null },
@@ -58,6 +60,17 @@ export async function apiKeyAuth(req: Request, res: Response, next: NextFunction
 
     req.userId = matched.userId;
     req.apiKeyId = matched.id;
+    req.projectId = matched.projectId;
+
+    // Attach per-key rate limits so downstream middleware can use them
+    if (matched.maxRequestsPerMinute || matched.maxRequestsPerDay || matched.maxTokensPerDay) {
+      req.apiKeyLimits = {
+        maxRequestsPerMinute: matched.maxRequestsPerMinute,
+        maxRequestsPerDay: matched.maxRequestsPerDay,
+        maxTokensPerDay: matched.maxTokensPerDay,
+      };
+    }
+
     next();
   } catch (error) {
     logger.error({ err: error }, 'API key auth error');

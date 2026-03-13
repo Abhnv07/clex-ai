@@ -19,16 +19,61 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  apiKeys  ApiKey[]
-  requests RequestLog[]
-  usage    UsageRecord[]
+  // Rate limiting and quotas
+  rateLimitPerMinute  Int    @default(60) @map("rate_limit_per_minute")
+  rateLimitPerHour    Int    @default(1000) @map("rate_limit_per_hour")
+  rateLimitPerDay     Int    @default(10000) @map("rate_limit_per_day")
+  monthlyTokenLimit   Int?   @map("monthly_token_limit")
+  currentTokenUsage   Int    @default(0) @map("current_token_usage")
+  tokenUsageResetDate DateTime @default(now()) @map("token_usage_reset_date")
+
+  projects   Project[]
+  apiKeys    ApiKey[]
+  requests   RequestLog[]
+  usage      UsageRecord[]
+  quotaUsage UserQuotaUsage[]
 
   @@map("users")
+}
+
+model UserQuotaUsage {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  windowType String  @map("window_type") // 'minute', 'hour', 'day', 'month'
+  windowStart DateTime @map("window_start")
+  requestCount Int    @default(0) @map("request_count")
+  tokenCount   Int    @default(0) @map("token_count")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, windowType, windowStart])
+  @@index([userId, windowType, windowStart])
+  @@map("user_quota_usage")
+}
+
+model Project {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  name        String
+  description String?
+  archivedAt  DateTime? @map("archived_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  user     User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  apiKeys  ApiKey[]
+  requests RequestLog[]
+
+  @@index([userId])
+  @@map("projects")
 }
 
 model ApiKey {
   id        String    @id @default(uuid())
   userId    String    @map("user_id")
+  projectId String?   @map("project_id")
   name      String    @default("Default Key")
   keyHash   String    @unique @map("key_hash")
   keyPrefix String    @map("key_prefix") // first 8 chars for display
@@ -37,18 +82,41 @@ model ApiKey {
   revokedAt DateTime? @map("revoked_at")
   expiresAt DateTime? @map("expires_at")
 
+  // Per-key rate limits (optional overrides; null = use user defaults)
+  maxRequestsPerMinute Int? @map("max_requests_per_minute")
+  maxRequestsPerDay    Int? @map("max_requests_per_day")
+  maxTokensPerDay      Int? @map("max_tokens_per_day")
+
   user     User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project  Project?     @relation(fields: [projectId], references: [id], onDelete: SetNull)
   requests RequestLog[]
+  events   KeyEvent[]
 
   @@index([keyHash])
   @@index([userId])
+  @@index([projectId])
   @@map("api_keys")
+}
+
+model KeyEvent {
+  id        String   @id @default(uuid())
+  apiKeyId  String   @map("api_key_id")
+  action    String   // 'created', 'revoked', 'rotated', 'updated'
+  details   String?
+  ip        String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  apiKey ApiKey @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+
+  @@index([apiKeyId, createdAt])
+  @@map("key_events")
 }
 
 model RequestLog {
   id             String   @id @default(uuid())
   apiKeyId       String?  @map("api_key_id")
   userId         String?  @map("user_id")
+  projectId      String?  @map("project_id")
   model          String
   provider       String
   promptTokens   Int      @default(0) @map("prompt_tokens")
@@ -64,11 +132,13 @@ model RequestLog {
   streaming      Boolean  @default(true)
   createdAt      DateTime @default(now()) @map("created_at")
 
-  apiKey ApiKey? @relation(fields: [apiKeyId], references: [id], onDelete: SetNull)
-  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  apiKey  ApiKey?  @relation(fields: [apiKeyId], references: [id], onDelete: SetNull)
+  user    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  project Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
 
   @@index([userId, createdAt])
   @@index([apiKeyId, createdAt])
+  @@index([projectId, createdAt])
   @@index([createdAt])
   @@index([model])
   @@map("request_logs")

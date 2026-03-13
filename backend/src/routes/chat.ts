@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import { apiKeyAuth } from '../middleware/auth';
 import { config } from '../config';
-import { ValidationError, normalizeProviderError } from '../utils/errors';
+import { AppError, ValidationError, normalizeProviderError } from '../utils/errors';
 import { setSSEHeaders } from '../utils/sse';
 import { logger } from '../utils/logger';
 import {
@@ -29,6 +29,65 @@ const chatSchema = z.object({
   stream: z.boolean().optional(),
 });
 
+/**
+ * @swagger
+ * /v1/chat/completions:
+ *   post:
+ *     summary: Create a chat completion
+ *     description: |
+ *       Send messages to an AI model and receive a response. Supports streaming (SSE) and non-streaming modes.
+ *       All responses are normalized to the OpenAI chat completion format regardless of the upstream provider.
+ *     tags: [Chat]
+ *     security:
+ *       - ApiKeyAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ChatCompletionRequest'
+ *           example:
+ *             model: "openai/gpt-4o"
+ *             messages:
+ *               - role: "user"
+ *                 content: "Hello, how are you?"
+ *             temperature: 0.7
+ *             max_tokens: 1024
+ *             stream: true
+ *     responses:
+ *       200:
+ *         description: Chat completion response (or SSE stream if stream=true)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ChatCompletionResponse'
+ *           text/event-stream:
+ *             description: Server-Sent Events stream of chat completion chunks
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Invalid or missing API key
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       429:
+ *         description: Rate limit or token quota exceeded
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       502:
+ *         description: Upstream provider error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.post('/', apiKeyAuth, async (req: Request, res: Response) => {
   const requestId = req.requestId || uuidv4();
   const startTime = Date.now();
@@ -37,14 +96,10 @@ router.post('/', apiKeyAuth, async (req: Request, res: Response) => {
   const parsed = chatSchema.safeParse(req.body);
   if (!parsed.success) {
     const details = parsed.error.flatten();
-    res.status(400).json({
-      error: {
-        message: `Invalid request: ${Object.values(details.fieldErrors).flat().join(', ')}`,
-        type: 'validation_error',
-        code: 'invalid_request',
-        status: 400,
-      },
-    });
+    const err = new ValidationError(
+      `Invalid request: ${Object.values(details.fieldErrors).flat().join(', ')}`
+    );
+    res.status(err.status).json(err.toJSON());
     return;
   }
 
@@ -83,6 +138,7 @@ router.post('/', apiKeyAuth, async (req: Request, res: Response) => {
         requestId,
         apiKeyId: req.apiKeyId,
         userId: req.userId,
+        projectId: req.projectId,
         model,
         provider,
         promptTokens: estimatePromptTokens(messages),
@@ -120,6 +176,7 @@ router.post('/', apiKeyAuth, async (req: Request, res: Response) => {
         requestId,
         apiKeyId: req.apiKeyId,
         userId: req.userId,
+        projectId: req.projectId,
         model,
         provider,
         promptTokens: estimatedPrompt,
@@ -175,6 +232,7 @@ router.post('/', apiKeyAuth, async (req: Request, res: Response) => {
         requestId,
         apiKeyId: req.apiKeyId,
         userId: req.userId,
+        projectId: req.projectId,
         model,
         provider,
         promptTokens: usage.prompt_tokens,
@@ -203,6 +261,7 @@ router.post('/', apiKeyAuth, async (req: Request, res: Response) => {
       requestId,
       apiKeyId: req.apiKeyId,
       userId: req.userId,
+      projectId: req.projectId,
       model,
       provider,
       promptTokens: estimatePromptTokens(messages),
@@ -217,14 +276,13 @@ router.post('/', apiKeyAuth, async (req: Request, res: Response) => {
 
     if (!res.headersSent) {
       const status = err.status || 500;
-      res.status(status).json({
-        error: {
-          message: err.message || 'Internal server error',
-          type: 'server_error',
-          code: 'internal_error',
-          status,
-        },
-      });
+      const appErr = new AppError(
+        err.message || 'Internal server error',
+        status,
+        'internal_error',
+        'server_error'
+      );
+      res.status(status).json(appErr.toJSON());
     } else if (!res.writableEnded) {
       res.end();
     }

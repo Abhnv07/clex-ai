@@ -6,6 +6,7 @@ interface LogRequestParams {
   requestId: string;
   apiKeyId?: string;
   userId?: string;
+  projectId?: string | null;
   model: string;
   provider: string;
   promptTokens: number;
@@ -28,6 +29,7 @@ export async function logRequest(params: LogRequestParams): Promise<void> {
         requestId: params.requestId,
         apiKeyId: params.apiKeyId || null,
         userId: params.userId || null,
+        projectId: params.projectId || null,
         model: params.model,
         provider: params.provider,
         promptTokens: params.promptTokens,

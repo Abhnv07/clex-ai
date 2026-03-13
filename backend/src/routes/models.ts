@@ -1,5 +1,31 @@
+/**
+ * @swagger
+ * /v1/models:
+ *   get:
+ *     summary: List available models
+ *     description: Returns a list of all available AI models from all providers
+ *     tags: [Models]
+ *     responses:
+ *       200:
+ *         description: List of models retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 object:
+ *                   type: string
+ *                   example: list
+ *                   description: Object type
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Model'
+*/
 import { Router, Request, Response } from 'express';
 import { ModelInfo } from '../types';
+import { getCachedModels, getModelsCacheStatus } from '../services/cachedModelsService';
+import { logger } from '../utils/logger';
 
 const router = Router();
 
@@ -263,37 +289,48 @@ const MODEL_CATALOG: ModelInfo[] = [
   },
 ];
 
-// Cache the response
-let cachedResponse: { data: ModelInfo[]; object: string; timestamp: number } | null = null;
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+router.get('/', async (req: Request, res: Response) => {
+  try {
+    // Get cached models
+    const models = await getCachedModels();
+    
+    // Support filtering
+    const provider = req.query.provider as string | undefined;
+    const capability = req.query.capability as string | undefined;
 
-router.get('/', (_req: Request, res: Response) => {
-  const now = Date.now();
-  if (!cachedResponse || now - cachedResponse.timestamp > CACHE_TTL) {
-    cachedResponse = {
+    let filtered = models;
+
+    if (provider) {
+      filtered = filtered.filter(m => m.provider === provider || m.owned_by === provider);
+    }
+    if (capability) {
+      filtered = filtered.filter(m => m.capabilities.includes(capability) || m.category === capability);
+    }
+
+    // Add cache headers
+    const cacheStatus = await getModelsCacheStatus();
+    res.set({
+      'X-Cache-Status': cacheStatus.cached ? 'HIT' : 'MISS',
+      ...(cacheStatus.lastUpdated && {
+        'X-Cache-Last-Updated': cacheStatus.lastUpdated.toISOString(),
+      }),
+    });
+
+    res.json({
       object: 'list',
-      data: MODEL_CATALOG,
-      timestamp: now,
-    };
+      data: filtered,
+    });
+  } catch (error) {
+    logger.error({ err: error }, 'Failed to get models');
+    res.status(500).json({
+      error: {
+        message: 'Failed to retrieve models',
+        type: 'models_error',
+        code: 'models_fetch_failed',
+        status: 500,
+      },
+    });
   }
-
-  // Support filtering
-  const provider = _req.query.provider as string | undefined;
-  const capability = _req.query.capability as string | undefined;
-
-  let filtered = cachedResponse.data;
-
-  if (provider) {
-    filtered = filtered.filter(m => m.provider === provider || m.owned_by === provider);
-  }
-  if (capability) {
-    filtered = filtered.filter(m => m.capabilities.includes(capability) || m.category === capability);
-  }
-
-  res.json({
-    object: 'list',
-    data: filtered,
-  });
 });
 
 export default router;
