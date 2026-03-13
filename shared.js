@@ -7,6 +7,7 @@ const CLEX_NAV_ITEMS = [
   { key: "platform", href: "index.html", label: "Platform" },
   { key: "models", href: "models.html", label: "Models" },
   { key: "docs", href: "docs.html", label: "Docs" },
+  { key: "api", href: "https://api.clex.in/", label: "API" },
   { key: "playground", href: "playground.html", label: "Playground" },
   { key: "pricing", href: "pricing.html", label: "Pricing" },
   { key: "support", href: "support.html", label: "Support" },
