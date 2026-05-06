@@ -72,6 +72,73 @@ const apiLimiter = rateLimit({
 });
 app.use('/api', apiLimiter);
 
+// ─── In-memory metrics ──────────────────────────────────
+// Lightweight per-route counters used by /api/admin/usage. clex-ai is
+// stateless (no D1 / no DB) so this is the only honest data source we
+// have for the LaunchOps admin dashboard. Resets on every cold start;
+// that's deliberate — anything more durable would mean adding storage
+// just for telemetry.
+const metricsBootedAt = Date.now();
+const metrics = {
+    bootedAt: metricsBootedAt,
+    totalRequests: 0,
+    perRoute: new Map(), // route -> { total, success, errors, lastSeen, bytesOut, latencySum }
+    statusCodes: new Map(), // status -> count
+    providerCalls: new Map(), // provider -> { total, errors }
+};
+function bumpMetric(route, status, latencyMs) {
+    metrics.totalRequests += 1;
+    const r = metrics.perRoute.get(route) || { total: 0, success: 0, errors: 0, lastSeen: 0, latencySum: 0 };
+    r.total += 1;
+    if (status >= 400) r.errors += 1;
+    else r.success += 1;
+    r.lastSeen = Math.floor(Date.now() / 1000);
+    r.latencySum += latencyMs || 0;
+    metrics.perRoute.set(route, r);
+    metrics.statusCodes.set(status, (metrics.statusCodes.get(status) || 0) + 1);
+}
+function bumpProviderCall(provider, ok) {
+    const p = metrics.providerCalls.get(provider) || { total: 0, errors: 0 };
+    p.total += 1;
+    if (!ok) p.errors += 1;
+    metrics.providerCalls.set(provider, p);
+}
+app.use((req, res, next) => {
+    const startedAt = Date.now();
+    res.on('finish', () => {
+        // Group every per-instance route under its template so we don't
+        // explode the map. We only care about the API surface.
+        const route = req.baseUrl + (req.route?.path || req.path);
+        const norm = route.startsWith('/api') || route.startsWith('/v1') || route.startsWith('/health')
+            ? route
+            : null;
+        if (norm) bumpMetric(norm, res.statusCode, Date.now() - startedAt);
+    });
+    next();
+});
+
+// ─── Admin auth ─────────────────────────────────────────
+// Uses CLEX_AI_ADMIN_SECRET (falls back to ADMIN_SECRET if the legacy
+// name is set). Constant-time compare. LaunchOps calls these endpoints
+// server-to-server; the secret never reaches the browser.
+function safeEqual(a, b) {
+    if (typeof a !== 'string' || typeof b !== 'string') return false;
+    if (a.length !== b.length) return false;
+    let mismatch = 0;
+    for (let i = 0; i < a.length; i += 1) mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    return mismatch === 0;
+}
+function requireAdmin(req, res, next) {
+    const expected = process.env.CLEX_AI_ADMIN_SECRET || process.env.ADMIN_SECRET || '';
+    if (!expected) return res.status(401).json({ error: 'Unauthorized' });
+    const provided = req.get('X-Admin-Secret') || '';
+    if (!provided || !safeEqual(provided, expected)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    res.set('Cache-Control', 'private, no-store');
+    next();
+}
+
 // Optional Firebase auth enforcement (ID token verification)
 let firebaseReady = false;
 try {
@@ -560,6 +627,153 @@ app.get('/api/public/summary', (req, res) => {
             models: '/v1/models',
             health: '/api/health',
         },
+    });
+});
+
+// ─── Admin: gateway summary ─────────────────────────────
+// One-shot read for LaunchOps. Surfaces process info, key/provider
+// configuration, and the per-route counters from the in-memory metrics
+// middleware.
+app.get('/api/admin/summary', requireAdmin, (req, res) => {
+    const uptimeMs = Date.now() - metrics.bootedAt;
+    const perRoute = Array.from(metrics.perRoute.entries()).map(([route, r]) => ({
+        route,
+        total: r.total,
+        success: r.success,
+        errors: r.errors,
+        error_rate_pct: r.total > 0 ? Number(((r.errors / r.total) * 100).toFixed(2)) : null,
+        last_seen: r.lastSeen,
+        avg_latency_ms: r.total > 0 ? Math.round(r.latencySum / r.total) : null,
+    })).sort((a, b) => b.total - a.total);
+    const statusCodes = Object.fromEntries(metrics.statusCodes.entries());
+    const providers = Array.from(metrics.providerCalls.entries()).map(([name, p]) => ({
+        provider: name,
+        total: p.total,
+        errors: p.errors,
+        error_rate_pct: p.total > 0 ? Number(((p.errors / p.total) * 100).toFixed(2)) : null,
+    }));
+
+    res.json({
+        service: 'clex-ai',
+        generatedAt: Math.floor(Date.now() / 1000),
+        process: {
+            booted_at: Math.floor(metrics.bootedAt / 1000),
+            uptime_ms: uptimeMs,
+            uptime_seconds: Math.floor(uptimeMs / 1000),
+            node_version: process.version,
+            platform: process.platform,
+            memory_rss_mb: Math.round((process.memoryUsage?.().rss || 0) / 1024 / 1024),
+        },
+        config: {
+            clex_key_configured: !!(process.env.CLEX_API_KEY || process.env.NVIDIA_API_KEY),
+            firebase_admin_ready: firebaseReady,
+            require_auth: process.env.REQUIRE_AUTH === 'true',
+            allowed_origin: process.env.ALLOWED_ORIGIN || null,
+            rate_limit_window_ms: Number(process.env.RATE_LIMIT_WINDOW_MS || 60_000),
+            rate_limit_max: Number(process.env.RATE_LIMIT_MAX || 120),
+            json_body_limit: process.env.JSON_BODY_LIMIT || '1mb',
+            providers: {
+                openai: !!process.env.OPENAI_API_KEY,
+                anthropic: !!process.env.ANTHROPIC_API_KEY,
+                gemini: !!process.env.GEMINI_API_KEY,
+            },
+        },
+        metrics: {
+            total_requests: metrics.totalRequests,
+            per_route: perRoute,
+            status_codes: statusCodes,
+            providers,
+        },
+    });
+});
+
+// ─── Admin: usage breakdown ─────────────────────────────
+// Same shape as /api/admin/summary.metrics but with no surrounding
+// process info — handy when LaunchOps just wants a refresh of the
+// counters without re-rendering the whole panel.
+app.get('/api/admin/usage', requireAdmin, (req, res) => {
+    const perRoute = Array.from(metrics.perRoute.entries()).map(([route, r]) => ({
+        route,
+        total: r.total,
+        success: r.success,
+        errors: r.errors,
+        error_rate_pct: r.total > 0 ? Number(((r.errors / r.total) * 100).toFixed(2)) : null,
+        last_seen: r.lastSeen,
+        avg_latency_ms: r.total > 0 ? Math.round(r.latencySum / r.total) : null,
+    })).sort((a, b) => b.total - a.total);
+
+    res.json({
+        service: 'clex-ai',
+        generatedAt: Math.floor(Date.now() / 1000),
+        booted_at: Math.floor(metrics.bootedAt / 1000),
+        total_requests: metrics.totalRequests,
+        per_route: perRoute,
+        status_codes: Object.fromEntries(metrics.statusCodes.entries()),
+        providers: Array.from(metrics.providerCalls.entries()).map(([name, p]) => ({
+            provider: name,
+            total: p.total,
+            errors: p.errors,
+            error_rate_pct: p.total > 0 ? Number(((p.errors / p.total) * 100).toFixed(2)) : null,
+        })),
+    });
+});
+
+// ─── Admin: extended health ─────────────────────────────
+// Public /api/health stays terse (no auth, cacheable). This admin
+// variant adds boot time, provider configuration, memory + process
+// info, and per-route hit counts so an operator can tell whether a
+// given instance has actually served traffic.
+app.get('/api/admin/health', requireAdmin, (req, res) => {
+    res.json({
+        ok: true,
+        service: 'clex-ai',
+        ts: Math.floor(Date.now() / 1000),
+        version: 'phase-2-admin-api',
+        booted_at: Math.floor(metrics.bootedAt / 1000),
+        uptime_ms: Date.now() - metrics.bootedAt,
+        node_version: process.version,
+        platform: process.platform,
+        memory_rss_mb: Math.round((process.memoryUsage?.().rss || 0) / 1024 / 1024),
+        config: {
+            clex_key_configured: !!(process.env.CLEX_API_KEY || process.env.NVIDIA_API_KEY),
+            firebase_admin_ready: firebaseReady,
+            require_auth: process.env.REQUIRE_AUTH === 'true',
+        },
+        metrics: {
+            total_requests: metrics.totalRequests,
+            per_route_count: metrics.perRoute.size,
+        },
+    });
+});
+
+// ─── Admin: audit (process events) ──────────────────────
+// clex-ai is stateless, so the only audit-worthy events we have are
+// process boot, last admin call, and the recent rate of 4xx/5xx
+// responses. Sufficient for LaunchOps to draw a "recent activity" feed.
+app.get('/api/admin/audit', requireAdmin, (req, res) => {
+    const events = [
+        {
+            type: 'process.boot',
+            ts: Math.floor(metrics.bootedAt / 1000),
+            details: {
+                node_version: process.version,
+                platform: process.platform,
+            },
+        },
+    ];
+    for (const [code, count] of metrics.statusCodes.entries()) {
+        if (code >= 500) {
+            events.push({
+                type: 'response.5xx',
+                ts: Math.floor(Date.now() / 1000),
+                details: { status: code, count },
+            });
+        }
+    }
+    res.json({
+        service: 'clex-ai',
+        generatedAt: Math.floor(Date.now() / 1000),
+        events: events.sort((a, b) => b.ts - a.ts),
     });
 });
 
