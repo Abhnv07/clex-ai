@@ -137,6 +137,36 @@ app.use('/v1/models', modelsRouter);
 app.use('/v1/metrics', metricsRouter);
 app.use('/docs', docsRouter);
 
+app.get(['/api/health', '/health'], (_req, res) => {
+  res.set('Cache-Control', 'public, max-age=10, s-maxage=30');
+  res.json({
+    ok: true,
+    service: 'clex-ai',
+    ts: Math.floor(Date.now() / 1000),
+    version: 'phase-1-public-face',
+    apiBase: 'https://api.ai.clex.in',
+    legacyApiBase: 'https://api.clex.in',
+  });
+});
+
+app.get('/api/public/summary', (_req, res) => {
+  res.set('Cache-Control', 'public, max-age=60, s-maxage=120, stale-while-revalidate=300');
+  res.json({
+    service: 'clex-ai',
+    generatedAt: Math.floor(Date.now() / 1000),
+    gateway: {
+      type: 'openai-compatible',
+      primaryApiBase: 'https://api.ai.clex.in',
+      legacyApiBase: 'https://api.clex.in',
+    },
+    endpoints: {
+      chatCompletions: '/v1/chat/completions',
+      models: '/v1/models',
+      health: '/api/health',
+    },
+  });
+});
+
 // Apply rate limiting and usage tracking to protected routes
 app.use('/v1/chat/completions', ...chatCompletionSecurity, perUserRateLimit, tokenQuotaCheck, recordUsage);
 app.use('/v1/keys', ...apiKeySecurity, perUserRateLimit, recordUsage);
