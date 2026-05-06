@@ -10,13 +10,13 @@ export default function SiteFooter() {
             <span>{`© ${new Date().getFullYear()} clex.in. All rights reserved.`}</span>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-6 font-medium">
-            <a href="https://clex.in/support.html" className="transition-colors hover:text-cyan-300">
+            <a href="https://ai.clex.in/support.html" className="transition-colors hover:text-cyan-300">
               Support
             </a>
-            <a href="https://clex.in/privacy.html" className="transition-colors hover:text-cyan-300">
+            <a href="https://ai.clex.in/privacy.html" className="transition-colors hover:text-cyan-300">
               Privacy Policy
             </a>
-            <a href="https://clex.in/terms.html" className="transition-colors hover:text-cyan-300">
+            <a href="https://ai.clex.in/terms.html" className="transition-colors hover:text-cyan-300">
               Terms of Service
             </a>
           </div>

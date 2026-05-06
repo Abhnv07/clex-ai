@@ -52,13 +52,24 @@ app.use(helmet({
     contentSecurityPolicy: false
 }));
 
+// CORS allow-list. Single ALLOWED_ORIGIN keeps existing behaviour; a
+// comma-separated ALLOWED_ORIGINS allows multiple aliases (api.clex.in,
+// api.ai.clex.in, ai.clex.in dashboard etc.). When neither is set we
+// fall through and allow everything — same as before.
+const corsAllowed = (() => {
+    const list = process.env.ALLOWED_ORIGINS || process.env.ALLOWED_ORIGIN || '';
+    return list
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+})();
+
 app.use(cors({
     origin: (origin, cb) => {
-        const allowed = process.env.ALLOWED_ORIGIN;
         if (!origin) return cb(null, true); // curl / same-origin / server-to-server
-        if (!allowed) return cb(null, true);
-        if (origin === allowed) return cb(null, true);
-        return cb(new Error('CORS blocked by ALLOWED_ORIGIN'));
+        if (corsAllowed.length === 0) return cb(null, true);
+        if (corsAllowed.includes(origin)) return cb(null, true);
+        return cb(new Error('CORS blocked by ALLOWED_ORIGINS'));
     }
 }));
 
@@ -669,6 +680,7 @@ app.get('/api/admin/summary', requireAdmin, (req, res) => {
             firebase_admin_ready: firebaseReady,
             require_auth: process.env.REQUIRE_AUTH === 'true',
             allowed_origin: process.env.ALLOWED_ORIGIN || null,
+            allowed_origins: corsAllowed.length ? corsAllowed : null,
             rate_limit_window_ms: Number(process.env.RATE_LIMIT_WINDOW_MS || 60_000),
             rate_limit_max: Number(process.env.RATE_LIMIT_MAX || 120),
             json_body_limit: process.env.JSON_BODY_LIMIT || '1mb',

@@ -110,7 +110,7 @@ export default function Login() {
         <main className="flex flex-1 items-center justify-center px-6 pb-12 pt-28">
           <div className="w-full max-w-[460px]">
             <div className="mb-10 text-center">
-              <a href="https://clex.in/" className="mb-6 inline-flex items-center gap-2 no-underline">
+              <a href="https://ai.clex.in/" className="mb-6 inline-flex items-center gap-2 no-underline">
                 <span className="text-3xl font-bold tracking-widest text-white">CLEX</span>
                 <div className="h-2 w-2 animate-pulse rounded-full bg-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.8)]" />
               </a>

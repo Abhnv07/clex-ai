@@ -1,4 +1,11 @@
-name = "modihin-temp-mail"
+# UNUSED — leftover scaffold. The live Clex AI deployment is the root
+# server.js on Vercel (api.ai.clex.in / api.clex.in). This wrangler.toml
+# was originally copy-pasted from the modih repo and the database/KV ids
+# below are still placeholders.
+#
+# Renamed to `clex-ai-frontend-unused` so a stray `wrangler deploy` from
+# this folder cannot collide with the modih production worker.
+name = "clex-ai-frontend-unused"
 main = "functions/[[path]].ts"
 compatibility_date = "2025-01-01"
 
@@ -7,14 +14,13 @@ bucket = "dist"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "modihin-temp-mail"
-database_id = "REPLACE_WITH_YOUR_D1_ID"
+database_name = "clex-ai-frontend-unused"
+database_id = "REPLACE_BEFORE_DEPLOY"
 
 [[kv_namespaces]]
 binding = "RATE_LIMIT_KV"
-id = "REPLACE_WITH_YOUR_RATE_LIMIT_KV_ID"
+id = "REPLACE_BEFORE_DEPLOY"
 
 [[kv_namespaces]]
 binding = "SESSION_KV"
-id = "REPLACE_WITH_YOUR_SESSION_KV_ID"
-
+id = "REPLACE_BEFORE_DEPLOY"

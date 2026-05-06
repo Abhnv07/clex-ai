@@ -22,7 +22,14 @@ const envSchema = z.object({
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().catch(60_000).default(60_000),
   RATE_LIMIT_MAX_REQUESTS: z.coerce.number().int().positive().catch(120).default(120),
 
-  ALLOWED_ORIGINS: z.string().catch('https://clex.in,https://www.clex.in,https://api.clex.in,http://localhost:3000,http://localhost:5173').default('https://clex.in,https://www.clex.in,https://api.clex.in,http://localhost:3000,http://localhost:5173'),
+  // Defaults include both the legacy api.clex.in and the new
+  // ai.clex.in / api.ai.clex.in / www.ai.clex.in aliases so the dashboard
+  // can call the API regardless of which hostname Vercel is currently
+  // serving the request on. clex.in (file-transfer product) is *not*
+  // here — only AI surfaces.
+  ALLOWED_ORIGINS: z.string()
+    .catch('https://api.clex.in,https://ai.clex.in,https://www.ai.clex.in,https://api.ai.clex.in,http://localhost:3000,http://localhost:5173')
+    .default('https://api.clex.in,https://ai.clex.in,https://www.ai.clex.in,https://api.ai.clex.in,http://localhost:3000,http://localhost:5173'),
 
   PROVIDER_TIMEOUT_MS: z.coerce.number().int().positive().catch(60_000).default(60_000),
 });

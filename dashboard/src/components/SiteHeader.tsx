@@ -3,13 +3,17 @@ import { Link, useLocation } from 'react-router-dom';
 
 import { useAuth } from '../context/AuthContext';
 
+// Dashboard nav points to the Clex AI marketing site (ai.clex.in), not
+// clex.in (the file-transfer product). The dashboard itself ships next to
+// the API at api.ai.clex.in/dashboard, so these are external links to the
+// public site.
 const navItems = [
-  { href: 'https://clex.in/', label: 'Platform' },
-  { href: 'https://clex.in/models.html', label: 'Models' },
-  { href: 'https://clex.in/docs.html', label: 'Docs' },
-  { href: 'https://clex.in/playground.html', label: 'Playground' },
-  { href: 'https://clex.in/pricing.html', label: 'Pricing' },
-  { href: 'https://clex.in/support.html', label: 'Support' },
+  { href: 'https://ai.clex.in/', label: 'Platform' },
+  { href: 'https://ai.clex.in/models.html', label: 'Models' },
+  { href: 'https://ai.clex.in/docs.html', label: 'Docs' },
+  { href: 'https://ai.clex.in/playground.html', label: 'Playground' },
+  { href: 'https://ai.clex.in/pricing.html', label: 'Pricing' },
+  { href: 'https://ai.clex.in/support.html', label: 'Support' },
 ];
 
 export default function SiteHeader() {
@@ -35,7 +39,7 @@ export default function SiteHeader() {
       ].join(' ')}
     >
       <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 md:px-12 lg:px-20">
-        <a href="https://clex.in/" className="flex items-center gap-1.5 no-underline">
+        <a href="https://ai.clex.in/" className="flex items-center gap-1.5 no-underline">
           <span className="text-xl font-bold tracking-widest text-white">CLEX</span>
           <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#c9a96e] shadow-[0_0_10px_rgba(201,169,110,0.8)]" />
         </a>
@@ -76,7 +80,7 @@ export default function SiteHeader() {
                 Sign Out
               </button>
               <a
-                href="https://clex.in/docs.html#getting-started"
+                href="https://ai.clex.in/docs.html#getting-started"
                 className="rounded-full border border-white/20 bg-white/10 px-5 py-2 text-sm font-medium text-white no-underline transition-all hover:bg-white hover:text-black"
               >
                 API Docs
@@ -91,7 +95,7 @@ export default function SiteHeader() {
                 Sign In
               </Link>
               <a
-                href="https://clex.in/docs.html#getting-started"
+                href="https://ai.clex.in/docs.html#getting-started"
                 className="rounded-full border border-white/20 bg-white/10 px-5 py-2 text-sm font-medium text-white no-underline transition-all hover:bg-white hover:text-black"
               >
                 Get Started

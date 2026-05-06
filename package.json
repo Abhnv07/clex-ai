@@ -1,7 +1,7 @@
 {
-  "name": "clex-api",
+  "name": "clex-ai-api",
   "version": "2.0.0",
-  "description": "CLEX.in - The Ultimate AI Wrapper API",
+  "description": "Clex AI — OpenAI-compatible AI gateway. Served at api.ai.clex.in (alias: api.clex.in).",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

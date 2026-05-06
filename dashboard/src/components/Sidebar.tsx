@@ -67,11 +67,11 @@ export default function Sidebar() {
       </div>
 
       <div className="mt-4 flex flex-col gap-1 border-t border-white/5 px-1 pt-4">
-        <a href="https://clex.in/docs.html" target="_blank" rel="noreferrer" className="dashboard-utility-link">
+        <a href="https://ai.clex.in/docs.html" target="_blank" rel="noreferrer" className="dashboard-utility-link">
           <ExternalLink size={16} />
           <span>API Docs</span>
         </a>
-        <a href="https://clex.in" target="_blank" rel="noreferrer" className="dashboard-utility-link">
+        <a href="https://ai.clex.in" target="_blank" rel="noreferrer" className="dashboard-utility-link">
           <ExternalLink size={16} />
           <span>clex.in</span>
         </a>
