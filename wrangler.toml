@@ -1,0 +1,56 @@
+# Cloudflare Pages config for ai.clex.in
+#
+# Layout:
+#   ./functions/        -> Pages Functions (server-side TS)
+#   ./public_assets/    -> static site root (built from repo root + dashboard + admin)
+#   ./migrations/       -> D1 migration SQL
+#
+# Domains expected to be wired up in dash.cloudflare.com:
+#   ai.clex.in            -> this Pages project (custom domain)
+#   api.ai.clex.in        -> alias of ai.clex.in (Pages Function /api/* answers both)
+#
+# Never redirects to clex.in. clex.in is a separate Cloudflare project.
+name = "clex-ai"
+compatibility_date = "2025-04-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "./public_assets"
+
+# ─── D1 ────────────────────────────────────────────────────
+# Created in account caaede3eeaf98e784d6573d4d03abfca via REST.
+# Migrations live at ./migrations and are applied with:
+#   curl -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+#     "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/d1/database/<uuid>/raw" ...
+[[d1_databases]]
+binding = "DB"
+database_name = "clex-ai"
+database_id = "e6e97690-7a12-4b2c-837b-f7d2216a6e48"
+
+# ─── KV: rate-limit + daily-quota counters ─────────────────
+# Sliding minute window:  rate:<key_hash>:<minute_floor>  -> count
+# Daily quota:            quota:<key_hash>:<utc_yyyymmdd> -> count
+# User-cache:             user:<key_hash>                 -> json blob
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "d1ca6321922e4aafb420da7021034697"
+
+# ─── KV: short-lived sessions ──────────────────────────────
+# Admin session:          admin_sess:<sid> -> { ip, ua, expires, methods[] }
+# Passkey challenges:     pk_chal:<sid>    -> base64 challenge
+[[kv_namespaces]]
+binding = "SESSION_KV"
+id = "8eb2197ff88b4d9c919cdafd807cbfcc"
+
+# ─── Vars (non-secret) ─────────────────────────────────────
+[vars]
+APP_ENV = "production"
+ALLOWED_ORIGINS = "https://ai.clex.in,https://api.ai.clex.in,https://www.ai.clex.in"
+PUBLIC_APP_URL = "https://ai.clex.in"
+PUBLIC_API_URL = "https://api.ai.clex.in"
+NVIDIA_UPSTREAM_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
+FIREBASE_PROJECT_ID = "clex-in"
+
+# ─── Secrets (set with `wrangler pages secret put NAME --project-name clex-ai`) ───
+# CLEX_API_KEY                  Upstream NVIDIA NIM key (server-side, never exposed)
+# CLEX_AI_ADMIN_SECRET          Admin password (rotate this on Cloudflare to change it)
+# WEBAUTHN_RP_ID                Relying-party id, e.g. "ai.clex.in"
+# WEBAUTHN_RP_NAME              "Clex AI"

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guide - RAG Setup | CLEX</title>
+    <meta
+      name="description"
+      content="Starter guide for retrieval-augmented generation (RAG) using CLEX embedding and chat model routing."
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="shared.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <!-- Social Preview Tags -->
+    <meta property="og:title" content="Guide - RAG Setup | CLEX" />
+    <meta property="og:description" content="Starter guide for retrieval-augmented generation (RAG) using CLEX embedding and chat model routing." />
+    <meta property="og:image" content="https://clex.in/preview.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Guide - RAG Setup | CLEX" />
+    <meta name="twitter:description" content="Starter guide for retrieval-augmented generation (RAG) using CLEX embedding and chat model routing." />
+    <meta name="twitter:image" content="https://clex.in/preview.png" />
+</head>
+  <body class="min-h-screen relative">
+    <canvas id="particle-canvas"></canvas>
+    <div class="relative z-10 flex flex-col min-h-screen">
+      <div data-clex-header data-page="docs"></div>
+
+      <main class="flex-1 max-w-[900px] mx-auto w-full px-6 md:px-10 pt-36 pb-20">
+        <section class="glass-card rounded-2xl p-8 md:p-10">
+          <p class="label-caps mb-3">Guide</p>
+          <h1 class="text-3xl md:text-4xl text-white mb-4 display-serif">RAG <span class="display-serif-italic" style="color:#c9a96e">Setup</span></h1>
+          <p class="text-[#888] leading-relaxed mb-6">
+            Build a simple retrieval pipeline that embeds documents, indexes vectors, and injects top-k context into
+            CLEX chat completions.
+          </p>
+          <div class="space-y-4 text-sm text-gray-300">
+            <p>1. Chunk documents and create embeddings for each chunk.</p>
+            <p>2. Store vectors in your preferred database with metadata.</p>
+            <p>3. At query time, embed the user prompt and fetch top-k chunks.</p>
+            <p>4. Compose a grounded prompt and stream final response from a chat model.</p>
+          </div>
+          <a href="docs.html#tutorials" class="inline-flex mt-8 text-[#c9a96e] hover:text-[#e0c9a0] no-underline">Back to Docs</a>
+        </section>
+      </main>
+
+      <div data-clex-footer></div>
+    </div>
+
+    <script src="models-data.js"></script>
+    <script src="shared.js?v=4"></script>
+  </body>
+</html>

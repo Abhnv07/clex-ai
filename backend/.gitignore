@@ -1,6 +1,0 @@
-node_modules/
-dist/
-public/dashboard/
-.env
-*.log
-.DS_Store

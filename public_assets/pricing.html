@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pricing — CLEX</title>
+    <meta name="description" content="Plans for the Clex AI gateway. Start free, upgrade to Starter or Pro for higher rate limits." />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="shared.css" />
+
+    <link rel="icon" type="image/png" href="favicon.png" />
+
+    <!-- Social Preview Tags -->
+    <meta property="og:title" content="Pricing — CLEX" />
+    <meta property="og:description" content="Plans for the Clex AI gateway. Start free, upgrade to Starter or Pro for higher rate limits." />
+    <meta property="og:image" content="https://ai.clex.in/preview.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Pricing — CLEX" />
+    <meta name="twitter:description" content="Plans for the Clex AI gateway. Start free, upgrade to Starter or Pro for higher rate limits." />
+    <meta name="twitter:image" content="https://ai.clex.in/preview.png" />
+  </head>
+
+  <body class="min-h-screen relative">
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="relative z-10 flex flex-col min-h-screen">
+      <div data-clex-header data-page="pricing" data-cta-href="login.html" data-cta-label="Sign In"></div>
+
+      <main class="flex-1 flex flex-col max-w-[1200px] mx-auto w-full px-6 md:px-12 lg:px-16 pt-40 pb-20 z-10">
+        <div class="text-center mb-16">
+          <p class="label-caps mb-4">Plans &amp; pricing</p>
+          <h1 class="text-4xl md:text-5xl lg:text-6xl text-white mb-6 display-serif">
+            Simple plans for <span class="display-serif-italic" style="color:#c9a96e">every builder</span>
+          </h1>
+          <p class="text-[#888] text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+            Start on the free tier. Upgrade when you need more headroom. No hidden fees, no per-token surprises.
+          </p>
+        </div>
+
+        <!-- Plan grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-20">
+          <!-- Free -->
+          <div class="glass-card rounded-2xl p-8 border border-white/[0.04] flex flex-col">
+            <p class="label-caps mb-3">Free</p>
+            <div class="flex items-baseline gap-2 mb-6">
+              <span class="text-5xl text-white display-serif">$0</span>
+              <span class="text-[#888] text-sm">/ month</span>
+            </div>
+            <p class="text-[#888] text-sm leading-relaxed mb-6">
+              For prototyping and personal projects. Generous enough to get a real demo running.
+            </p>
+            <ul class="space-y-3 mb-8 text-sm text-[#aaa]">
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 mt-0.5 text-[#c9a96e] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span><strong class="text-white">20</strong> requests / day</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 mt-0.5 text-[#c9a96e] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span><strong class="text-white">1</strong> request / minute burst</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 mt-0.5 text-[#c9a96e] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span>Access to every model in the catalogue</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 mt-0.5 text-[#c9a96e] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span>Unlimited <code class="font-mono text-xs text-[#c9a96e]">clex_*</code> API keys</span>
+              </li>
+            </ul>
+            <a href="login.html" class="mt-auto inline-flex items-center justify-center gap-2 text-sm font-semibold px-5 py-3 rounded-full bg-white/[0.06] border border-white/[0.08] text-white hover:bg-white/[0.1] hover:border-white/[0.15] transition-all no-underline">
+              Start free
+            </a>
+          </div>
+
+          <!-- Starter -->
+          <div class="glass-card rounded-2xl p-8 border border-[#c9a96e]/20 flex flex-col relative overflow-hidden">
+            <div class="absolute top-4 right-4 text-[10px] font-bold tracking-[0.2em] uppercase text-[#c9a96e]/80 bg-[#c9a96e]/[0.08] border border-[#c9a96e]/20 rounded-full px-3 py-1">Coming soon</div>
+            <p class="label-caps mb-3" style="color:#c9a96e">Starter</p>
+            <div class="flex items-baseline gap-2 mb-6">
+              <span class="text-5xl text-white display-serif">$2</span>
+              <span class="text-[#888] text-sm">/ month</span>
+            </div>
+            <p class="text-[#888] text-sm leading-relaxed mb-6">
+              For early-stage products and indie apps that need a steady drip of traffic.
+            </p>
+            <ul class="space-y-3 mb-8 text-sm text-[#aaa]">
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 mt-0.5 text-[#c9a96e] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span><strong class="text-white">200</strong> requests / day</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 mt-0.5 text-[#c9a96e] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span><strong class="text-white">5</strong> requests / minute burst</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 mt-0.5 text-[#c9a96e] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span>Everything in Free</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 mt-0.5 text-[#c9a96e] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span>Priority email support</span>
+              </li>
+            </ul>
+            <button type="button" disabled class="mt-auto inline-flex items-center justify-center gap-2 text-sm font-semibold px-5 py-3 rounded-full bg-[#c9a96e]/[0.08] border border-[#c9a96e]/30 text-[#c9a96e] cursor-not-allowed opacity-80">
+              Coming soon
+            </button>
+          </div>
+
+          <!-- Pro -->
+          <div class="glass-card rounded-2xl p-8 border border-white/[0.04] flex flex-col relative overflow-hidden">
+            <div class="absolute top-4 right-4 text-[10px] font-bold tracking-[0.2em] uppercase text-[#c9a96e]/80 bg-[#c9a96e]/[0.08] border border-[#c9a96e]/20 rounded-full px-3 py-1">Coming soon</div>
+            <p class="label-caps mb-3">Pro</p>
+            <div class="flex items-baseline gap-2 mb-6">
+              <span class="text-5xl text-white display-serif">$5</span>
+              <span class="text-[#888] text-sm">/ month</span>
+            </div>
+            <p class="text-[#888] text-sm leading-relaxed mb-6">
+              For teams with real traffic. Comfortable headroom and burst capacity.
+            </p>
+            <ul class="space-y-3 mb-8 text-sm text-[#aaa]">
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 mt-0.5 text-[#c9a96e] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span><strong class="text-white">2,000</strong> requests / day</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 mt-0.5 text-[#c9a96e] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span><strong class="text-white">20</strong> requests / minute burst</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 mt-0.5 text-[#c9a96e] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span>Everything in Starter</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-4 h-4 mt-0.5 text-[#c9a96e] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span>Direct line for incident escalation</span>
+              </li>
+            </ul>
+            <button type="button" disabled class="mt-auto inline-flex items-center justify-center gap-2 text-sm font-semibold px-5 py-3 rounded-full bg-[#c9a96e]/[0.08] border border-[#c9a96e]/30 text-[#c9a96e] cursor-not-allowed opacity-80">
+              Coming soon
+            </button>
+          </div>
+        </div>
+
+        <!-- Note -->
+        <div class="glass-card rounded-2xl p-8 mb-20 border border-white/[0.04]">
+          <p class="label-caps mb-3">A note on billing</p>
+          <p class="text-[#888] leading-relaxed text-sm md:text-base">
+            We&rsquo;re running Clex AI on a hand-curated basis right now &mdash; every account starts on the
+            Free plan, and Starter / Pro upgrades are granted manually by the operator while we finish
+            the billing pipeline. Want a paid tier today? Reach out at
+            <a href="mailto:hello@clex.in" class="text-[#c9a96e] hover:text-[#e0c9a0]">hello@clex.in</a>
+            and we&rsquo;ll bump you up.
+          </p>
+        </div>
+      </main>
+
+      <div data-clex-footer></div>
+    </div>
+
+    <script src="models-data.js"></script>
+    <script src="shared.js?v=5"></script>
+  </body>
+</html>

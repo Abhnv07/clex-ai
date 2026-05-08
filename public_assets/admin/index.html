@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Clex AI · Admin</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./admin.css" />
+  </head>
+  <body>
+    <div id="auth-screen" class="auth-screen">
+      <div class="auth-card">
+        <div class="auth-mark">
+          <span class="auth-mark-line">Clex AI</span>
+          <span class="auth-mark-italic">control room.</span>
+        </div>
+        <p class="auth-sub">
+          Restricted area. Sign in with the admin secret or a registered passkey.
+        </p>
+
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="password">Password</button>
+          <button class="auth-tab" data-tab="passkey">Passkey</button>
+        </div>
+
+        <form id="auth-password-form" class="auth-form">
+          <label for="auth-secret">Admin secret</label>
+          <input
+            id="auth-secret"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Enter CLEX_AI_ADMIN_SECRET"
+            required
+          />
+          <button class="btn-gold" type="submit">Continue</button>
+        </form>
+
+        <div id="auth-passkey-pane" class="auth-form" hidden>
+          <button id="passkey-login-btn" class="btn-gold" type="button">
+            Use a passkey
+          </button>
+          <p class="hint">
+            A platform passkey must be registered on this device first via the
+            password tab → Passkeys section.
+          </p>
+        </div>
+
+        <div id="auth-error" class="auth-error" hidden></div>
+      </div>
+    </div>
+
+    <div id="shell" class="shell" hidden>
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">
+            <span class="brand-line">Clex AI</span>
+            <span class="brand-italic">admin.</span>
+          </div>
+          <div id="session-meta" class="session-meta"></div>
+        </div>
+
+        <nav class="nav">
+          <button class="nav-item active" data-route="overview">
+            <span class="nav-dot"></span>Overview
+          </button>
+          <button class="nav-item" data-route="users">
+            <span class="nav-dot"></span>Users
+          </button>
+          <button class="nav-item" data-route="feeds">
+            <span class="nav-dot"></span>Live feed
+          </button>
+          <button class="nav-item" data-route="audit">
+            <span class="nav-dot"></span>Audit log
+          </button>
+          <button class="nav-item" data-route="passkeys">
+            <span class="nav-dot"></span>Passkeys
+          </button>
+        </nav>
+
+        <button id="logout-btn" class="btn-ghost">Sign out</button>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <p class="kicker">Clex AI control</p>
+            <h1 id="page-title" class="page-title">
+              <span class="page-title-base">Operator </span>
+              <span class="page-title-italic">overview</span>
+            </h1>
+          </div>
+          <div id="page-actions" class="page-actions"></div>
+        </header>
+
+        <div id="route-overview" class="route">
+          <div id="overview-stats" class="stat-grid"></div>
+          <div class="grid-2col">
+            <div class="card">
+              <div class="card-head">
+                <h3 class="card-title">Recent signups</h3>
+              </div>
+              <div id="overview-signups" class="list"></div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <h3 class="card-title">Recent admin sign-ins</h3>
+              </div>
+              <div id="overview-logins" class="list"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h3 class="card-title">Last 30 days · API calls</h3>
+            </div>
+            <div id="overview-spark" class="spark"></div>
+          </div>
+        </div>
+
+        <div id="route-users" class="route" hidden>
+          <div class="filters">
+            <input
+              id="users-q"
+              type="search"
+              placeholder="Search by email, name, id…"
+            />
+            <select id="users-plan">
+              <option value="">All plans</option>
+              <option value="free">Free</option>
+              <option value="starter">Starter</option>
+              <option value="pro">Pro</option>
+              <option value="developer">Developer</option>
+            </select>
+            <button id="users-refresh" class="btn-ghost">Refresh</button>
+          </div>
+          <div id="users-table" class="card table"></div>
+          <div class="pager">
+            <button id="users-prev" class="btn-ghost">Prev</button>
+            <span id="users-page-info"></span>
+            <button id="users-next" class="btn-ghost">Next</button>
+          </div>
+        </div>
+
+        <div id="route-feeds" class="route" hidden>
+          <div class="grid-2col">
+            <div class="card">
+              <div class="card-head">
+                <h3 class="card-title">API calls</h3>
+              </div>
+              <div id="feeds-calls" class="list"></div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <h3 class="card-title">Key creations</h3>
+              </div>
+              <div id="feeds-keys" class="list"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h3 class="card-title">IP log</h3>
+            </div>
+            <div id="feeds-ips" class="list"></div>
+          </div>
+        </div>
+
+        <div id="route-audit" class="route" hidden>
+          <div class="grid-2col">
+            <div class="card">
+              <div class="card-head">
+                <h3 class="card-title">Password log</h3>
+              </div>
+              <div id="audit-passwords" class="list"></div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <h3 class="card-title">Passkey log</h3>
+              </div>
+              <div id="audit-passkeys" class="list"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h3 class="card-title">Plan changes</h3>
+            </div>
+            <div id="audit-plans" class="list"></div>
+          </div>
+        </div>
+
+        <div id="route-passkeys" class="route" hidden>
+          <div class="card">
+            <div class="card-head">
+              <h3 class="card-title">Registered passkeys</h3>
+              <button id="passkey-register" class="btn-gold">
+                Register a passkey on this device
+              </button>
+            </div>
+            <div id="passkeys-list" class="list"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div id="user-modal" class="modal" hidden>
+      <div class="modal-card">
+        <div class="modal-head">
+          <div>
+            <p class="kicker">User detail</p>
+            <h2 id="user-modal-title" class="page-title">
+              <span class="page-title-base">User </span>
+              <span class="page-title-italic">profile</span>
+            </h2>
+          </div>
+          <button id="user-modal-close" class="btn-ghost">Close</button>
+        </div>
+        <div id="user-modal-body" class="modal-body"></div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" hidden></div>
+    <script src="./admin.js" defer></script>
+  </body>
+</html>
