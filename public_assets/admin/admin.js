@@ -94,6 +94,14 @@ function showAuthScreen() {
   document.getElementById("shell").hidden = true;
   document.getElementById("auth-screen").hidden = false;
   document.getElementById("auth-error").hidden = true;
+  closeUserModal();
+}
+
+function closeUserModal() {
+  const modal = document.getElementById("user-modal");
+  if (modal) modal.hidden = true;
+  const body = document.getElementById("user-modal-body");
+  if (body) body.innerHTML = "";
 }
 
 function showShell() {
@@ -638,17 +646,24 @@ async function openUserModal(id) {
       }
     });
   } catch (err) {
+    if (err.message === "session_expired") {
+      // showAuthScreen() already hid the modal — surface the reason via toast
+      // so the user understands why they got bounced back to sign-in.
+      toast("Session expired. Please sign in again.", "error");
+      return;
+    }
     body.innerHTML = `<div class="auth-error">Failed: ${escapeHtml(err.message)}</div>`;
   }
 }
 
 function bindUserModal() {
-  document.getElementById("user-modal-close").addEventListener("click", () => {
-    document.getElementById("user-modal").hidden = true;
-  });
+  document.getElementById("user-modal-close").addEventListener("click", closeUserModal);
   document.getElementById("user-modal").addEventListener("click", (e) => {
-    if (e.target.id === "user-modal") {
-      document.getElementById("user-modal").hidden = true;
+    if (e.target.id === "user-modal") closeUserModal();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !document.getElementById("user-modal").hidden) {
+      closeUserModal();
     }
   });
 }
