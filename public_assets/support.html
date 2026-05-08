@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support — CLEX</title>
+  <meta name="description" content="Get help with your CLEX API integration. Contact support, read FAQs, or join our community." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="shared.css" />
+
+  <link rel="icon" type="image/png" href="favicon.png" />
+    <!-- Social Preview Tags -->
+    <meta property="og:title" content="Support — CLEX" />
+    <meta property="og:description" content="Get help with your CLEX API integration. Contact support, read FAQs, or join our community." />
+    <meta property="og:image" content="https://clex.in/preview.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Support — CLEX" />
+    <meta name="twitter:description" content="Get help with your CLEX API integration. Contact support, read FAQs, or join our community." />
+    <meta name="twitter:image" content="https://clex.in/preview.png" />
+</head>
+
+<body class="min-h-screen relative">
+  <canvas id="particle-canvas"></canvas>
+
+  <div class="relative z-10 flex flex-col min-h-screen">
+    <div data-clex-header data-page="support"></div>
+
+    <main class="flex-1 flex flex-col max-w-[1200px] mx-auto w-full px-6 md:px-12 lg:px-20 pt-40 pb-24 z-10">
+      <div class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl text-white mb-6 display-serif">
+          How can we <span class="display-serif-italic" style="color:#c9a96e">help?</span>
+        </h1>
+        <p class="text-[#888] text-lg max-w-2xl mx-auto leading-relaxed">
+          Search through our frequently asked questions, join the developer
+          community, or get in touch below.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <!-- FAQ Section -->
+        <div class="lg:col-span-7 space-y-4">
+          <h2 class="text-2xl text-white mb-6 display-serif">Frequently Asked Questions</h2>
+
+          <details
+            class="group bg-white/[0.02] border border-white/[0.06] rounded-2xl open:bg-white/[0.04] transition-all duration-300">
+            <summary
+              class="flex justify-between items-center font-semibold cursor-pointer p-6 text-white focus:outline-none rounded-2xl">
+              How do I switch from raw OpenAI to CLEX?
+              <span
+                class="text-[#c9a96e] group-open:rotate-45 transition-transform duration-300 text-2xl leading-none">+</span>
+            </summary>
+            <div class="text-sm text-gray-400 px-6 pb-6 leading-relaxed">
+              It's as simple as swapping the base URL to
+              <code class="text-[#c9a96e]">https://api.clex.in/v1</code> and
+              passing in your CLEX API key. All endpoints are 100% compatible
+              with the standard OpenAI SDK format.
+            </div>
+          </details>
+
+          <details
+            class="group bg-white/[0.02] border border-white/[0.06] rounded-2xl open:bg-white/[0.04] transition-all duration-300">
+            <summary
+              class="flex justify-between items-center font-semibold cursor-pointer p-6 text-white focus:outline-none rounded-2xl">
+              Will you have access to my user data or prompts?
+              <span
+                class="text-[#c9a96e] group-open:rotate-45 transition-transform duration-300 text-2xl leading-none">+</span>
+            </summary>
+            <div class="text-sm text-gray-400 px-6 pb-6 leading-relaxed">
+              We are zero-retention by default for prompt/response content in
+              the proxy path. Requests are routed through CLEX with
+              low-latency overhead.
+            </div>
+          </details>
+
+          <details
+            class="group bg-white/[0.02] border border-white/[0.06] rounded-2xl open:bg-white/[0.04] transition-all duration-300">
+            <summary
+              class="flex justify-between items-center font-semibold cursor-pointer p-6 text-white focus:outline-none rounded-2xl">
+              What happens if a model drops offline?
+              <span
+                class="text-[#c9a96e] group-open:rotate-45 transition-transform duration-300 text-2xl leading-none">+</span>
+            </summary>
+            <div class="text-sm text-gray-400 px-6 pb-6 leading-relaxed">
+              Our unified API automatically routes your request to a fallback
+              cluster running identical weights (e.g. falling back from Meta's
+              Llama cluster to NVIDIA's) when available. This reduces, but
+              does not eliminate, the chance of user-visible disruption.
+            </div>
+          </details>
+
+          <details
+            class="group bg-white/[0.02] border border-white/[0.06] rounded-2xl open:bg-white/[0.04] transition-all duration-300">
+            <summary
+              class="flex justify-between items-center font-semibold cursor-pointer p-6 text-white focus:outline-none rounded-2xl">
+              Can I get custom rate limits for production workloads?
+              <span
+                class="text-[#c9a96e] group-open:rotate-45 transition-transform duration-300 text-2xl leading-none">+</span>
+            </summary>
+            <div class="text-sm text-gray-400 px-6 pb-6 leading-relaxed">
+              Yes. Please reach out to
+              <a href="mailto:support@abhnv.in"
+                class="text-[#c9a96e] hover:text-[#e0c9a0] underline">support@abhnv.in</a>
+              with your expected TPS (Tokens per Second) and concurrency
+              requirements. We can provision dedicated VPC endpoints.
+            </div>
+          </details>
+
+          <div
+            class="mt-8 p-6 bg-[#c9a96e]/5 border border-[#c9a96e]/10 rounded-2xl flex items-center justify-between group">
+            <div>
+              <h3 class="text-white font-semibold mb-1">Community</h3>
+              <p class="text-xs text-gray-400">
+                Community channel invite will be published soon.
+              </p>
+            </div>
+            <span
+              class="px-5 py-2.5 bg-white/5 border border-white/10 text-gray-400 font-semibold rounded-xl text-sm">Coming
+              soon</span>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="lg:col-span-5">
+          <div class="glass-card rounded-3xl p-8 sticky top-32 border border-white/[0.06]">
+            <h2 class="text-2xl text-white mb-2 display-serif">Contact Us</h2>
+            <p class="text-[#888] text-sm mb-6">
+              Send us a message directly from here.
+            </p>
+
+            <form id="contact-form" class="space-y-4">
+              <div>
+                <label for="name"
+                  class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Name</label>
+                <input type="text" id="name" required
+                  class="w-full bg-[#050505]/50 border border-white/[0.06] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#c9a96e]/30 transition-colors"
+                  placeholder="Abhinav Raj" />
+              </div>
+              <div>
+                <label for="email" class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Email
+                  address</label>
+                <input type="email" id="email" required
+                  class="w-full bg-[#050505]/50 border border-white/[0.06] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#c9a96e]/30 transition-colors"
+                  placeholder="abhinav@clex.in" />
+              </div>
+              <div>
+                <label for="message"
+                  class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Message</label>
+                <textarea id="message" rows="4" required
+                  class="w-full bg-[#050505]/50 border border-white/[0.06] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#c9a96e]/30 transition-colors resize-none"
+                  placeholder="I have a question about..."></textarea>
+              </div>
+              <button type="submit"
+                class="w-full bg-[#c9a96e] text-black font-bold py-3.5 px-4 rounded-xl transition-all hover:bg-[#d4b87a] mt-2 hover:shadow-[0_0_20px_rgba(201,169,110,0.3)]">
+                Send Message
+              </button>
+            </form>
+            <div id="form-success"
+              class="hidden mt-4 p-3 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 rounded-lg text-sm text-center">
+              Thanks! We have received your message.
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div data-clex-footer></div>
+  </div>
+
+  <script src="shared.js?v=4"></script>
+  <script>
+    document
+      .getElementById("contact-form")
+      ?.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const message = document.getElementById("message").value.trim();
+
+        if (!name || !email || !message) return;
+
+        const subject = encodeURIComponent(`[CLEX Support] Message from ${name}`);
+        const body = encodeURIComponent(
+          `Name: ${name}\nEmail: ${email}\n\n${message}`
+        );
+
+        // Open mailto link to send directly to support email
+        window.location.href = `mailto:abhinav@abhnv.in?subject=${subject}&body=${body}`;
+
+        // Also try to POST to server-side endpoint as backup
+        fetch("/api/support/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, message }),
+        }).catch(() => { });
+
+        // Show success state
+        e.target.style.display = "none";
+        document.getElementById("form-success").classList.remove("hidden");
+      });
+  </script>
+</body>
+
+</html>
