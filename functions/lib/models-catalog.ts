@@ -2,9 +2,8 @@
 // Server-side mirror of public_assets/models-data.js. Used by /v1/models.
 //
 // AUTO-GENERATED from the live NVIDIA /v1/models list.
-// Re-run: python3 tools/build-models-data.py + a quick script to regen this
-// if NVIDIA adds or deprecates models. The credit cost is owned by
-// lib/credits.ts (MODEL_CREDIT_COST) — do not duplicate it here.
+// Re-run tools/build-models-data.py + this script to refresh.
+// The credit cost is owned by lib/credits.ts (MODEL_CREDIT_COST).
 // ═══════════════════════════════════════════════════════════════════════════
 
 export interface ClexModel {
@@ -447,7 +446,7 @@ export const CLEX_MODELS: ClexModel[] = [
     name: "kimi-k2-thinking",
     publisher: "Moonshot",
     use: "Moonshot Kimi K2 Thinking \u2014 chain-of-thought reasoning.",
-    category: "reasoning",
+    category: "text",
     nvidiaId: "moonshotai/kimi-k2-thinking",
   },
   {
@@ -796,7 +795,7 @@ export const CLEX_MODELS: ClexModel[] = [
   {
     name: "glm4.7",
     publisher: "Z.ai",
-    use: "Z.ai GLM 4.7 \u2014 premium reasoning.",
+    use: "Z.ai GLM 4.7 \u2014 flagship reasoning.",
     category: "text",
     nvidiaId: "z-ai/glm4.7",
   },

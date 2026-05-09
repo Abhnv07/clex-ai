@@ -97,7 +97,7 @@ window.CLEX_MODELS = window.CLEX_MODELS || [
     name: "kimi-k2-thinking",
     publisher: "Moonshot",
     use: "Moonshot Kimi K2 Thinking \u2014 chain-of-thought reasoning.",
-    category: "reasoning",
+    category: "text",
     nvidiaId: "moonshotai/kimi-k2-thinking",
     credits: 10,
   },
@@ -179,6 +179,14 @@ window.CLEX_MODELS = window.CLEX_MODELS || [
     use: "Z.ai GLM 5.1 \u2014 newest flagship.",
     category: "text",
     nvidiaId: "z-ai/glm-5.1",
+    credits: 10,
+  },
+  {
+    name: "glm4.7",
+    publisher: "Z.ai",
+    use: "Z.ai GLM 4.7 \u2014 flagship reasoning.",
+    category: "text",
+    nvidiaId: "z-ai/glm4.7",
     credits: 10,
   },
   {
@@ -267,14 +275,6 @@ window.CLEX_MODELS = window.CLEX_MODELS || [
     use: "Stockmark 2 100B \u2014 premium Japanese-tuned.",
     category: "text",
     nvidiaId: "stockmark/stockmark-2-100b-instruct",
-    credits: 5,
-  },
-  {
-    name: "glm4.7",
-    publisher: "Z.ai",
-    use: "Z.ai GLM 4.7 \u2014 premium reasoning.",
-    category: "text",
-    nvidiaId: "z-ai/glm4.7",
     credits: 5,
   },
   {

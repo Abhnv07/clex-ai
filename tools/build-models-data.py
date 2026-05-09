@@ -40,7 +40,7 @@ OVERRIDES = {
     "moonshotai/kimi-k2.6":
         (10, "text", "Moonshot Kimi K2.6 — flagship long-context reasoning."),
     "moonshotai/kimi-k2-thinking":
-        (10, "reasoning", "Moonshot Kimi K2 Thinking — chain-of-thought reasoning."),
+        (10, "text", "Moonshot Kimi K2 Thinking — chain-of-thought reasoning."),
     "deepseek-ai/deepseek-v4-pro":
         (10, "text", "DeepSeek V4 Pro — frontier reasoning + coding."),
     "deepseek-ai/deepseek-v4-flash":
@@ -80,7 +80,7 @@ OVERRIDES = {
     "moonshotai/kimi-k2-instruct":
         (5, "text", "Moonshot Kimi K2 Instruct — premium long-context."),
     "z-ai/glm4.7":
-        (5, "text", "Z.ai GLM 4.7 — premium reasoning."),
+        (10, "text", "Z.ai GLM 4.7 — flagship reasoning."),
     "z-ai/glm5":
         (5, "text", "Z.ai GLM 5 — premium reasoning + agentic."),
     "qwen/qwen3.5-122b-a10b":
