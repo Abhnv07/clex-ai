@@ -10,7 +10,7 @@
     />
 
     <!-- IDE owns the full viewport — no Tailwind, no marketing chrome. -->
-    <link rel="stylesheet" href="playground.css?v=6" />
+    <link rel="stylesheet" href="playground.css?v=7" />
     <link rel="icon" type="image/png" href="favicon.png" />
 
     <meta property="og:title" content="Playground — Clex AI" />
@@ -166,10 +166,29 @@
       <a class="ide-menu-item ide-menu-item--btn" href="/dashboard#signout" id="topbar-signout-link">Sign out</a>
     </div>
 
+    <!-- ───────────────────── MOBILE TAB BAR ─────────────────────
+         Visible only at <= 820px. Lets the user switch between Files /
+         Editor / Chat / Preview when there's no room for the full grid.
+    -->
+    <nav class="ide-mobile-tabs" id="ide-mobile-tabs" role="tablist" aria-label="Workspace pane">
+      <button class="ide-mobile-tab is-active" data-mobile-pane="files" role="tab" aria-selected="true">
+        Files
+      </button>
+      <button class="ide-mobile-tab" data-mobile-pane="editor" role="tab">
+        Code
+      </button>
+      <button class="ide-mobile-tab" data-mobile-pane="chat" role="tab">
+        AI
+      </button>
+      <button class="ide-mobile-tab" data-mobile-pane="dock" role="tab">
+        Preview
+      </button>
+    </nav>
+
     <!-- ───────────────────── MAIN GRID ───────────────────── -->
     <main class="ide-main" id="ide-main">
       <!-- Files explorer -->
-      <aside class="ide-pane ide-pane--files" id="ide-files-pane">
+      <aside class="ide-pane ide-pane--files" id="ide-files-pane" data-mobile-pane="files">
         <header class="ide-pane-header">
           <span class="ide-pane-title">
             <svg class="ide-pane-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -198,8 +217,19 @@
         </div>
       </aside>
 
+      <!-- Splitter: files | editor -->
+      <div
+        class="ide-splitter ide-splitter--col"
+        id="ide-splitter-files"
+        role="separator"
+        aria-orientation="vertical"
+        aria-controls="ide-files-pane"
+        tabindex="0"
+        title="Drag to resize the file tree"
+      ></div>
+
       <!-- Editor -->
-      <section class="ide-pane ide-pane--editor">
+      <section class="ide-pane ide-pane--editor" data-mobile-pane="editor">
         <header class="ide-pane-header ide-pane-header--tabs">
           <div id="editor-tabs" class="ide-tabs" role="tablist"></div>
           <div class="ide-pane-actions">
@@ -226,8 +256,19 @@
         </div>
       </section>
 
+      <!-- Splitter: editor | chat -->
+      <div
+        class="ide-splitter ide-splitter--col"
+        id="ide-splitter-chat"
+        role="separator"
+        aria-orientation="vertical"
+        aria-controls="ide-chat-pane"
+        tabindex="0"
+        title="Drag to resize the AI chat"
+      ></div>
+
       <!-- AI chat -->
-      <section class="ide-pane ide-pane--chat">
+      <section class="ide-pane ide-pane--chat" id="ide-chat-pane" data-mobile-pane="chat">
         <div class="ide-chat-modes" role="tablist" aria-label="Assistant mode">
           <button type="button" class="ide-mode-tab is-active" data-mode="ask" role="tab" aria-selected="true">
             Ask <span class="ide-mode-tab-key">⌘1</span>
@@ -295,8 +336,19 @@
       </section>
     </main>
 
+    <!-- Splitter: main | dock -->
+    <div
+      class="ide-splitter ide-splitter--row"
+      id="ide-splitter-dock"
+      role="separator"
+      aria-orientation="horizontal"
+      aria-controls="ide-dock"
+      tabindex="0"
+      title="Drag to resize the preview / console"
+    ></div>
+
     <!-- ──────────────────── BOTTOM DOCK ──────────────────── -->
-    <section class="ide-dock" id="ide-dock">
+    <section class="ide-dock" id="ide-dock" data-mobile-pane="dock">
       <div class="ide-dock-strip">
         <button class="ide-dock-tab active" data-dock="preview" role="tab" aria-selected="true">
           Preview <span class="ide-dock-url" id="preview-url">(not running)</span>
@@ -332,8 +384,8 @@
       </div>
     </section>
 
-    <script src="models-data.js?v=2"></script>
+    <script src="models-data.js?v=3"></script>
     <script src="shared.js?v=9"></script>
-    <script type="module" src="playground.js?v=5"></script>
+    <script type="module" src="playground.js?v=6"></script>
   </body>
 </html>

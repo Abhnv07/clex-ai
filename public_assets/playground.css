@@ -41,7 +41,11 @@ body.ide-body {
   text-rendering: optimizeLegibility;
 
   display: grid;
-  grid-template-rows: var(--topbar-h) minmax(0, 1fr) var(--dock-h);
+  grid-template-rows:
+    var(--topbar-h)
+    minmax(0, 1fr)
+    var(--splitter-h)
+    var(--dock-h);
   grid-template-columns: 100%;
   height: 100vh;
   height: 100dvh;
@@ -86,6 +90,9 @@ body.ide-body {
   --chat-w: 400px;
   --dock-h: 240px;
   --dock-h-collapsed: 36px;
+  --splitter-w: 4px;
+  --splitter-h: 4px;
+  --mobile-tabs-h: 40px;
 
   --shadow-pop: 0 12px 40px rgba(0, 0, 0, 0.6);
   --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.02), 0 4px 20px rgba(0, 0, 0, 0.4);
@@ -502,7 +509,12 @@ body.ide-body {
 .ide-main {
   grid-row: 2;
   display: grid;
-  grid-template-columns: var(--files-w) minmax(0, 1fr) var(--chat-w);
+  grid-template-columns:
+    var(--files-w)
+    var(--splitter-w)
+    minmax(0, 1fr)
+    var(--splitter-w)
+    var(--chat-w);
   min-height: 0;
   background: var(--ide-bg);
 }
@@ -1204,7 +1216,7 @@ body.ide-body {
 /* ───── Bottom dock ───── */
 
 .ide-dock {
-  grid-row: 3;
+  grid-row: 4;
   display: flex;
   flex-direction: column;
   background: var(--ide-bg-1);
@@ -1217,7 +1229,11 @@ body.ide-body {
 }
 
 body.ide-body:has(.ide-dock.is-collapsed) {
-  grid-template-rows: var(--topbar-h) minmax(0, 1fr) var(--dock-h-collapsed);
+  grid-template-rows:
+    var(--topbar-h)
+    minmax(0, 1fr)
+    var(--splitter-h)
+    var(--dock-h-collapsed);
 }
 
 .ide-dock-strip {
@@ -1528,5 +1544,184 @@ body.ide-body:has(.ide-dock.is-collapsed) {
   /* keep auth visible even when topbar-right collapses */
   .ide-topbar-right .ide-auth {
     margin-left: auto;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Splitters — drag handles between Files | Editor | Chat and above the dock.
+   The narrow visible band is 4px; we widen the hit-target with a transparent
+   ::before pseudo-element so it's easy to grab without making the layout
+   look chunky.
+   ─────────────────────────────────────────────────────────────────────── */
+
+.ide-splitter {
+  position: relative;
+  background: var(--ide-border);
+  transition: background 0.12s ease;
+  flex: 0 0 auto;
+}
+
+.ide-splitter::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+}
+
+.ide-splitter--col {
+  width: var(--splitter-w);
+  height: 100%;
+  cursor: col-resize;
+}
+.ide-splitter--col::before {
+  inset: 0 -3px;
+}
+
+.ide-splitter--row {
+  grid-row: 3;
+  width: 100%;
+  height: var(--splitter-h);
+  cursor: row-resize;
+}
+.ide-splitter--row::before {
+  inset: -3px 0;
+}
+
+.ide-splitter:hover,
+.ide-splitter:focus-visible,
+.ide-splitter.is-dragging {
+  background: var(--ide-accent);
+  outline: none;
+}
+
+body.is-resizing,
+body.is-resizing * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+body.is-resizing--row,
+body.is-resizing--row * {
+  cursor: row-resize !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Mobile tab bar (visible <= 820px). We hide it on desktop with display:none
+   in the base block and re-enable it under the breakpoint.
+   ─────────────────────────────────────────────────────────────────────── */
+
+.ide-mobile-tabs {
+  display: none;
+  grid-row: 2;
+}
+
+.ide-mobile-tab {
+  flex: 1 1 0;
+  height: var(--mobile-tabs-h);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ide-muted);
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+.ide-mobile-tab.is-active {
+  color: var(--ide-accent);
+  border-bottom-color: var(--ide-accent);
+  background: rgba(201, 169, 110, 0.06);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   AI chat input — make it noticeably taller and grow with content. The user
+   complaint was "the chatting toggle should be big enough"; we cap at 40 % of
+   viewport height so a long prompt has room without burying the thread.
+   ─────────────────────────────────────────────────────────────────────── */
+
+.ide-chat-input {
+  min-height: 96px;
+  max-height: 40vh;
+  resize: vertical;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+/* ───── Mobile (≤ 820px) — single-pane swap via .ide-mobile-tabs ───── */
+
+@media (max-width: 820px) {
+  body.ide-body {
+    /* topbar | mobile-tabs | active pane (no dock row, the dock is one of the
+       tabbable panes when in mobile mode) */
+    grid-template-rows:
+      var(--topbar-h)
+      var(--mobile-tabs-h)
+      minmax(0, 1fr);
+  }
+
+  .ide-mobile-tabs {
+    display: flex;
+    align-items: stretch;
+    background: var(--ide-bg-1);
+    border-bottom: 1px solid var(--ide-border);
+  }
+
+  .ide-main {
+    grid-row: 3;
+    grid-template-columns: 1fr;
+  }
+
+  .ide-pane,
+  .ide-dock {
+    display: none;
+  }
+
+  body[data-mobile-pane="files"] .ide-pane--files,
+  body[data-mobile-pane="editor"] .ide-pane--editor,
+  body[data-mobile-pane="chat"] .ide-pane--chat,
+  body[data-mobile-pane="dock"] .ide-dock {
+    display: flex;
+    grid-row: 3;
+  }
+
+  body[data-mobile-pane="dock"] .ide-dock {
+    grid-row: 3;
+    height: 100%;
+  }
+
+  /* Hide the desktop column splitters and the dock splitter on mobile */
+  .ide-splitter--col,
+  .ide-splitter--row {
+    display: none;
+  }
+
+  .ide-topbar-center {
+    display: none;
+  }
+
+  .ide-topbar-right {
+    gap: 6px;
+  }
+
+  /* Bigger touch targets */
+  .ide-btn,
+  .ide-icon-btn {
+    min-height: 36px;
+  }
+
+  .ide-chat-input {
+    min-height: 120px;
+  }
+}
+
+/* ───── Tablet (820–1100px) — keep all 3 panes but narrower sidebars ───── */
+
+@media (min-width: 821px) and (max-width: 1100px) {
+  :root {
+    --files-w: 200px;
+    --chat-w: 320px;
   }
 }

@@ -1,3 +1,5 @@
 .env
+.dev.vars
+.wrangler/
 node_modules/
 clex-in-firebase-adminsdk-*

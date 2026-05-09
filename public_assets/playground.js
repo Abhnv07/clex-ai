@@ -37,6 +37,7 @@ import { css } from "https://esm.sh/@codemirror/lang-css@6.3.1";
 import { json } from "https://esm.sh/@codemirror/lang-json@6.0.1";
 
 import { attachPlaygroundAuth } from "./playground-auth.js";
+import { initPlaygroundLayout } from "./playground-layout.js";
 
 const $ = (id) => document.getElementById(id);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
@@ -821,16 +822,18 @@ function loadModels() {
   // Group models by tier and emit grouped <optgroup>s, sorted by credit cost.
   const tiers = {
     1: { label: "1 cr — small / utility", models: [] },
-    2: { label: "2 cr — medium", models: [] },
+    2: { label: "2 cr — standard", models: [] },
     3: { label: "3 cr — large", models: [] },
     5: { label: "5 cr — premium", models: [] },
+    10: { label: "10 cr — flagship", models: [] },
+    15: { label: "15 cr — frontier (multimodal)", models: [] },
   };
   for (const m of models) {
     const tier = tiers[m.credits] || tiers[1];
     tier.models.push(m);
   }
   els.modelInput.innerHTML = "";
-  for (const credits of [1, 2, 3, 5]) {
+  for (const credits of [1, 2, 3, 5, 10, 15]) {
     const tier = tiers[credits];
     if (!tier.models.length) continue;
     const grp = document.createElement("optgroup");
@@ -1375,6 +1378,7 @@ setMode("ask");
 updateContextHint();
 updateApiKeyLabel();
 setStatus("idle", "Idle");
+initPlaygroundLayout();
 
 // ───── Firebase auth + auto-key (kills the "Missing clex API key" 401) ─────
 
