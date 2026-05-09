@@ -7,17 +7,21 @@
 // Tiers — pick by model size / class. Anything not in the explicit map below
 // falls back to DEFAULT_MODEL_COST so adding a new model never breaks the API.
 //
-//   1 credit  →  small / utility / embedding / safety / rerank (≤ ~9B)
-//   2 credits →  mid-size text & code (~10–35B, plus small MoE A3B)
-//   3 credits →  big dense or 49–123B + 80B-A3B thinking
-//   5 credits →  premium 200B+ MoE, 250B+ dense, multimodal video
+//   1 credit   →  small / utility / embedding / safety / rerank (≤ ~9B)
+//   2 credits  →  mid-size text & code (~10–35B, plus small MoE A3B)
+//   3 credits  →  big dense or 49–123B + 80B-A3B thinking
+//   5 credits  →  premium 200B+ MoE, 250B+ dense, multimodal video
+//   10 credits →  flagship frontier reasoning (Kimi K2.5/2.6, DeepSeek V3.2,
+//                 Qwen3.5 397B, Llama-3.1 405B)
+//   15 credits →  multimodal frontier (image-edit, lipsync, video gen,
+//                 vision-heavy 100B+ MoE)
 //
 // Keep this in sync with public_assets/models-data.js (which advertises the
 // same number under each model's `credits` field). The server is the source
 // of truth — clients can be slightly out of date without breaking quotas.
 // ═══════════════════════════════════════════════════════════════════════════
 
-export type CreditCost = 1 | 2 | 3 | 5;
+export type CreditCost = 1 | 2 | 3 | 5 | 10 | 15;
 
 export const DEFAULT_MODEL_COST: CreditCost = 1;
 
@@ -25,21 +29,35 @@ export const DEFAULT_MODEL_COST: CreditCost = 1;
 // upstream (e.g. "qwen/qwen3-coder-480b-a35b-instruct"). Lookups are case-
 // insensitive — see creditCostFor().
 export const MODEL_CREDIT_COST: Record<string, CreditCost> = {
+  // ── 15 credits — multimodal frontier (image edit, lipsync, video) ──────
+  'qwen/qwen-image-edit': 15,
+  'qwen/qwen-image': 15,
+  'sync/lipsync-2': 15,
+  'meta/llama-4-maverick-17b-128e-instruct': 15,
+
+  // ── 10 credits — flagship frontier reasoning ───────────────────────────
+  'moonshotai/kimi-k2.5': 10,
+  'moonshotai/kimi-k2.6': 10,
+  'moonshotai/kimi-k2-instruct-0905': 10,
+  'moonshotai/kimi-k2-thinking': 10,
+  'qwen/qwen3.5-397b-a17b': 10,
+  'qwen/qwen3-coder-480b-a35b-instruct': 10,
+  'deepseek-ai/deepseek-v3.1': 10,
+  'deepseek-ai/deepseek-v3.1-terminus': 10,
+  'deepseek-ai/deepseek-v3.2': 10,
+  'deepseek-ai/deepseek-v4': 10,
+  'meta/llama-3.1-405b-instruct': 10,
+  'nvidia/llama-3.1-nemotron-ultra-253b-v1': 10,
+  'minimaxai/minimax-m2.5': 10,
+  'zhipuai/glm4.7': 10,
+  'zhipuai/glm-4.7': 10,
+
   // ── 5 credits — premium 200B+ MoE / 250B+ dense / multimodal vision ────
   'moonshotai/kimi-k2-instruct': 5,
-  'moonshotai/kimi-k2-instruct-0905': 5,
-  'moonshotai/kimi-k2.5': 5,
-  'qwen/qwen3.5-397b-a17b': 5,
-  'qwen/qwen3-coder-480b-a35b-instruct': 5,
-  'deepseek-ai/deepseek-v3.1': 5,
-  'deepseek-ai/deepseek-v3.1-terminus': 5,
-  'deepseek-ai/deepseek-v3.2': 5,
-  'meta/llama-4-maverick-17b-128e-instruct': 5,
-  'nvidia/llama-3.1-nemotron-ultra-253b-v1': 5,
-  'meta/llama-3.1-405b-instruct': 5,
   'mistralai/mixtral-8x22b-instruct-v0.1': 5,
   'igenius/colosseum-355b-instruct-16k': 5,
   'abacusai/dracarys-llama-3.1-70b-instruct': 5,
+  'minimaxai/minimax-m2.1': 5,
 
   // ── 3 credits — large 49–123B / 80B-A3B thinking / multimodal vision ──
   'qwen/qwen3.5-122b-a10b': 3,
@@ -113,6 +131,10 @@ export function creditTierName(cost: CreditCost): string {
       return 'Large';
     case 5:
       return 'Premium';
+    case 10:
+      return 'Flagship';
+    case 15:
+      return 'Frontier';
   }
 }
 
@@ -129,7 +151,9 @@ export function pricingSnapshot(): {
       { cost: 1, label: 'Cheap', description: '≤9B params · utility / safety / embedding / rerank' },
       { cost: 2, label: 'Standard', description: '10–35B + small MoE-A3B · everyday text & code' },
       { cost: 3, label: 'Large', description: '49–123B + 80B-A3B thinking · heavier reasoning & long context' },
-      { cost: 5, label: 'Premium', description: '200B+ MoE / 250B+ dense / multimodal video' },
+      { cost: 5, label: 'Premium', description: '200B+ MoE / 250B+ dense · agentic + long context' },
+      { cost: 10, label: 'Flagship', description: 'Frontier reasoning · Kimi K2.5+, DeepSeek V3.2+, Qwen3.5 397B, Llama 405B' },
+      { cost: 15, label: 'Frontier', description: 'Multimodal frontier · image edit, lipsync, video gen, vision-heavy MoE' },
     ],
     models: Object.entries(MODEL_CREDIT_COST)
       .map(([model, cost]) => ({ model, cost }))
