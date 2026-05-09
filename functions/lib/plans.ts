@@ -8,11 +8,15 @@ import type { PlanTier, PlanDuration, UserRow } from './types';
 import { nowSeconds } from './ids';
 
 export interface PlanLimits {
+  // Per-minute burst protection. Counts *requests*, not credits, so a user
+  // can't hammer upstream NVIDIA regardless of which model they call.
   perMinute: number;
-  perDay: number;
+  // Daily credit budget. Each /api/chat call charges credits per the
+  // model's tier (see lib/credits.ts) and rolls over at 00:00 UTC.
+  creditsPerDay: number;
   // Maximum number of *active* clex_* API keys a user on this tier may hold.
-  // `Infinity` means uncapped (Pro / Developer); JSON serialises this as `null`
-  // and the dashboard renders "Unlimited" when the field is null/Infinity.
+  // `Infinity` means uncapped (Developer); JSON serialises this as `null` and
+  // the dashboard renders "Unlimited" when the field is null/Infinity.
   maxActiveKeys: number;
 }
 
@@ -21,10 +25,10 @@ export interface PlanLimits {
 export const UNLIMITED_KEYS_SENTINEL = 1_000_000;
 
 export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
-  free: { perMinute: 1, perDay: 20, maxActiveKeys: 1 },
-  starter: { perMinute: 5, perDay: 200, maxActiveKeys: 5 },
-  pro: { perMinute: 10, perDay: 1000, maxActiveKeys: 20 },
-  developer: { perMinute: 60, perDay: 100000, maxActiveKeys: UNLIMITED_KEYS_SENTINEL },
+  free: { perMinute: 1, creditsPerDay: 100, maxActiveKeys: 1 },
+  starter: { perMinute: 5, creditsPerDay: 500, maxActiveKeys: 5 },
+  pro: { perMinute: 10, creditsPerDay: 2000, maxActiveKeys: 20 },
+  developer: { perMinute: 60, creditsPerDay: 1_000_000, maxActiveKeys: UNLIMITED_KEYS_SENTINEL },
 };
 
 export function isUnlimitedKeys(limit: number): boolean {
@@ -47,7 +51,7 @@ export const PLAN_CATALOG: PlanCatalogEntry[] = [
     monthlyUsd: 0,
     comingSoon: false,
     limits: PLAN_LIMITS.free,
-    blurb: '20 requests / day · 1 / minute · 1 API key. Great for trying Clex AI.',
+    blurb: '100 credits / day · 1 req / minute · 1 API key. Great for trying Clex AI.',
   },
   {
     tier: 'starter',
@@ -55,7 +59,7 @@ export const PLAN_CATALOG: PlanCatalogEntry[] = [
     monthlyUsd: 2,
     comingSoon: true,
     limits: PLAN_LIMITS.starter,
-    blurb: '200 requests / day · 5 / minute · 5 API keys. Side projects and prototyping.',
+    blurb: '500 credits / day · 5 req / minute · 5 API keys. Side projects and prototyping.',
   },
   {
     tier: 'pro',
@@ -63,7 +67,7 @@ export const PLAN_CATALOG: PlanCatalogEntry[] = [
     monthlyUsd: 5,
     comingSoon: true,
     limits: PLAN_LIMITS.pro,
-    blurb: '1000 requests / day · 10 / minute · 20 API keys. Production workloads.',
+    blurb: '2,000 credits / day · 10 req / minute · 20 API keys. Production workloads.',
   },
 ];
 

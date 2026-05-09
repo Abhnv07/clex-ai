@@ -36,7 +36,16 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     {
       today: utcDayStamp(),
       daily: daily.results || [],
-      live: { minute: usage.minute, day: usage.day, limits: usage.limits, tier: usage.tier },
+      live: {
+        minute: usage.minute,
+        credits_today: usage.creditsToday,
+        credits_remaining: Math.max(0, usage.limits.creditsPerDay - usage.creditsToday),
+        credits_per_day: usage.limits.creditsPerDay,
+        per_minute: usage.limits.perMinute,
+        resets_at: usage.resetsAt,
+        limits: usage.limits,
+        tier: usage.tier,
+      },
     },
     {},
     request,

@@ -346,20 +346,47 @@ async function loadKeysData(force = false) {
   return cachedKeys;
 }
 
+let cachedPricing = null;
+async function loadPricing(force = false) {
+  if (cachedPricing && !force) return cachedPricing;
+  // /api/credits/pricing is public — no auth header needed.
+  const res = await fetch("/api/credits/pricing");
+  if (!res.ok) throw new Error(`pricing ${res.status}`);
+  cachedPricing = await res.json();
+  return cachedPricing;
+}
+
+async function loadHealth() {
+  // /api/health returns { status: "ok", ... } when upstream + DB are happy.
+  const res = await fetch("/api/health", { cache: "no-store" });
+  if (!res.ok) {
+    return { status: "down", http_status: res.status };
+  }
+  try {
+    return await res.json();
+  } catch {
+    return { status: "ok" };
+  }
+}
+
 // ─────────── Overview ───────────
 
 async function loadOverview() {
   try {
-    const [me, usage, keys] = await Promise.all([
+    const [me, usage, keys, pricing, health] = await Promise.all([
       loadMe(),
       loadUsageData(),
       loadKeysData(),
+      loadPricing().catch(() => null),
+      loadHealth().catch(() => null),
     ]);
     renderAccountMeta(me);
+    renderApiStatus(me, usage, health);
     renderOverviewStats(me, usage, keys);
     renderOverviewPlan(me, usage);
     renderOverviewRecent(usage);
     renderSpark($("#overview-spark"), (usage.daily || []).slice(-14));
+    renderModelPricing(pricing);
   } catch (err) {
     toast("Couldn't load overview: " + err.message, "error");
   }
@@ -376,15 +403,41 @@ function renderAccountMeta(me) {
 
 function liveSnapshot(me, usage) {
   const live = (usage && usage.live) || {};
+  const planLimits = (me && me.plan && me.plan.limits) || {};
+  const meUsage = (me && me.usage) || {};
   const minute =
-    typeof live.minute === "number" ? live.minute : me.usage.minute;
-  const day = typeof live.day === "number" ? live.day : me.usage.day;
-  return { minute, day };
+    typeof live.minute === "number" ? live.minute : meUsage.minute || 0;
+  const creditsToday =
+    typeof live.credits_today === "number"
+      ? live.credits_today
+      : typeof meUsage.credits_today === "number"
+        ? meUsage.credits_today
+        : 0;
+  const creditsPerDay =
+    typeof live.credits_per_day === "number"
+      ? live.credits_per_day
+      : typeof planLimits.credits_per_day === "number"
+        ? planLimits.credits_per_day
+        : 0;
+  const creditsRemaining = Math.max(0, creditsPerDay - creditsToday);
+  const resetsAt =
+    typeof live.resets_at === "number"
+      ? live.resets_at
+      : typeof meUsage.resets_at === "number"
+        ? meUsage.resets_at
+        : null;
+  return { minute, creditsToday, creditsPerDay, creditsRemaining, resetsAt };
 }
 
 function renderOverviewStats(me, usage, keys) {
   const limits = me.plan.limits;
-  const { minute, day } = liveSnapshot(me, usage);
+  const { minute, creditsToday, creditsPerDay, creditsRemaining } = liveSnapshot(
+    me,
+    usage,
+  );
+  const totalRequestsToday = (usage.daily || [])
+    .filter((d) => d.day === usage.today)
+    .reduce((acc, d) => acc + (d.requests || 0), 0);
   const activeKeys = (keys || []).filter((k) => !k.revoked_at).length;
   const stats = [
     {
@@ -398,19 +451,19 @@ function renderOverviewStats(me, usage, keys) {
       gold: me.plan.tier !== "free",
     },
     {
-      label: "Today",
-      value: fmtNumber(day),
-      meta: `of ${fmtNumber(limits.requests_per_day)} / day`,
+      label: "Credits today",
+      value: `${fmtNumber(creditsToday)} / ${fmtNumber(creditsPerDay)}`,
+      meta: `${fmtNumber(creditsRemaining)} left · resets 00:00 UTC`,
     },
     {
       label: "This minute",
       value: fmtNumber(minute),
-      meta: `of ${fmtNumber(limits.requests_per_minute)} / min`,
+      meta: `of ${fmtNumber(limits.requests_per_minute)} req / min`,
     },
     {
-      label: "Active keys",
-      value: fmtNumber(activeKeys),
-      meta: `of ${fmtKeyLimit(limits.max_active_keys)} max`,
+      label: "Requests today",
+      value: fmtNumber(totalRequestsToday),
+      meta: `${fmtNumber(activeKeys)} of ${fmtKeyLimit(limits.max_active_keys)} keys active`,
     },
   ];
   $("#overview-stats").innerHTML = stats
@@ -433,10 +486,10 @@ function renderOverviewPlan(me, usage) {
     : me.plan.tier === "free"
       ? "Default tier · upgrade for higher limits"
       : "Lifetime";
-  const { minute, day } = liveSnapshot(me, usage);
-  const dayPct = Math.min(
+  const { minute, creditsToday, creditsPerDay } = liveSnapshot(me, usage);
+  const creditsPct = Math.min(
     100,
-    Math.round((day / Math.max(1, limits.requests_per_day)) * 100),
+    Math.round((creditsToday / Math.max(1, creditsPerDay)) * 100),
   );
   const minutePct = Math.min(
     100,
@@ -453,14 +506,14 @@ function renderOverviewPlan(me, usage) {
     </div>
     <div>
       <div class="row">
-        <span class="label">Daily quota</span>
-        <span>${fmtNumber(day)} / ${fmtNumber(limits.requests_per_day)}</span>
+        <span class="label">Credits today</span>
+        <span>${fmtNumber(creditsToday)} / ${fmtNumber(creditsPerDay)}</span>
       </div>
-      <div class="plan-bar"><span style="width:${dayPct}%"></span></div>
+      <div class="plan-bar"><span style="width:${creditsPct}%"></span></div>
     </div>
     <div>
       <div class="row">
-        <span class="label">Per-minute</span>
+        <span class="label">Per-minute requests</span>
         <span>${fmtNumber(minute)} / ${fmtNumber(limits.requests_per_minute)}</span>
       </div>
       <div class="plan-bar"><span style="width:${minutePct}%"></span></div>
@@ -487,6 +540,128 @@ function renderOverviewRecent(usage) {
       </div>`,
     )
     .join("");
+}
+
+// ─────────── API status card ───────────
+
+function fmtCountdown(seconds) {
+  if (typeof seconds !== "number" || !isFinite(seconds) || seconds < 0) {
+    return "—";
+  }
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  if (h > 0) return `${h}h ${String(m).padStart(2, "0")}m`;
+  return `${m}m ${String(Math.floor(seconds % 60)).padStart(2, "0")}s`;
+}
+
+function renderApiStatus(me, usage, health) {
+  const host = $("#api-status");
+  if (!host) return;
+  const { creditsToday, creditsPerDay, creditsRemaining, resetsAt } =
+    liveSnapshot(me, usage);
+  const pct = Math.min(
+    100,
+    Math.round((creditsToday / Math.max(1, creditsPerDay)) * 100),
+  );
+  const now = Math.floor(Date.now() / 1000);
+  const secondsUntilReset = resetsAt ? Math.max(0, resetsAt - now) : null;
+
+  const healthOk =
+    health && (health.ok === true || health.status === "ok");
+  const healthLabel = healthOk
+    ? "Operational"
+    : health && health.status === "down"
+      ? "Down"
+      : "Degraded";
+  const healthCls = healthOk
+    ? "status-pill status-ok"
+    : health && health.status === "down"
+      ? "status-pill status-down"
+      : "status-pill status-warn";
+
+  const totalRequestsToday = (usage.daily || [])
+    .filter((d) => d.day === usage.today)
+    .reduce((acc, d) => acc + (d.requests || 0), 0);
+
+  host.innerHTML = `
+    <div class="card-head">
+      <div>
+        <h3 class="card-title">API status</h3>
+        <p class="card-sub">Live credit usage and gateway health.</p>
+      </div>
+      <span class="${healthCls}" title="api.ai.clex.in">${escapeHtml(healthLabel)}</span>
+    </div>
+    <div class="api-status-grid">
+      <div class="api-status-meter">
+        <div class="api-status-meter-row">
+          <span class="api-status-num">${fmtNumber(creditsToday)}</span>
+          <span class="api-status-denom">/ ${fmtNumber(creditsPerDay)} credits today</span>
+        </div>
+        <div class="plan-bar"><span style="width:${pct}%"></span></div>
+        <div class="api-status-foot">
+          ${fmtNumber(creditsRemaining)} credits remaining ·
+          resets in ${escapeHtml(fmtCountdown(secondsUntilReset))}
+        </div>
+      </div>
+      <div class="api-status-mini">
+        <div class="api-status-mini-cell">
+          <span class="api-status-mini-label">Requests today</span>
+          <span class="api-status-mini-val">${fmtNumber(totalRequestsToday)}</span>
+        </div>
+        <div class="api-status-mini-cell">
+          <span class="api-status-mini-label">Plan</span>
+          <span class="api-status-mini-val">${escapeHtml(titleCase(me.plan.tier))}</span>
+        </div>
+        <div class="api-status-mini-cell">
+          <span class="api-status-mini-label">Gateway</span>
+          <span class="api-status-mini-val font-mono">api.ai.clex.in</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ─────────── Model pricing table ───────────
+
+function renderModelPricing(pricing) {
+  const host = $("#model-pricing");
+  if (!host) return;
+  if (!pricing || !pricing.tiers) {
+    host.innerHTML = `<div class="list-empty">Pricing unavailable. Refresh in a minute.</div>`;
+    return;
+  }
+  // Group models by tier for a compact, scannable layout.
+  const byCost = new Map();
+  (pricing.models || []).forEach((m) => {
+    if (!byCost.has(m.cost)) byCost.set(m.cost, []);
+    byCost.get(m.cost).push(m.model);
+  });
+  const tierOrder = [...pricing.tiers].sort((a, b) => a.cost - b.cost);
+  const defaultCost = pricing.default_cost || 1;
+  const blocks = tierOrder.map((tier) => {
+    const models = byCost.get(tier.cost) || [];
+    const isDefault = tier.cost === defaultCost;
+    const note = isDefault
+      ? `<p class="model-pricing-default">Any model not listed elsewhere costs <strong>${tier.cost} credit${tier.cost === 1 ? "" : "s"}</strong> per call (default tier).</p>`
+      : "";
+    const list = models.length
+      ? `<ul class="model-pricing-list">${models
+          .map((m) => `<li><code class="font-mono">${escapeHtml(m)}</code></li>`)
+          .join("")}</ul>`
+      : `<p class="model-pricing-default">All other models — see default tier.</p>`;
+    return `
+      <div class="model-pricing-tier">
+        <div class="model-pricing-head">
+          <span class="model-pricing-cost">${tier.cost}</span>
+          <span class="model-pricing-label">${escapeHtml(tier.label)}</span>
+          <span class="model-pricing-desc">${escapeHtml(tier.description)}</span>
+        </div>
+        ${note}
+        ${list}
+      </div>
+    `;
+  });
+  host.innerHTML = blocks.join("");
 }
 
 // ─────────── Sparkline ───────────
@@ -606,7 +781,8 @@ async function loadUsage() {
     const me = await loadMe();
     const usage = await loadUsageData(true);
     const limits = me.plan.limits;
-    const { minute, day } = liveSnapshot(me, usage);
+    const { minute, creditsToday, creditsPerDay, creditsRemaining } =
+      liveSnapshot(me, usage);
     const total30 = (usage.daily || []).reduce(
       (acc, d) => acc + (d.requests || 0),
       0,
@@ -617,14 +793,14 @@ async function loadUsage() {
     );
     const stats = [
       {
-        label: "Today",
-        value: fmtNumber(day),
-        meta: `of ${fmtNumber(limits.requests_per_day)}`,
+        label: "Credits today",
+        value: `${fmtNumber(creditsToday)} / ${fmtNumber(creditsPerDay)}`,
+        meta: `${fmtNumber(creditsRemaining)} left · resets 00:00 UTC`,
       },
       {
         label: "This minute",
         value: fmtNumber(minute),
-        meta: `of ${fmtNumber(limits.requests_per_minute)}`,
+        meta: `of ${fmtNumber(limits.requests_per_minute)} req / min`,
       },
       {
         label: "Last 30 days",
@@ -691,8 +867,8 @@ async function loadPlan() {
       </div>
       <div class="grid-3col" style="margin-top:8px">
         <div class="stat">
-          <span class="stat-label">Requests / day</span>
-          <span class="stat-value">${fmtNumber(limits.requests_per_day)}</span>
+          <span class="stat-label">Credits / day</span>
+          <span class="stat-value">${fmtNumber(limits.credits_per_day)}</span>
         </div>
         <div class="stat">
           <span class="stat-label">Requests / minute</span>

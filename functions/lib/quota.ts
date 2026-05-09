@@ -1,29 +1,41 @@
 // ═══════════════════════════════════════════════════════════════════════════
-// Quota engine. We rate-limit by api key (and fall back to user id when there
-// is no key, e.g. dashboard preview calls). The minute window is enforced via
-// KV; the daily cap also lives in KV but is double-checked against
-// daily_usage on D1 so users can't bypass it by burning through KV cache.
+// Quota engine. Two enforcement axes:
+//
+//   1. Per-minute *requests* — burst protection. Counts every /api/chat hit
+//      regardless of model, success or failure.
+//   2. Daily *credits* — long-window budget. Each model has a credit cost
+//      (see lib/credits.ts); the day counter resets at 00:00 UTC.
+//
+// We rate-limit by api key (and fall back to user id when there is no key,
+// e.g. dashboard preview calls). Both counters live in KV with TTL so they
+// self-expire — no cron needed.
 // ═══════════════════════════════════════════════════════════════════════════
 
 import type { Env, UserRow, ApiKeyRow } from './types';
 import { effectivePlanTier, planLimitsFor } from './plans';
 import {
-  bumpMinuteAndDay,
+  bumpMinuteCounter,
+  bumpDailyCredits,
   getMinuteCount,
-  getDailyCount,
-  minuteKey,
-  dailyKey,
-  incrementCounter,
+  getDailyCredits,
 } from './kv';
 import { nowSeconds, utcDayStamp } from './ids';
 
 export interface QuotaDecision {
   allowed: boolean;
-  reason?: 'rate_limited_minute' | 'rate_limited_day' | 'plan_expired' | 'blocked';
+  reason?:
+    | 'rate_limited_minute'
+    | 'rate_limited_credits'
+    | 'plan_expired'
+    | 'blocked';
   retryAfterSeconds: number;
-  limits: { perMinute: number; perDay: number };
-  used: { minute: number; day: number };
-  remaining: { minute: number; day: number };
+  // Plan ceilings.
+  limits: { perMinute: number; creditsPerDay: number };
+  // Where we are right now.
+  used: { minute: number; creditsToday: number };
+  remaining: { minute: number; creditsToday: number };
+  // Cost we *would* have charged for the inbound request.
+  cost: number;
   tier: string;
 }
 
@@ -32,14 +44,15 @@ function buildScope(user: UserRow, key: ApiKeyRow | null): string {
 }
 
 // Pre-flight check: is the request allowed *before* we forward it upstream?
-// This does NOT bump the counters — call commitQuota() after the upstream
-// call returns so we only count successful requests against the daily cap.
-// Per-minute is bumped here, though, so users can't spam upstream regardless
-// of outcome.
+// Per-minute is bumped here (every attempt counts toward burst protection,
+// success or failure). The daily credit counter is NOT bumped here — call
+// commitDailyCredits() after the upstream call returns 2xx so we only charge
+// for successful requests.
 export async function checkAndBumpMinute(
   env: Env,
   user: UserRow,
   key: ApiKeyRow | null,
+  cost: number,
   ref: number = nowSeconds()
 ): Promise<QuotaDecision> {
   const tier = effectivePlanTier(user, ref);
@@ -51,17 +64,18 @@ export async function checkAndBumpMinute(
       allowed: false,
       reason: 'blocked',
       retryAfterSeconds: 60,
-      limits,
-      used: { minute: 0, day: 0 },
-      remaining: { minute: 0, day: 0 },
+      limits: { perMinute: limits.perMinute, creditsPerDay: limits.creditsPerDay },
+      used: { minute: 0, creditsToday: 0 },
+      remaining: { minute: 0, creditsToday: 0 },
+      cost,
       tier,
     };
   }
 
   // Read first to short-circuit obvious 429s without spending a write.
-  const [currentMinute, currentDay] = await Promise.all([
+  const [currentMinute, currentCredits] = await Promise.all([
     getMinuteCount(env, scope),
-    getDailyCount(env, scope),
+    getDailyCredits(env, scope),
   ]);
 
   if (currentMinute >= limits.perMinute) {
@@ -70,75 +84,92 @@ export async function checkAndBumpMinute(
       allowed: false,
       reason: 'rate_limited_minute',
       retryAfterSeconds: Math.max(1, ttl),
-      limits,
-      used: { minute: currentMinute, day: currentDay },
+      limits: { perMinute: limits.perMinute, creditsPerDay: limits.creditsPerDay },
+      used: { minute: currentMinute, creditsToday: currentCredits },
       remaining: {
         minute: Math.max(0, limits.perMinute - currentMinute),
-        day: Math.max(0, limits.perDay - currentDay),
+        creditsToday: Math.max(0, limits.creditsPerDay - currentCredits),
       },
+      cost,
       tier,
     };
   }
-  if (currentDay >= limits.perDay) {
+  if (currentCredits + cost > limits.creditsPerDay) {
     const tomorrow = (Math.floor(ref / 86400) + 1) * 86400;
     return {
       allowed: false,
-      reason: 'rate_limited_day',
+      reason: 'rate_limited_credits',
       retryAfterSeconds: Math.max(60, tomorrow - ref),
-      limits,
-      used: { minute: currentMinute, day: currentDay },
-      remaining: { minute: 0, day: 0 },
+      limits: { perMinute: limits.perMinute, creditsPerDay: limits.creditsPerDay },
+      used: { minute: currentMinute, creditsToday: currentCredits },
+      remaining: {
+        minute: Math.max(0, limits.perMinute - currentMinute),
+        creditsToday: Math.max(0, limits.creditsPerDay - currentCredits),
+      },
+      cost,
       tier,
     };
   }
 
-  // Bump the per-minute counter immediately (every attempt counts toward
-  // the per-minute cap, success or failure).
-  const minute = await incrementCounter(env.RATE_LIMIT_KV, minuteKey(scope, ref), 70);
+  // Bump the per-minute counter immediately.
+  const minute = await bumpMinuteCounter(env, scope);
 
   return {
     allowed: true,
     retryAfterSeconds: 0,
-    limits,
-    used: { minute, day: currentDay },
+    limits: { perMinute: limits.perMinute, creditsPerDay: limits.creditsPerDay },
+    used: { minute, creditsToday: currentCredits },
     remaining: {
       minute: Math.max(0, limits.perMinute - minute),
-      day: Math.max(0, limits.perDay - currentDay),
+      creditsToday: Math.max(0, limits.creditsPerDay - currentCredits),
     },
+    cost,
     tier,
   };
 }
 
-// Bump the daily counter after a successful upstream call.
-export async function commitDailyUse(
+// Bump the daily credit counter after a successful upstream call. Returns
+// the new credits-used-today value.
+export async function commitDailyCredits(
   env: Env,
   user: UserRow,
   key: ApiKeyRow | null,
-  ref: number = nowSeconds()
+  cost: number
 ): Promise<number> {
   const scope = buildScope(user, key);
-  return incrementCounter(env.RATE_LIMIT_KV, dailyKey(scope, ref), 60 * 60 * 26);
+  return bumpDailyCredits(env, scope, cost);
 }
 
 export async function snapshotUsage(
   env: Env,
   user: UserRow,
   ref: number = nowSeconds()
-): Promise<{ minute: number; day: number; tier: string; limits: { perMinute: number; perDay: number } }> {
+): Promise<{
+  minute: number;
+  creditsToday: number;
+  tier: string;
+  limits: { perMinute: number; creditsPerDay: number };
+  resetsAt: number;
+}> {
   // Snapshot uses the user-level scope so the dashboard "today's calls"
   // panel reflects the user's full activity even before they create a key.
   const scope = buildScope(user, null);
-  const [minute, day] = await Promise.all([
+  const [minute, creditsToday] = await Promise.all([
     getMinuteCount(env, scope),
-    getDailyCount(env, scope),
+    getDailyCredits(env, scope),
   ]);
   const tier = effectivePlanTier(user, ref);
   const limits = planLimitsFor(user, ref);
-  return { minute, day, tier, limits };
+  const resetsAt = (Math.floor(ref / 86400) + 1) * 86400;
+  return {
+    minute,
+    creditsToday,
+    tier,
+    limits: { perMinute: limits.perMinute, creditsPerDay: limits.creditsPerDay },
+    resetsAt,
+  };
 }
 
 export function todayStamp(ref: number = nowSeconds()): number {
   return utcDayStamp(ref);
 }
-
-export { bumpMinuteAndDay };

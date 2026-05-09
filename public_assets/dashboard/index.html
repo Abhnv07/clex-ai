@@ -15,7 +15,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./dashboard.css?v=2" />
+    <link rel="stylesheet" href="./dashboard.css?v=3" />
   </head>
   <body>
     <div id="auth-screen" class="auth-screen">
@@ -171,6 +171,7 @@
         </header>
 
         <div id="route-overview" class="route">
+          <div id="api-status" class="card api-status-card"></div>
           <div id="overview-stats" class="stat-grid"></div>
           <div class="grid-2col">
             <div class="card">
@@ -193,6 +194,15 @@
               <h3 class="card-title">Last 14 days · API calls</h3>
             </div>
             <div id="overview-spark" class="spark"></div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Model pricing</h3>
+                <p class="card-sub">Each call charges credits depending on the model. Daily credits reset at 00:00 UTC.</p>
+              </div>
+            </div>
+            <div id="model-pricing" class="model-pricing"></div>
           </div>
         </div>
 
@@ -254,7 +264,7 @@
                 <span class="page-title-italic">forever</span>
               </h3>
               <ul class="plan-features">
-                <li>20 requests / day</li>
+                <li>100 credits / day</li>
                 <li>1 request / minute</li>
                 <li>1 active API key</li>
               </ul>
@@ -267,7 +277,7 @@
                 <span class="page-title-italic">/ month</span>
               </h3>
               <ul class="plan-features">
-                <li>200 requests / day</li>
+                <li>500 credits / day</li>
                 <li>5 requests / minute</li>
                 <li>5 active API keys</li>
               </ul>
@@ -285,7 +295,7 @@
                 <span class="page-title-italic">/ month</span>
               </h3>
               <ul class="plan-features">
-                <li>1,000 requests / day</li>
+                <li>2,000 credits / day</li>
                 <li>10 requests / minute</li>
                 <li>20 active API keys</li>
               </ul>
@@ -303,6 +313,6 @@
 
     <div id="toast" class="toast" hidden></div>
 
-    <script type="module" src="./dashboard.js?v=2"></script>
+    <script type="module" src="./dashboard.js?v=3"></script>
   </body>
 </html>
