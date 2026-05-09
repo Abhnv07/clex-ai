@@ -10,7 +10,7 @@
     />
 
     <!-- IDE owns the full viewport — no Tailwind, no marketing chrome. -->
-    <link rel="stylesheet" href="playground.css?v=5" />
+    <link rel="stylesheet" href="playground.css?v=6" />
     <link rel="icon" type="image/png" href="favicon.png" />
 
     <meta property="og:title" content="Playground — Clex AI" />
@@ -111,8 +111,47 @@
         <span class="ide-topbar-divider" aria-hidden="true"></span>
 
         <a href="/dashboard" class="ide-btn ide-btn--ghost" title="Open dashboard">Dashboard</a>
+
+        <span class="ide-topbar-divider" aria-hidden="true"></span>
+
+        <!-- Auth chip: shows "Sign in" when signed-out, profile + sign-out when signed-in. -->
+        <div class="ide-auth" id="ide-auth" data-auth-state="signed-out">
+          <button
+            type="button"
+            id="ide-auth-signin"
+            class="ide-btn ide-btn--auth"
+            title="Sign in to auto-load your Clex API key"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c2.39 0 4.68.94 6.36 2.64"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span>Sign in</span>
+          </button>
+
+          <div id="ide-auth-profile" class="ide-auth-profile" hidden>
+            <img id="ide-auth-avatar" class="ide-auth-avatar" alt="" src="" />
+            <span id="ide-auth-name" class="ide-auth-name">Signed in</span>
+            <button
+              type="button"
+              id="ide-auth-signout"
+              class="ide-icon-btn ide-auth-signout"
+              title="Sign out"
+              aria-label="Sign out"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- Inline status banner used by playground-auth.js -->
+    <div id="ide-auth-status" class="ide-auth-status" hidden></div>
 
     <!-- Hamburger menu (overlay, hidden by default) -->
     <div id="topbar-menu" class="ide-menu" hidden>
@@ -295,6 +334,6 @@
 
     <script src="models-data.js?v=2"></script>
     <script src="shared.js?v=9"></script>
-    <script type="module" src="playground.js?v=4"></script>
+    <script type="module" src="playground.js?v=5"></script>
   </body>
 </html>

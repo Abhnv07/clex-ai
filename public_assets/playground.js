@@ -36,6 +36,8 @@ import { html } from "https://esm.sh/@codemirror/lang-html@6.4.11";
 import { css } from "https://esm.sh/@codemirror/lang-css@6.3.1";
 import { json } from "https://esm.sh/@codemirror/lang-json@6.0.1";
 
+import { attachPlaygroundAuth } from "./playground-auth.js";
+
 const $ = (id) => document.getElementById(id);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
@@ -1140,7 +1142,20 @@ ${context}`;
       const errText = await res.text();
       aiBody.textContent = "";
       const err = appendChatMsg("err", "");
-      err.textContent = `Request failed (${res.status}): ${errText.slice(0, 400) || res.statusText}`;
+      // Surface a sign-in hint specifically for the 401 case so users know
+      // why their first request bounced.
+      let detail = errText.slice(0, 400) || res.statusText;
+      try {
+        const parsed = JSON.parse(errText);
+        detail = parsed.error || parsed.message || detail;
+      } catch {
+        /* not JSON, keep raw */
+      }
+      if (res.status === 401 && /clex_/.test(detail)) {
+        detail +=
+          "\n\nClick \u2018Sign in\u2019 in the top-right and Clex will auto-load a playground API key for you.";
+      }
+      err.textContent = `Request failed (${res.status}): ${detail}`;
       return;
     }
 
@@ -1360,4 +1375,30 @@ setMode("ask");
 updateContextHint();
 updateApiKeyLabel();
 setStatus("idle", "Idle");
-log("Welcome to the Clex AI IDE. Click Boot sandbox to start.");
+
+// ───── Firebase auth + auto-key (kills the "Missing clex API key" 401) ─────
+
+attachPlaygroundAuth({
+  elements: {
+    root: document.getElementById("ide-auth"),
+    signInBtn: /** @type {HTMLButtonElement | null} */ (
+      document.getElementById("ide-auth-signin")
+    ),
+    profile: document.getElementById("ide-auth-profile"),
+    avatar: /** @type {HTMLImageElement | null} */ (
+      document.getElementById("ide-auth-avatar")
+    ),
+    name: document.getElementById("ide-auth-name"),
+    signOutBtn: /** @type {HTMLButtonElement | null} */ (
+      document.getElementById("ide-auth-signout")
+    ),
+    apiKeyInput: els.apiKey,
+    apiKeyLabel: els.apiKeyLabel,
+    status: document.getElementById("ide-auth-status"),
+  },
+  onKeyReady: () => updateApiKeyLabel(),
+  onSignedOut: () => {
+    if (els.apiKey) els.apiKey.value = "";
+    updateApiKeyLabel();
+  },
+});
