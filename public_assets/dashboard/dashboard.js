@@ -7,6 +7,8 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider,
   GithubAuthProvider,
   signOut,
@@ -159,12 +161,24 @@ async function handleResponse(res) {
 
 // ─────────── Auth UI ───────────
 
+// Three states: loading (waiting for Firebase to resolve), auth (signed-out
+// form), shell (signed-in app). The boot path always starts in 'loading' so
+// the user never sees the sign-in form flash before Firebase has restored
+// their session from localStorage.
+function showLoading() {
+  $("#auth-loading").hidden = false;
+  $("#auth-screen").hidden = true;
+  $("#shell").hidden = true;
+}
+
 function showAuth() {
+  $("#auth-loading").hidden = true;
   $("#auth-screen").hidden = false;
   $("#shell").hidden = true;
 }
 
 function showShell() {
+  $("#auth-loading").hidden = true;
   $("#auth-screen").hidden = true;
   $("#shell").hidden = false;
 }
@@ -238,6 +252,20 @@ function bindAuthForms() {
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (err) {
+      // Popup blocked, mobile, or third-party-cookies disabled → fall back
+      // to a full-page redirect. Firebase remembers the in-flight request so
+      // getRedirectResult() picks it up after the navigation home.
+      if (shouldFallbackToRedirect(err)) {
+        try {
+          showLoading();
+          await signInWithRedirect(auth, googleProvider);
+          return;
+        } catch (redirErr) {
+          setAuthError(humanFirebaseError(redirErr));
+          showAuth();
+          return;
+        }
+      }
       setAuthError(humanFirebaseError(err));
     }
   });
@@ -247,9 +275,31 @@ function bindAuthForms() {
     try {
       await signInWithPopup(auth, githubProvider);
     } catch (err) {
+      if (shouldFallbackToRedirect(err)) {
+        try {
+          showLoading();
+          await signInWithRedirect(auth, githubProvider);
+          return;
+        } catch (redirErr) {
+          setAuthError(humanFirebaseError(redirErr));
+          showAuth();
+          return;
+        }
+      }
       setAuthError(humanFirebaseError(err));
     }
   });
+}
+
+function shouldFallbackToRedirect(err) {
+  if (!err || !err.code) return false;
+  return [
+    "auth/popup-blocked",
+    "auth/popup-closed-by-user",
+    "auth/cancelled-popup-request",
+    "auth/operation-not-supported-in-this-environment",
+    "auth/web-storage-unsupported",
+  ].includes(err.code);
 }
 
 function humanFirebaseError(err) {
@@ -914,6 +964,7 @@ function titleCase(s) {
 
 // ─────────── Boot ───────────
 
+showLoading();
 bindAuthTabs();
 bindAuthForms();
 bindNav();
@@ -921,6 +972,17 @@ bindKeyForm();
 
 window.addEventListener("hashchange", () => {
   if (auth.currentUser) setRoute(location.hash.replace(/^#/, "") || "overview");
+});
+
+// If we just got back from a Firebase redirect (Google/GitHub OAuth), pick up
+// the result before onAuthStateChanged fires so the loading spinner stays up
+// instead of flashing the sign-in form.
+getRedirectResult(auth).catch((err) => {
+  // Non-fatal — onAuthStateChanged will still drive the right UI state. We
+  // just surface a hint if the redirect actually errored.
+  if (err && err.code && err.code !== "auth/no-redirect-result") {
+    console.warn("[clex] redirect sign-in failed", err);
+  }
 });
 
 onAuthStateChanged(auth, async (user) => {

@@ -27,3 +27,21 @@
 
 /*.css
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Playground / IDE — needs cross-origin isolation so WebContainer's in-browser
+# Node runtime works (SharedArrayBuffer requires COOP+COEP).
+# Without this, "Boot Sandbox" fails with "page is not cross-origin isolated".
+# We scope the headers to /playground.html so the rest of the marketing site
+# can keep loading third-party assets (gstatic Firebase SDK, Tailwind CDN, ...)
+# without the strict CORP requirement on every embedded resource.
+# ─────────────────────────────────────────────────────────────────────────────
+/playground.html
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
+  Cache-Control: public, max-age=60, must-revalidate
+
+/playground
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
+  Cache-Control: public, max-age=60, must-revalidate

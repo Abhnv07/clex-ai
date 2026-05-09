@@ -15,10 +15,25 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./dashboard.css?v=3" />
+    <link rel="stylesheet" href="./dashboard.css?v=4" />
   </head>
   <body>
-    <div id="auth-screen" class="auth-screen">
+    <!--
+      Boot-time loading splash. Both #auth-screen and #shell start hidden so
+      we never flash the sign-in form before Firebase resolves the cached
+      session (or completes a Google/GitHub redirect sign-in). dashboard.js
+      flips to the right state inside onAuthStateChanged.
+    -->
+    <div id="auth-loading" class="auth-loading">
+      <div class="auth-loading-card">
+        <span class="auth-loading-mark">Clex AI</span>
+        <span class="auth-loading-italic">control deck.</span>
+        <div class="auth-loading-spinner" aria-hidden="true"></div>
+        <span class="auth-loading-hint">Restoring your session…</span>
+      </div>
+    </div>
+
+    <div id="auth-screen" class="auth-screen" hidden>
       <div class="auth-card">
         <a href="/" class="auth-mark" aria-label="Back to Clex AI home">
           <span class="auth-mark-line">Clex AI</span>
@@ -313,6 +328,6 @@
 
     <div id="toast" class="toast" hidden></div>
 
-    <script type="module" src="./dashboard.js?v=3"></script>
+    <script type="module" src="./dashboard.js?v=4"></script>
   </body>
 </html>

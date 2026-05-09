@@ -153,7 +153,7 @@
     </div>
 
     <script src="models-data.js?v=2"></script>
-    <script src="shared.js?v=7"></script>
+    <script src="shared.js?v=8"></script>
     <script>
       // ═══════════════════════════════════════════════════════
       // MODEL CATALOG (backed by shared models-data.js)
@@ -472,10 +472,10 @@
         return div.innerHTML;
       }
 
-      // Guard: shared.js?v=7 should define `window.clex.streamChatCompletionsSSE`
+      // Guard: shared.js?v=8 should define `window.clex.streamChatCompletionsSSE`
       if (!window.clex || !window.clex.streamChatCompletionsSSE) {
         console.warn(
-          "Streaming helper not found. Make sure shared.js?v=7 is loaded.",
+          "Streaming helper not found. Make sure shared.js?v=8 is loaded.",
         );
       }
     </script>
