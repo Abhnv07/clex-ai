@@ -42,21 +42,28 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
         is_lifetime: !!user.is_lifetime,
         started_at: user.plan_started_at,
         expires_at: user.plan_expires_at,
-        // The dashboard reads these snake_case fields under `plan.limits`.
-        // We keep both styles so older clients calling `limits.perMinute`
-        // continue to work.
+        // Snake_case is the canonical shape the dashboard reads. CamelCase
+        // aliases stay around for any older clients still pinned to them.
         limits: {
+          // ── Burst protection (requests per minute) ────────────
           perMinute: limits.perMinute,
-          perDay: limits.perDay,
           requests_per_minute: limits.perMinute,
-          requests_per_day: limits.perDay,
+          // ── Daily credit budget ───────────────────────────────
+          credits_per_day: limits.creditsPerDay,
+          creditsPerDay: limits.creditsPerDay,
+          // ── Active key cap ────────────────────────────────────
           max_active_keys: maxActiveKeys,
         },
       },
       usage: {
         minute: usage.minute,
-        day: usage.day,
-        limits: { perMinute: usage.limits.perMinute, perDay: usage.limits.perDay },
+        credits_today: usage.creditsToday,
+        credits_remaining: Math.max(0, usage.limits.creditsPerDay - usage.creditsToday),
+        resets_at: usage.resetsAt,
+        limits: {
+          perMinute: usage.limits.perMinute,
+          credits_per_day: usage.limits.creditsPerDay,
+        },
       },
     },
     {},

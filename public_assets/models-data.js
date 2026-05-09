@@ -20,6 +20,8 @@ window.CLEX_MODELS =
       use: "Text retrieval / reranking",
       category: "embedding",
       nvidiaId: "nvidia/llama-nemotron-rerank-1b-v2",
+
+      credits: 1,
     },
     {
       name: "qwen3.5-122b-a10b",
@@ -27,6 +29,8 @@ window.CLEX_MODELS =
       use: "Chat, coding, reasoning",
       category: "text",
       nvidiaId: "qwen/qwen3.5-122b-a10b",
+
+      credits: 3,
     },
     {
       name: "qwen3.5-397b-a17b",
@@ -34,6 +38,8 @@ window.CLEX_MODELS =
       use: "Vision, chat, RAG, agentic",
       category: "text",
       nvidiaId: "qwen/qwen3.5-397b-a17b",
+
+      credits: 5,
     },
     {
       name: "glm5",
@@ -41,6 +47,8 @@ window.CLEX_MODELS =
       use: "Reasoning, agentic",
       category: "text",
       nvidiaId: "zhipuai/glm5",
+
+      credits: 3,
     },
     {
       name: "minimax-m2.5",
@@ -48,6 +56,8 @@ window.CLEX_MODELS =
       use: "Coding, reasoning, office tasks",
       category: "text",
       nvidiaId: "minimaxai/minimax-m2.5",
+
+      credits: 3,
     },
     {
       name: "minimax-m2.1",
@@ -55,6 +65,8 @@ window.CLEX_MODELS =
       use: "Coding, app/web dev, agentic",
       category: "text",
       nvidiaId: "minimaxai/minimax-m2.1",
+
+      credits: 3,
     },
     {
       name: "step-3.5-flash",
@@ -62,6 +74,8 @@ window.CLEX_MODELS =
       use: "Reasoning, agentic",
       category: "text",
       nvidiaId: "stepfun-ai/step-3.5-flash",
+
+      credits: 3,
     },
     {
       name: "kimi-k2.5",
@@ -69,6 +83,8 @@ window.CLEX_MODELS =
       use: "Multimodal, video understanding",
       category: "vision",
       nvidiaId: "moonshotai/kimi-k2.5",
+
+      credits: 5,
     },
     {
       name: "glm4.7",
@@ -76,6 +92,8 @@ window.CLEX_MODELS =
       use: "Agentic coding, tool calling",
       category: "text",
       nvidiaId: "zhipuai/glm4.7",
+
+      credits: 3,
     },
     {
       name: "deepseek-v3.2",
@@ -83,6 +101,8 @@ window.CLEX_MODELS =
       use: "Reasoning, long context",
       category: "text",
       nvidiaId: "deepseek-ai/deepseek-v3.2",
+
+      credits: 5,
     },
     {
       name: "nemotron-3-nano-30b-a3b",
@@ -90,6 +110,8 @@ window.CLEX_MODELS =
       use: "Coding, reasoning, MoE",
       category: "text",
       nvidiaId: "nvidia/nemotron-3-nano-30b-a3b",
+
+      credits: 2,
     },
     {
       name: "kimi-k2-thinking",
@@ -97,6 +119,8 @@ window.CLEX_MODELS =
       use: "Reasoning, tool use",
       category: "text",
       nvidiaId: "moonshotai/kimi-k2-thinking",
+
+      credits: 3,
     },
     {
       name: "ministral-14b-instruct-2512",
@@ -104,6 +128,8 @@ window.CLEX_MODELS =
       use: "Chat, instruction following",
       category: "text",
       nvidiaId: "mistralai/ministral-14b-instruct-2512",
+
+      credits: 2,
     },
     {
       name: "devstral-2-123b-instruct-2512",
@@ -111,6 +137,8 @@ window.CLEX_MODELS =
       use: "Code, reasoning",
       category: "code",
       nvidiaId: "mistralai/devstral-2-123b-instruct-2512",
+
+      credits: 3,
     },
     {
       name: "deepseek-v3.1-terminus",
@@ -118,6 +146,8 @@ window.CLEX_MODELS =
       use: "Agentic, tool calling",
       category: "text",
       nvidiaId: "deepseek-ai/deepseek-v3.1-terminus",
+
+      credits: 5,
     },
     {
       name: "deepseek-v3.1",
@@ -125,6 +155,8 @@ window.CLEX_MODELS =
       use: "Reasoning, tool use",
       category: "text",
       nvidiaId: "deepseek-ai/deepseek-v3.1",
+
+      credits: 5,
     },
     {
       name: "stockmark-2-100b-instruct",
@@ -132,6 +164,8 @@ window.CLEX_MODELS =
       use: "Japanese enterprise LLM",
       category: "text",
       nvidiaId: "stockmark/stockmark-2-100b-instruct",
+
+      credits: 3,
     },
     {
       name: "qwen3-next-80b-a3b-instruct",
@@ -139,6 +173,8 @@ window.CLEX_MODELS =
       use: "Chat, long context",
       category: "text",
       nvidiaId: "qwen/qwen3-next-80b-a3b-instruct",
+
+      credits: 3,
     },
     {
       name: "kimi-k2-instruct-0905",
@@ -146,6 +182,8 @@ window.CLEX_MODELS =
       use: "Reasoning, long context",
       category: "text",
       nvidiaId: "moonshotai/kimi-k2-instruct-0905",
+
+      credits: 5,
     },
     {
       name: "bielik-11b-v2.6-instruct",
@@ -153,6 +191,8 @@ window.CLEX_MODELS =
       use: "Polish language, text generation",
       category: "text",
       nvidiaId: "speakleash/bielik-11b-v2.6-instruct",
+
+      credits: 2,
     },
     {
       name: "qwen3-next-80b-a3b-thinking",
@@ -160,6 +200,8 @@ window.CLEX_MODELS =
       use: "Reasoning, multilingual",
       category: "text",
       nvidiaId: "qwen/qwen3-next-80b-a3b-thinking",
+
+      credits: 3,
     },
     {
       name: "seed-oss-36b-instruct",
@@ -167,6 +209,8 @@ window.CLEX_MODELS =
       use: "Reasoning, agentic",
       category: "text",
       nvidiaId: "bytedance/seed-oss-36b-instruct",
+
+      credits: 2,
     },
     {
       name: "qwen3-coder-480b-a35b-instruct",
@@ -174,6 +218,8 @@ window.CLEX_MODELS =
       use: "Agentic coding",
       category: "code",
       nvidiaId: "qwen/qwen3-coder-480b-a35b-instruct",
+
+      credits: 5,
     },
     {
       name: "nvidia-nemotron-nano-9b-v2",
@@ -181,6 +227,8 @@ window.CLEX_MODELS =
       use: "Reasoning, agentic",
       category: "text",
       nvidiaId: "nvidia/nvidia-nemotron-nano-9b-v2",
+
+      credits: 1,
     },
     {
       name: "llama-3.3-nemotron-super-49b-v1.5",
@@ -188,6 +236,8 @@ window.CLEX_MODELS =
       use: "Reasoning, chat, tool calling",
       category: "text",
       nvidiaId: "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+
+      credits: 3,
     },
     {
       name: "teuken-7b-instruct-commercial-v0.4",
@@ -195,6 +245,8 @@ window.CLEX_MODELS =
       use: "EU multilingual LLM",
       category: "text",
       nvidiaId: "opengpt-x/teuken-7b-instruct-commercial-v0.4",
+
+      credits: 1,
     },
     {
       name: "sarvam-m",
@@ -202,6 +254,8 @@ window.CLEX_MODELS =
       use: "Indian language, coding, math",
       category: "text",
       nvidiaId: "sarvamai/sarvam-m",
+
+      credits: 2,
     },
     {
       name: "mistral-small-3.1-24b-instruct-2503",
@@ -209,6 +263,8 @@ window.CLEX_MODELS =
       use: "Multilingual, image understanding",
       category: "text",
       nvidiaId: "mistralai/mistral-small-3.1-24b-instruct-2503",
+
+      credits: 2,
     },
     {
       name: "mistral-medium-3-instruct",
@@ -216,6 +272,8 @@ window.CLEX_MODELS =
       use: "Enterprise, software dev",
       category: "text",
       nvidiaId: "mistralai/mistral-medium-3-instruct",
+
+      credits: 2,
     },
     {
       name: "llama-3.1-nemotron-ultra-253b-v1",
@@ -223,6 +281,8 @@ window.CLEX_MODELS =
       use: "Scientific reasoning, coding",
       category: "text",
       nvidiaId: "nvidia/llama-3.1-nemotron-ultra-253b-v1",
+
+      credits: 5,
     },
     {
       name: "llama-4-maverick-17b-128e-instruct",
@@ -230,6 +290,8 @@ window.CLEX_MODELS =
       use: "Multimodal, multilingual",
       category: "vision",
       nvidiaId: "meta/llama-4-maverick-17b-128e-instruct",
+
+      credits: 5,
     },
     {
       name: "llama-4-scout-17b-16e-instruct",
@@ -237,6 +299,8 @@ window.CLEX_MODELS =
       use: "Multimodal, multilingual",
       category: "vision",
       nvidiaId: "meta/llama-4-scout-17b-16e-instruct",
+
+      credits: 3,
     },
     {
       name: "llama-3.3-nemotron-super-49b-v1",
@@ -244,6 +308,8 @@ window.CLEX_MODELS =
       use: "Chat, reasoning",
       category: "text",
       nvidiaId: "nvidia/llama-3.3-nemotron-super-49b-v1",
+
+      credits: 3,
     },
     {
       name: "llama-3.1-nemotron-nano-8b-v1",
@@ -251,6 +317,8 @@ window.CLEX_MODELS =
       use: "Chat, edge",
       category: "text",
       nvidiaId: "nvidia/llama-3.1-nemotron-nano-8b-v1",
+
+      credits: 1,
     },
     {
       name: "marin-8b-instruct",
@@ -258,6 +326,8 @@ window.CLEX_MODELS =
       use: "Reasoning, math, science",
       category: "text",
       nvidiaId: "marin/marin-8b-instruct",
+
+      credits: 1,
     },
     {
       name: "granite-3.3-8b-instruct",
@@ -265,6 +335,8 @@ window.CLEX_MODELS =
       use: "Reasoning, coding",
       category: "text",
       nvidiaId: "ibm/granite-3.3-8b-instruct",
+
+      credits: 1,
     },
     {
       name: "eurollm-9b-instruct",
@@ -272,6 +344,8 @@ window.CLEX_MODELS =
       use: "EU multilingual",
       category: "text",
       nvidiaId: "utter-project/eurollm-9b-instruct",
+
+      credits: 1,
     },
     {
       name: "gemma-2-9b-cpt-sahabatai-instruct",
@@ -279,6 +353,8 @@ window.CLEX_MODELS =
       use: "Indonesian language",
       category: "text",
       nvidiaId: "gotocompany/gemma-2-9b-cpt-sahabatai-instruct",
+
+      credits: 1,
     },
     {
       name: "phi-4-mini-flash-reasoning",
@@ -286,6 +362,8 @@ window.CLEX_MODELS =
       use: "Edge reasoning",
       category: "text",
       nvidiaId: "microsoft/phi-4-mini-flash-reasoning",
+
+      credits: 1,
     },
     {
       name: "kimi-k2-instruct",
@@ -293,6 +371,8 @@ window.CLEX_MODELS =
       use: "Coding, reasoning, agentic",
       category: "text",
       nvidiaId: "moonshotai/kimi-k2-instruct",
+
+      credits: 5,
     },
     {
       name: "magistral-small-2506",
@@ -300,6 +380,8 @@ window.CLEX_MODELS =
       use: "Reasoning, edge",
       category: "text",
       nvidiaId: "mistralai/magistral-small-2506",
+
+      credits: 2,
     },
     {
       name: "llama-guard-4-12b",
@@ -307,6 +389,8 @@ window.CLEX_MODELS =
       use: "Multimodal safety",
       category: "safety",
       nvidiaId: "meta/llama-guard-4-12b",
+
+      credits: 2,
     },
     {
       name: "gemma-3n-e4b-it",
@@ -314,6 +398,8 @@ window.CLEX_MODELS =
       use: "Text/audio/image, edge",
       category: "vision",
       nvidiaId: "google/gemma-3n-e4b-it",
+
+      credits: 1,
     },
     {
       name: "gemma-3n-e2b-it",
@@ -321,6 +407,8 @@ window.CLEX_MODELS =
       use: "Text/audio/image, edge",
       category: "vision",
       nvidiaId: "google/gemma-3n-e2b-it",
+
+      credits: 1,
     },
     {
       name: "mistral-nemotron",
@@ -328,6 +416,8 @@ window.CLEX_MODELS =
       use: "Coding, agentic",
       category: "code",
       nvidiaId: "mistralai/mistral-nemotron",
+
+      credits: 2,
     },
     {
       name: "llama-3.1-nemotron-nano-vl-8b-v1",
@@ -335,6 +425,8 @@ window.CLEX_MODELS =
       use: "Vision-language",
       category: "vision",
       nvidiaId: "nvidia/llama-3.1-nemotron-nano-vl-8b-v1",
+
+      credits: 1,
     },
     {
       name: "llama-3.1-nemotron-nano-4b-v1.1",
@@ -342,6 +434,8 @@ window.CLEX_MODELS =
       use: "Reasoning, edge agents",
       category: "text",
       nvidiaId: "nvidia/llama-3.1-nemotron-nano-4b-v1.1",
+
+      credits: 1,
     },
     {
       name: "nemotron-content-safety-reasoning-4b",
@@ -349,6 +443,8 @@ window.CLEX_MODELS =
       use: "Safety / guardrails",
       category: "safety",
       nvidiaId: "nvidia/nemotron-content-safety-reasoning-4b",
+
+      credits: 1,
     },
     {
       name: "llama-3.1-nemotron-safety-guard-8b-v3",
@@ -356,6 +452,8 @@ window.CLEX_MODELS =
       use: "Content moderation",
       category: "safety",
       nvidiaId: "nvidia/llama-3.1-nemotron-safety-guard-8b-v3",
+
+      credits: 1,
     },
     {
       name: "deepseek-r1-distill-llama-8b",
@@ -363,6 +461,8 @@ window.CLEX_MODELS =
       use: "Reasoning (distilled)",
       category: "text",
       nvidiaId: "deepseek-ai/deepseek-r1-distill-llama-8b",
+
+      credits: 1,
     },
     {
       name: "deepseek-r1-distill-qwen-32b",
@@ -370,6 +470,8 @@ window.CLEX_MODELS =
       use: "Coding/reasoning (distilled)",
       category: "text",
       nvidiaId: "deepseek-ai/deepseek-r1-distill-qwen-32b",
+
+      credits: 2,
     },
     {
       name: "deepseek-r1-distill-qwen-14b",
@@ -377,6 +479,8 @@ window.CLEX_MODELS =
       use: "Coding/reasoning (distilled)",
       category: "text",
       nvidiaId: "deepseek-ai/deepseek-r1-distill-qwen-14b",
+
+      credits: 2,
     },
     {
       name: "deepseek-r1-distill-qwen-7b",
@@ -384,6 +488,8 @@ window.CLEX_MODELS =
       use: "Coding/reasoning (distilled)",
       category: "text",
       nvidiaId: "deepseek-ai/deepseek-r1-distill-qwen-7b",
+
+      credits: 1,
     },
     {
       name: "phi-4-mini-instruct",
@@ -391,6 +497,8 @@ window.CLEX_MODELS =
       use: "Chat, multilingual",
       category: "text",
       nvidiaId: "microsoft/phi-4-mini-instruct",
+
+      credits: 1,
     },
     {
       name: "mistral-small-24b-instruct",
@@ -398,6 +506,8 @@ window.CLEX_MODELS =
       use: "Code, math, general",
       category: "text",
       nvidiaId: "mistralai/mistral-small-24b-instruct",
+
+      credits: 2,
     },
     {
       name: "llama-3.1-nemoguard-8b-topic-control",
@@ -405,6 +515,8 @@ window.CLEX_MODELS =
       use: "Guardrails/topic control",
       category: "safety",
       nvidiaId: "nvidia/llama-3.1-nemoguard-8b-topic-control",
+
+      credits: 1,
     },
     {
       name: "nemoguard-jailbreak-detect",
@@ -412,6 +524,8 @@ window.CLEX_MODELS =
       use: "Jailbreak detection",
       category: "safety",
       nvidiaId: "nvidia/nemoguard-jailbreak-detect",
+
+      credits: 1,
     },
     {
       name: "llama-3.1-nemoguard-8b-content-safety",
@@ -419,6 +533,8 @@ window.CLEX_MODELS =
       use: "Content safety",
       category: "safety",
       nvidiaId: "nvidia/llama-3.1-nemoguard-8b-content-safety",
+
+      credits: 1,
     },
     {
       name: "colosseum-355b-instruct-16k",
@@ -426,6 +542,8 @@ window.CLEX_MODELS =
       use: "Enterprise regulated industries",
       category: "text",
       nvidiaId: "igenius/colosseum-355b-instruct-16k",
+
+      credits: 5,
     },
     {
       name: "falcon3-7b-instruct",
@@ -433,6 +551,8 @@ window.CLEX_MODELS =
       use: "Reasoning, math",
       category: "text",
       nvidiaId: "tiiuae/falcon3-7b-instruct",
+
+      credits: 1,
     },
     {
       name: "italia-10b-instruct-16k",
@@ -440,6 +560,8 @@ window.CLEX_MODELS =
       use: "European multilingual",
       category: "text",
       nvidiaId: "igenius/italia-10b-instruct-16k",
+
+      credits: 2,
     },
     {
       name: "qwen2.5-7b-instruct",
@@ -447,6 +569,8 @@ window.CLEX_MODELS =
       use: "Chinese & English LLM",
       category: "text",
       nvidiaId: "qwen/qwen2.5-7b-instruct",
+
+      credits: 1,
     },
     {
       name: "cosmos-nemotron-34b",
@@ -454,6 +578,8 @@ window.CLEX_MODELS =
       use: "Vision-language",
       category: "vision",
       nvidiaId: "nvidia/cosmos-nemotron-34b",
+
+      credits: 3,
     },
     {
       name: "llama-3.2-nv-embedqa-1b-v2",
@@ -461,6 +587,8 @@ window.CLEX_MODELS =
       use: "Text embedding / retrieval",
       category: "embedding",
       nvidiaId: "nvidia/llama-3.2-nv-embedqa-1b-v2",
+
+      credits: 1,
     },
     {
       name: "llama-3.2-nv-rerankqa-1b-v2",
@@ -468,6 +596,8 @@ window.CLEX_MODELS =
       use: "Reranking",
       category: "embedding",
       nvidiaId: "nvidia/llama-3.2-nv-rerankqa-1b-v2",
+
+      credits: 1,
     },
     {
       name: "llama-3.3-70b-instruct",
@@ -475,6 +605,8 @@ window.CLEX_MODELS =
       use: "Reasoning, math",
       category: "text",
       nvidiaId: "meta/llama-3.3-70b-instruct",
+
+      credits: 3,
     },
     {
       name: "nemotron-4-mini-hindi-4b-instruct",
@@ -482,6 +614,8 @@ window.CLEX_MODELS =
       use: "Hindi-English bilingual",
       category: "text",
       nvidiaId: "nvidia/nemotron-4-mini-hindi-4b-instruct",
+
+      credits: 1,
     },
     {
       name: "granite-guardian-3.0-8b",
@@ -489,6 +623,8 @@ window.CLEX_MODELS =
       use: "Guardrail",
       category: "safety",
       nvidiaId: "ibm/granite-guardian-3.0-8b",
+
+      credits: 1,
     },
     {
       name: "llama-3.1-swallow-70b-instruct-v0.1",
@@ -496,6 +632,8 @@ window.CLEX_MODELS =
       use: "Japanese sovereign AI",
       category: "text",
       nvidiaId: "tokyotech-llm/llama-3.1-swallow-70b-instruct-v0.1",
+
+      credits: 3,
     },
     {
       name: "llama-3.1-swallow-8b-instruct-v0.1",
@@ -503,6 +641,8 @@ window.CLEX_MODELS =
       use: "Japanese sovereign AI",
       category: "text",
       nvidiaId: "tokyotech-llm/llama-3.1-swallow-8b-instruct-v0.1",
+
+      credits: 1,
     },
     {
       name: "llama-3.1-nemotron-70b-reward",
@@ -510,6 +650,8 @@ window.CLEX_MODELS =
       use: "Reward model (RLHF)",
       category: "text",
       nvidiaId: "nvidia/llama-3.1-nemotron-70b-reward",
+
+      credits: 3,
     },
     {
       name: "llama-3.2-3b-instruct",
@@ -517,6 +659,8 @@ window.CLEX_MODELS =
       use: "Chat, reasoning",
       category: "text",
       nvidiaId: "meta/llama-3.2-3b-instruct",
+
+      credits: 1,
     },
     {
       name: "llama-3.2-1b-instruct",
@@ -524,6 +668,8 @@ window.CLEX_MODELS =
       use: "Chat, reasoning",
       category: "text",
       nvidiaId: "meta/llama-3.2-1b-instruct",
+
+      credits: 1,
     },
     {
       name: "qwen2-7b-instruct",
@@ -531,6 +677,8 @@ window.CLEX_MODELS =
       use: "Chinese & English LLM",
       category: "text",
       nvidiaId: "qwen/qwen2-7b-instruct",
+
+      credits: 1,
     },
     {
       name: "dracarys-llama-3.1-70b-instruct",
@@ -538,6 +686,8 @@ window.CLEX_MODELS =
       use: "Code, summarization",
       category: "text",
       nvidiaId: "abacusai/dracarys-llama-3.1-70b-instruct",
+
+      credits: 5,
     },
     {
       name: "llama-3.1-405b-instruct",
@@ -545,6 +695,8 @@ window.CLEX_MODELS =
       use: "Synthetic data, coding",
       category: "text",
       nvidiaId: "meta/llama-3.1-405b-instruct",
+
+      credits: 5,
     },
     {
       name: "llama-3.1-70b-instruct",
@@ -552,6 +704,8 @@ window.CLEX_MODELS =
       use: "Chat",
       category: "text",
       nvidiaId: "meta/llama-3.1-70b-instruct",
+
+      credits: 3,
     },
     {
       name: "llama-3.1-8b-instruct",
@@ -559,6 +713,8 @@ window.CLEX_MODELS =
       use: "Chat",
       category: "text",
       nvidiaId: "meta/llama-3.1-8b-instruct",
+
+      credits: 1,
     },
     {
       name: "phi-3-medium-128k-instruct",
@@ -566,6 +722,8 @@ window.CLEX_MODELS =
       use: "Chat, reasoning",
       category: "text",
       nvidiaId: "microsoft/phi-3-medium-128k-instruct",
+
+      credits: 2,
     },
     {
       name: "gemma-2-27b-it",
@@ -573,6 +731,8 @@ window.CLEX_MODELS =
       use: "Chat, text generation",
       category: "text",
       nvidiaId: "google/gemma-2-27b-it",
+
+      credits: 2,
     },
     {
       name: "gemma-2-9b-it",
@@ -580,6 +740,8 @@ window.CLEX_MODELS =
       use: "Chat, text generation",
       category: "text",
       nvidiaId: "google/gemma-2-9b-it",
+
+      credits: 1,
     },
     {
       name: "llama3-chatqa-1.5-8b",
@@ -587,6 +749,8 @@ window.CLEX_MODELS =
       use: "Text chatbot/search",
       category: "text",
       nvidiaId: "nvidia/llama3-chatqa-1.5-8b",
+
+      credits: 1,
     },
     {
       name: "mistral-7b-instruct-v0.3",
@@ -594,6 +758,8 @@ window.CLEX_MODELS =
       use: "Chat",
       category: "text",
       nvidiaId: "mistralai/mistral-7b-instruct-v0.3",
+
+      credits: 1,
     },
     {
       name: "solar-10.7b-instruct",
@@ -601,6 +767,8 @@ window.CLEX_MODELS =
       use: "NLP, reasoning, math",
       category: "text",
       nvidiaId: "upstage/solar-10.7b-instruct",
+
+      credits: 2,
     },
     {
       name: "nv-embed-v1",
@@ -608,6 +776,8 @@ window.CLEX_MODELS =
       use: "Text embeddings",
       category: "embedding",
       nvidiaId: "nvidia/nv-embed-v1",
+
+      credits: 1,
     },
     {
       name: "bge-m3",
@@ -615,6 +785,8 @@ window.CLEX_MODELS =
       use: "Text retrieval / embeddings",
       category: "embedding",
       nvidiaId: "baai/bge-m3",
+
+      credits: 1,
     },
     {
       name: "breeze-7b-instruct",
@@ -622,6 +794,8 @@ window.CLEX_MODELS =
       use: "Traditional Chinese chat",
       category: "text",
       nvidiaId: "mediatek/breeze-7b-instruct",
+
+      credits: 1,
     },
     {
       name: "phi-3-small-8k-instruct",
@@ -629,6 +803,8 @@ window.CLEX_MODELS =
       use: "Chat",
       category: "text",
       nvidiaId: "microsoft/phi-3-small-8k-instruct",
+
+      credits: 1,
     },
     {
       name: "phi-3-small-128k-instruct",
@@ -636,6 +812,8 @@ window.CLEX_MODELS =
       use: "Chat (long context)",
       category: "text",
       nvidiaId: "microsoft/phi-3-small-128k-instruct",
+
+      credits: 1,
     },
     {
       name: "phi-3-medium-4k-instruct",
@@ -643,6 +821,8 @@ window.CLEX_MODELS =
       use: "Chat",
       category: "text",
       nvidiaId: "microsoft/phi-3-medium-4k-instruct",
+
+      credits: 2,
     },
     {
       name: "sea-lion-7b-instruct",
@@ -650,6 +830,8 @@ window.CLEX_MODELS =
       use: "Southeast Asian languages",
       category: "text",
       nvidiaId: "ai-singapore/sea-lion-7b-instruct",
+
+      credits: 1,
     },
     {
       name: "phi-3-mini-4k-instruct",
@@ -657,6 +839,8 @@ window.CLEX_MODELS =
       use: "Chat",
       category: "text",
       nvidiaId: "microsoft/phi-3-mini-4k-instruct",
+
+      credits: 1,
     },
     {
       name: "phi-3-mini-128k-instruct",
@@ -664,6 +848,8 @@ window.CLEX_MODELS =
       use: "Chat (long context)",
       category: "text",
       nvidiaId: "microsoft/phi-3-mini-128k-instruct",
+
+      credits: 1,
     },
     {
       name: "mixtral-8x22b-instruct-v0.1",
@@ -671,6 +857,8 @@ window.CLEX_MODELS =
       use: "Advanced reasoning",
       category: "text",
       nvidiaId: "mistralai/mixtral-8x22b-instruct-v0.1",
+
+      credits: 5,
     },
     {
       name: "llama3-70b-instruct",
@@ -678,6 +866,8 @@ window.CLEX_MODELS =
       use: "Chat",
       category: "text",
       nvidiaId: "meta/llama3-70b-instruct",
+
+      credits: 3,
     },
     {
       name: "llama3-8b-instruct",
@@ -685,6 +875,8 @@ window.CLEX_MODELS =
       use: "Chat",
       category: "text",
       nvidiaId: "meta/llama3-8b-instruct",
+
+      credits: 1,
     },
     {
       name: "rerank-qa-mistral-4b",
@@ -692,6 +884,8 @@ window.CLEX_MODELS =
       use: "Ranking / reranking",
       category: "embedding",
       nvidiaId: "nvidia/rerank-qa-mistral-4b",
+
+      credits: 1,
     },
     {
       name: "gemma-7b",
@@ -699,6 +893,8 @@ window.CLEX_MODELS =
       use: "Chat, text generation",
       category: "text",
       nvidiaId: "google/gemma-7b",
+
+      credits: 1,
     },
     {
       name: "mistral-7b-instruct-v0.2",
@@ -706,6 +902,8 @@ window.CLEX_MODELS =
       use: "Chat",
       category: "text",
       nvidiaId: "mistralai/mistral-7b-instruct-v0.2",
+
+      credits: 1,
     },
     {
       name: "mixtral-8x7b-instruct",
@@ -713,6 +911,8 @@ window.CLEX_MODELS =
       use: "Advanced reasoning",
       category: "text",
       nvidiaId: "mistralai/mixtral-8x7b-instruct",
+
+      credits: 3,
     },
     {
       name: "llama-3-taiwan-70b-instruct",
@@ -720,6 +920,8 @@ window.CLEX_MODELS =
       use: "Traditional Mandarin",
       category: "text",
       nvidiaId: "yentinglin/llama-3-taiwan-70b-instruct",
+
+      credits: 1,
     },
     {
       name: "llama-3-swallow-70b-instruct-v0.1",
@@ -727,6 +929,8 @@ window.CLEX_MODELS =
       use: "Japanese",
       category: "text",
       nvidiaId: "tokyotech-llm/llama-3-swallow-70b-instruct-v0.1",
+
+      credits: 1,
     },
     {
       name: "jamba-1.5-mini-instruct",
@@ -734,6 +938,8 @@ window.CLEX_MODELS =
       use: "Chat, generative AI",
       category: "text",
       nvidiaId: "ai21labs/jamba-1.5-mini-instruct",
+
+      credits: 1,
     },
     {
       name: "nemotron-mini-4b-instruct",
@@ -741,6 +947,8 @@ window.CLEX_MODELS =
       use: "Chat, RAG",
       category: "text",
       nvidiaId: "nvidia/nemotron-mini-4b-instruct",
+
+      credits: 1,
     },
     {
       name: "mistral-nemo-minitron-8b-base",
@@ -748,6 +956,8 @@ window.CLEX_MODELS =
       use: "Chat, content generation",
       category: "text",
       nvidiaId: "nvidia/mistral-nemo-minitron-8b-base",
+
+      credits: 1,
     },
     {
       name: "phi-3.5-mini-instruct",
@@ -755,6 +965,8 @@ window.CLEX_MODELS =
       use: "Chat, edge",
       category: "text",
       nvidiaId: "microsoft/phi-3.5-mini-instruct",
+
+      credits: 1,
     },
     {
       name: "rakutenai-7b-instruct",
@@ -762,6 +974,8 @@ window.CLEX_MODELS =
       use: "Chat",
       category: "text",
       nvidiaId: "rakuten/rakutenai-7b-instruct",
+
+      credits: 1,
     },
     {
       name: "rakutenai-7b-chat",
@@ -769,6 +983,8 @@ window.CLEX_MODELS =
       use: "Chat",
       category: "text",
       nvidiaId: "rakuten/rakutenai-7b-chat",
+
+      credits: 1,
     },
     {
       name: "chatglm3-6b",
@@ -776,6 +992,8 @@ window.CLEX_MODELS =
       use: "Chinese/English chat, translation",
       category: "text",
       nvidiaId: "thudm/chatglm3-6b",
+
+      credits: 1,
     },
     {
       name: "baichuan2-13b-chat",
@@ -783,6 +1001,8 @@ window.CLEX_MODELS =
       use: "Chinese/English chat",
       category: "text",
       nvidiaId: "baichuan-ai/baichuan2-13b-chat",
+
+      credits: 1,
     },
     {
       name: "gpt-oss-20b",
@@ -790,6 +1010,8 @@ window.CLEX_MODELS =
       use: "Text reasoning, math",
       category: "text",
       nvidiaId: "openai/gpt-oss-20b",
+
+      credits: 1,
     },
     {
       name: "gpt-oss-120b",
@@ -797,6 +1019,8 @@ window.CLEX_MODELS =
       use: "Text reasoning (MoE)",
       category: "text",
       nvidiaId: "openai/gpt-oss-120b",
+
+      credits: 1,
     },
 
     // Code-focused models
@@ -806,6 +1030,8 @@ window.CLEX_MODELS =
       use: "OpenUSD coding",
       category: "code",
       nvidiaId: "nvidia/usdcode",
+
+      credits: 1,
     },
     {
       name: "qwen2.5-coder-32b-instruct",
@@ -813,6 +1039,8 @@ window.CLEX_MODELS =
       use: "Code generation, reasoning, fixing",
       category: "code",
       nvidiaId: "qwen/qwen2.5-coder-32b-instruct",
+
+      credits: 1,
     },
     {
       name: "qwen2.5-coder-7b-instruct",
@@ -820,6 +1048,8 @@ window.CLEX_MODELS =
       use: "Code completion",
       category: "code",
       nvidiaId: "qwen/qwen2.5-coder-7b-instruct",
+
+      credits: 1,
     },
     {
       name: "mamba-codestral-7b-v0.1",
@@ -827,6 +1057,8 @@ window.CLEX_MODELS =
       use: "Code completion",
       category: "code",
       nvidiaId: "mistralai/mamba-codestral-7b-v0.1",
+
+      credits: 1,
     },
     {
       name: "starcoder2-7b",
@@ -834,6 +1066,8 @@ window.CLEX_MODELS =
       use: "Code completion, Python",
       category: "code",
       nvidiaId: "bigcode/starcoder2-7b",
+
+      credits: 1,
     },
     {
       name: "qwq-32b",
@@ -841,6 +1075,8 @@ window.CLEX_MODELS =
       use: "Coding, reasoning",
       category: "code",
       nvidiaId: "qwen/qwq-32b",
+
+      credits: 1,
     },
 
     // Speech / audio and TTS
@@ -850,6 +1086,8 @@ window.CLEX_MODELS =
       use: "Mandarin Taiwanese English ASR",
       category: "speech",
       nvidiaId: "nvidia/parakeet-ctc-0.6b-zh-tw",
+
+      credits: 1,
     },
     {
       name: "parakeet-ctc-0.6b-zh-cn",
@@ -857,6 +1095,8 @@ window.CLEX_MODELS =
       use: "Mandarin English ASR",
       category: "speech",
       nvidiaId: "nvidia/parakeet-ctc-0.6b-zh-cn",
+
+      credits: 1,
     },
     {
       name: "parakeet-ctc-0.6b-es",
@@ -864,6 +1104,8 @@ window.CLEX_MODELS =
       use: "Spanish-English ASR",
       category: "speech",
       nvidiaId: "nvidia/parakeet-ctc-0.6b-es",
+
+      credits: 1,
     },
     {
       name: "parakeet-ctc-0.6b-vi",
@@ -871,6 +1113,8 @@ window.CLEX_MODELS =
       use: "Vietnamese-English ASR",
       category: "speech",
       nvidiaId: "nvidia/parakeet-ctc-0.6b-vi",
+
+      credits: 1,
     },
     {
       name: "parakeet-tdt-0.6b-v2",
@@ -878,6 +1122,8 @@ window.CLEX_MODELS =
       use: "English ASR with timestamps",
       category: "speech",
       nvidiaId: "nvidia/parakeet-tdt-0.6b-v2",
+
+      credits: 1,
     },
     {
       name: "parakeet-ctc-1.1b-asr",
@@ -885,6 +1131,8 @@ window.CLEX_MODELS =
       use: "English ASR",
       category: "speech",
       nvidiaId: "nvidia/parakeet-ctc-1.1b-asr",
+
+      credits: 1,
     },
     {
       name: "parakeet-ctc-0.6b-asr",
@@ -892,6 +1140,8 @@ window.CLEX_MODELS =
       use: "English ASR",
       category: "speech",
       nvidiaId: "nvidia/parakeet-ctc-0.6b-asr",
+
+      credits: 1,
     },
     {
       name: "parakeet-1.1b-rnnt-multilingual-asr",
@@ -899,6 +1149,8 @@ window.CLEX_MODELS =
       use: "25-language ASR",
       category: "speech",
       nvidiaId: "nvidia/parakeet-1.1b-rnnt-multilingual-asr",
+
+      credits: 1,
     },
     {
       name: "whisper-large-v3",
@@ -906,6 +1158,8 @@ window.CLEX_MODELS =
       use: "Speech recognition",
       category: "speech",
       nvidiaId: "openai/whisper-large-v3",
+
+      credits: 1,
     },
     {
       name: "canary-1b-asr",
@@ -913,6 +1167,8 @@ window.CLEX_MODELS =
       use: "Multilingual speech-to-text & translation",
       category: "speech",
       nvidiaId: "nvidia/canary-1b-asr",
+
+      credits: 1,
     },
     {
       name: "phi-4-multimodal-instruct",
@@ -920,6 +1176,8 @@ window.CLEX_MODELS =
       use: "Speech + image reasoning",
       category: "speech",
       nvidiaId: "microsoft/phi-4-multimodal-instruct",
+
+      credits: 1,
     },
     {
       name: "magpie-tts-flow",
@@ -927,6 +1185,8 @@ window.CLEX_MODELS =
       use: "Text-to-speech",
       category: "speech",
       nvidiaId: "nvidia/magpie-tts-flow",
+
+      credits: 1,
     },
   ];
 
@@ -1473,6 +1733,12 @@ window.CLEX_MARQUEE_MODELS = [
       isPreview: Boolean(rawModel?.isPreview),
       comingSoon: Boolean(rawModel?.comingSoon),
       description,
+
+      // Credit cost per call. Server-side lib/credits.ts is the source of
+      // truth; this is the advertised value that the catalog ships to the
+      // client. Falls back to 1 (DEFAULT_MODEL_COST) if the entry didn't
+      // declare one.
+      credits: typeof rawModel?.credits === "number" ? rawModel.credits : 1,
 
       // Legacy aliases used by older page scripts.
       publisher: provider,
