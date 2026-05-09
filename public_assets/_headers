@@ -1,0 +1,29 @@
+# ════════════════════════════════════════════════════════════════════════════
+# Cloudflare Pages cache rules.
+#
+# We rev static assets via `?v=N` query strings (e.g. shared.js?v=6,
+# dashboard.css?v=2). That works only if the *HTML* that points at those URLs
+# is fresh. If browsers / Cloudflare cache the HTML aggressively, users keep
+# seeing stale `?v=…` references and never re-fetch the bumped asset.
+#
+# So: short max-age for HTML, and a long, versioned cache for everything
+# else. Pages serves these in order; the most specific rule wins.
+# ════════════════════════════════════════════════════════════════════════════
+
+# Aggressive: HTML must always be revalidated. Tiny TTL so the CDN can still
+# absorb traffic spikes, but browsers / Cloudflare will re-fetch promptly
+# whenever we bump an asset version inside an HTML file.
+/*.html
+  Cache-Control: public, max-age=60, must-revalidate
+
+/
+  Cache-Control: public, max-age=60, must-revalidate
+
+# Static assets are referenced with `?v=N` cache busters, so we can let the
+# CDN/browsers cache them aggressively. A new `?v=N+1` is a brand-new URL
+# from the cache's perspective.
+/*.js
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/*.css
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800

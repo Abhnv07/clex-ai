@@ -23,7 +23,7 @@ export const UNLIMITED_KEYS_SENTINEL = 1_000_000;
 export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
   free: { perMinute: 1, perDay: 20, maxActiveKeys: 1 },
   starter: { perMinute: 5, perDay: 200, maxActiveKeys: 5 },
-  pro: { perMinute: 20, perDay: 1000, maxActiveKeys: UNLIMITED_KEYS_SENTINEL },
+  pro: { perMinute: 10, perDay: 1000, maxActiveKeys: 20 },
   developer: { perMinute: 60, perDay: 100000, maxActiveKeys: UNLIMITED_KEYS_SENTINEL },
 };
 
@@ -63,7 +63,7 @@ export const PLAN_CATALOG: PlanCatalogEntry[] = [
     monthlyUsd: 5,
     comingSoon: true,
     limits: PLAN_LIMITS.pro,
-    blurb: '1000 requests / day · 20 / minute · unlimited API keys. Production workloads.',
+    blurb: '1000 requests / day · 10 / minute · 20 API keys. Production workloads.',
   },
 ];
 

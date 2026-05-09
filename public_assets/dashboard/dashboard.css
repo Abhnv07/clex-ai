@@ -689,10 +689,24 @@ label {
 .key-create {
   display: flex;
   gap: 10px;
+  align-items: stretch;
 }
 
 .key-create input {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* The default `.btn-gold { width: 100% }` is meant for full-width auth/CTA
+   buttons. Inside the inline create-key form we want the button to size to
+   its label so the adjacent input gets the remaining space — without this
+   override the input collapses to a 0-width sliver. */
+.key-create .btn-gold {
+  width: auto;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  padding-left: 22px;
+  padding-right: 22px;
 }
 
 .key-revealed {
