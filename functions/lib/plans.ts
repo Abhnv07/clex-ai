@@ -24,11 +24,15 @@ export interface PlanLimits {
 // enforcing — useful so we don't depend on Infinity surviving JSON round-trips.
 export const UNLIMITED_KEYS_SENTINEL = 1_000_000;
 
+// Per-minute caps mirror NVIDIA NIM's per-key rate limits — Free matches the
+// upstream Build-tier ceiling (40 req/min). Starter / Pro assume a paid NVIDIA
+// plan upstream; if the upstream returns 429 the chat handler surfaces a
+// clear "Upstream rate limit hit, retry in N seconds" message.
 export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
-  free: { perMinute: 1, creditsPerDay: 100, maxActiveKeys: 1 },
-  starter: { perMinute: 5, creditsPerDay: 500, maxActiveKeys: 5 },
-  pro: { perMinute: 10, creditsPerDay: 2000, maxActiveKeys: 20 },
-  developer: { perMinute: 60, creditsPerDay: 1_000_000, maxActiveKeys: UNLIMITED_KEYS_SENTINEL },
+  free: { perMinute: 40, creditsPerDay: 100, maxActiveKeys: 1 },
+  starter: { perMinute: 80, creditsPerDay: 500, maxActiveKeys: 5 },
+  pro: { perMinute: 200, creditsPerDay: 2000, maxActiveKeys: 20 },
+  developer: { perMinute: 600, creditsPerDay: 1_000_000, maxActiveKeys: UNLIMITED_KEYS_SENTINEL },
 };
 
 export function isUnlimitedKeys(limit: number): boolean {
@@ -51,7 +55,7 @@ export const PLAN_CATALOG: PlanCatalogEntry[] = [
     monthlyUsd: 0,
     comingSoon: false,
     limits: PLAN_LIMITS.free,
-    blurb: '100 credits / day · 1 req / minute · 1 API key. Great for trying Clex AI.',
+    blurb: '100 credits / day · 40 req / minute · 1 API key. Great for trying Clex AI.',
   },
   {
     tier: 'starter',
@@ -59,7 +63,7 @@ export const PLAN_CATALOG: PlanCatalogEntry[] = [
     monthlyUsd: 2,
     comingSoon: true,
     limits: PLAN_LIMITS.starter,
-    blurb: '500 credits / day · 5 req / minute · 5 API keys. Side projects and prototyping.',
+    blurb: '500 credits / day · 80 req / minute · 5 API keys. Side projects and prototyping.',
   },
   {
     tier: 'pro',
@@ -67,7 +71,7 @@ export const PLAN_CATALOG: PlanCatalogEntry[] = [
     monthlyUsd: 5,
     comingSoon: true,
     limits: PLAN_LIMITS.pro,
-    blurb: '2,000 credits / day · 10 req / minute · 20 API keys. Production workloads.',
+    blurb: '2,000 credits / day · 200 req / minute · 20 API keys. Production workloads.',
   },
 ];
 

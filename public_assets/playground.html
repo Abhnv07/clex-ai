@@ -8,9 +8,9 @@
       name="description"
       content="The Clex AI IDE. Multi-file project + AI assistant in your browser."
     />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="shared.css" />
-    <link rel="stylesheet" href="playground.css?v=4" />
+
+    <!-- IDE owns the full viewport — no Tailwind, no marketing chrome. -->
+    <link rel="stylesheet" href="playground.css?v=5" />
     <link rel="icon" type="image/png" href="favicon.png" />
 
     <meta property="og:title" content="Playground — Clex AI" />
@@ -19,8 +19,6 @@
       content="The Clex AI IDE. Multi-file project + AI assistant in your browser."
     />
     <meta property="og:image" content="https://clex.in/preview.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Playground — Clex AI" />
     <meta
@@ -31,280 +29,272 @@
   </head>
 
   <body class="ide-body">
-    <!-- Marketing particle canvas is hidden by playground.css. Kept here so
-         shared.js's particle bootstrap doesn't error when it queries for it. -->
-    <canvas id="particle-canvas" aria-hidden="true"></canvas>
+    <!-- ───────────────────────── TOPBAR ───────────────────────── -->
+    <div class="ide-topbar">
+      <!-- Left: hamburger + brand + status -->
+      <div class="ide-topbar-left">
+        <button
+          id="topbar-menu-btn"
+          class="ide-icon-btn ide-topbar-menu-btn"
+          title="Menu"
+          aria-label="Open menu"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
 
-    <div class="ide-shell">
-      <div data-clex-header data-page="playground"></div>
-      <!-- ─────────────── Top tab strip (compact toolbar) ─────────────── -->
-      <div class="ide-tabstrip">
-        <div class="ide-tabstrip-left">
-          <span class="ide-brand-badge">
-            Clex AI <span class="ide-brand-badge-italic">IDE</span>
-          </span>
-          <span class="ide-status" id="ide-status" data-state="idle">
-            <span class="ide-status-dot"></span>
-            <span class="ide-status-label">Idle</span>
-          </span>
-        </div>
+        <a class="ide-brand" href="/">
+          <span class="ide-brand-mark" aria-hidden="true"></span>
+          <span class="ide-brand-text">Clex AI <span class="ide-brand-italic">IDE</span></span>
+        </a>
 
-        <div class="ide-tabstrip-spacer"></div>
+        <span class="ide-topbar-divider" aria-hidden="true"></span>
 
-        <div class="ide-tabstrip-right">
-          <span class="ide-tab-select-label">Template</span>
-          <select id="template-select" class="ide-tab-select" aria-label="Project template">
+        <span class="ide-status" id="ide-status" data-state="idle">
+          <span class="ide-status-dot"></span>
+          <span class="ide-status-label">Idle</span>
+        </span>
+      </div>
+
+      <!-- Center: project / model controls -->
+      <div class="ide-topbar-center">
+        <label class="ide-control">
+          <span class="ide-control-label">Template</span>
+          <select id="template-select" class="ide-control-input" aria-label="Project template">
             <option value="static">Static (HTML/CSS/JS)</option>
             <option value="vite-react">Vite + React</option>
             <option value="vue">Vite + Vue</option>
             <option value="svelte">Vite + Svelte</option>
             <option value="typescript">TypeScript</option>
           </select>
+        </label>
 
-          <span class="ide-tab-divider" aria-hidden="true"></span>
+        <label class="ide-control ide-control-model">
+          <span class="ide-control-label">Model</span>
+          <span id="chat-model-name" class="ide-control-value" title="Active model">moonshotai/kimi-k2-instruct</span>
+          <span id="chat-model-cost" class="ide-control-cost">5 cr</span>
+          <select id="model-input" class="ide-control-overlay" aria-label="Model"></select>
+          <svg class="ide-control-caret" width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </label>
 
-          <button id="boot-btn" class="ide-btn ide-btn--primary ide-btn--small">
-            <span class="ide-btn-dot"></span> Boot sandbox
+        <label class="ide-control ide-control-key">
+          <span class="ide-control-label">API key</span>
+          <span id="chat-key-label" class="ide-control-value">Auto key</span>
+          <input
+            id="clex-api-key"
+            class="ide-control-overlay"
+            type="password"
+            placeholder="clex_…"
+            autocomplete="off"
+            aria-label="Clex API key"
+          />
+        </label>
+      </div>
+
+      <!-- Right: actions + auth -->
+      <div class="ide-topbar-right">
+        <button id="boot-btn" class="ide-btn ide-btn--primary">
+          <span class="ide-btn-dot"></span>
+          <span class="ide-btn-label">Boot sandbox</span>
+        </button>
+        <button id="install-btn" class="ide-btn" disabled title="npm install">npm i</button>
+        <button id="run-btn" class="ide-btn" disabled title="npm run dev">npm run dev</button>
+        <button id="save-btn" class="ide-btn ide-btn--ghost" disabled title="Save active file (⌘S)">Save</button>
+
+        <span class="ide-topbar-divider" aria-hidden="true"></span>
+
+        <a href="/dashboard" class="ide-btn ide-btn--ghost" title="Open dashboard">Dashboard</a>
+      </div>
+    </div>
+
+    <!-- Hamburger menu (overlay, hidden by default) -->
+    <div id="topbar-menu" class="ide-menu" hidden>
+      <a class="ide-menu-item" href="/">Home</a>
+      <a class="ide-menu-item" href="/models.html">Models</a>
+      <a class="ide-menu-item" href="/docs.html">Docs</a>
+      <a class="ide-menu-item is-active" href="/playground.html" aria-current="page">Playground</a>
+      <a class="ide-menu-item" href="/pricing.html">Pricing</a>
+      <a class="ide-menu-item" href="/support.html">Support</a>
+      <div class="ide-menu-sep"></div>
+      <a class="ide-menu-item" href="/dashboard">Dashboard</a>
+      <a class="ide-menu-item ide-menu-item--btn" href="/dashboard#signout" id="topbar-signout-link">Sign out</a>
+    </div>
+
+    <!-- ───────────────────── MAIN GRID ───────────────────── -->
+    <main class="ide-main" id="ide-main">
+      <!-- Files explorer -->
+      <aside class="ide-pane ide-pane--files" id="ide-files-pane">
+        <header class="ide-pane-header">
+          <span class="ide-pane-title">
+            <svg class="ide-pane-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"></path>
+            </svg>
+            Explorer
+          </span>
+          <div class="ide-pane-actions">
+            <button id="new-file-btn" class="ide-icon-btn" title="New file" aria-label="New file" disabled>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                <line x1="12" y1="11" x2="12" y2="17"/>
+                <line x1="9" y1="14" x2="15" y2="14"/>
+              </svg>
+            </button>
+            <button id="del-file-btn" class="ide-icon-btn" title="Delete active file" aria-label="Delete active file" disabled>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+              </svg>
+            </button>
+          </div>
+        </header>
+        <div id="file-tree" class="ide-file-tree" role="tree">
+          <p class="ide-empty">Boot the sandbox to load files.</p>
+        </div>
+      </aside>
+
+      <!-- Editor -->
+      <section class="ide-pane ide-pane--editor">
+        <header class="ide-pane-header ide-pane-header--tabs">
+          <div id="editor-tabs" class="ide-tabs" role="tablist"></div>
+          <div class="ide-pane-actions">
+            <span class="ide-shortcut" title="Save active file">⌘S</span>
+            <button id="format-btn" class="ide-icon-btn" title="Reset file from template" aria-label="Reset file from template" disabled>↺</button>
+          </div>
+        </header>
+        <div id="editor" class="ide-editor"></div>
+        <div id="editor-empty" class="ide-editor-empty">
+          <div class="ide-editor-empty-inner">
+            <span class="ide-editor-empty-mark" aria-hidden="true"></span>
+            <h2>Welcome to the Clex IDE.</h2>
+            <p>
+              Click <strong>Boot sandbox</strong> in the topbar — that spins up a real
+              Node + npm runtime in your browser so you can edit files, install
+              packages, and ship a preview, all without leaving this tab.
+            </p>
+            <ul>
+              <li>Browse files in the left explorer.</li>
+              <li>Pair-program with the AI in the right pane (Ask / Agent / Edit).</li>
+              <li>Preview your dev server in the bottom dock.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI chat -->
+      <section class="ide-pane ide-pane--chat">
+        <div class="ide-chat-modes" role="tablist" aria-label="Assistant mode">
+          <button type="button" class="ide-mode-tab is-active" data-mode="ask" role="tab" aria-selected="true">
+            Ask <span class="ide-mode-tab-key">⌘1</span>
           </button>
-          <button id="install-btn" class="ide-btn ide-btn--small" disabled>
-            npm install
+          <button type="button" class="ide-mode-tab" data-mode="agent" role="tab">
+            Agent <span class="ide-mode-tab-key">⌘2</span>
           </button>
-          <button id="run-btn" class="ide-btn ide-btn--small" disabled>
-            npm run dev
+          <button type="button" class="ide-mode-tab" data-mode="edit" role="tab">
+            Edit <span class="ide-mode-tab-key">⌘3</span>
           </button>
-          <button
-            id="save-btn"
-            class="ide-btn ide-btn--ghost ide-btn--small"
-            disabled
-            title="Save (⌘S)"
-          >
-            Save
+          <div class="ide-chat-modes-spacer"></div>
+          <button id="chat-clear" class="ide-icon-btn" title="Clear chat" aria-label="Clear chat">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/>
+            </svg>
           </button>
+        </div>
+
+        <div class="ide-chat-toolbar">
+          <span class="ide-chat-mode-hint" id="chat-mode-hint">
+            Q&amp;A about the active file — won't edit unless you ask.
+          </span>
+        </div>
+
+        <div id="chat-thread" class="ide-chat-thread">
+          <div class="ide-chat-empty">
+            <h3 class="ide-chat-empty-title">Pair-program with Clex.</h3>
+            <p class="ide-chat-empty-line">
+              Switch to <strong>Agent</strong> to scaffold and edit files directly.
+              The model sees your active file plus everything in the explorer.
+            </p>
+            <p class="ide-chat-empty-hint">
+              Code blocks tagged
+              <code>```lang file=path/to/file</code>
+              get an <strong>Apply</strong> button that writes straight to the sandbox.
+            </p>
+          </div>
+        </div>
+
+        <div class="ide-chat-suggest" id="chat-suggest">
+          <button class="ide-chip" data-prompt="Add a dark / light mode toggle to this project.">Theme toggle</button>
+          <button class="ide-chip" data-prompt="Refactor the active file into smaller components.">Refactor</button>
+          <button class="ide-chip" data-prompt="Add a contact form with client-side validation.">Contact form</button>
+          <button class="ide-chip" data-prompt="Explain what the active file does, line by line.">Explain</button>
+          <button class="ide-chip" data-prompt="Write tests for the active file using vitest.">Tests</button>
+        </div>
+
+        <div class="ide-chat-context" id="chat-context"></div>
+
+        <form id="chat-form" class="ide-chat-form" autocomplete="off">
+          <textarea
+            id="chat-input"
+            class="ide-chat-input"
+            rows="3"
+            placeholder="Ask anything about the project. The model can see the active file."
+          ></textarea>
+          <div class="ide-chat-form-row">
+            <span class="ide-chat-keyhint">
+              <kbd>↩</kbd> send · <kbd>⇧↩</kbd> newline
+            </span>
+            <button type="submit" id="chat-send" class="ide-btn ide-btn--primary ide-btn--small" disabled>Send</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <!-- ──────────────────── BOTTOM DOCK ──────────────────── -->
+    <section class="ide-dock" id="ide-dock">
+      <div class="ide-dock-strip">
+        <button class="ide-dock-tab active" data-dock="preview" role="tab" aria-selected="true">
+          Preview <span class="ide-dock-url" id="preview-url">(not running)</span>
+        </button>
+        <button class="ide-dock-tab" data-dock="console" role="tab">
+          Console
+        </button>
+        <div class="ide-dock-spacer"></div>
+        <div class="ide-dock-actions">
+          <div class="ide-dock-devices" role="group" aria-label="Preview viewport">
+            <button class="ide-chip ide-chip--device active" data-device="desktop">Desktop</button>
+            <button class="ide-chip ide-chip--device" data-device="tablet">Tablet</button>
+            <button class="ide-chip ide-chip--device" data-device="mobile">Mobile</button>
+          </div>
+          <button id="refresh-preview" class="ide-icon-btn" title="Refresh preview" aria-label="Refresh preview">⟳</button>
+          <button id="open-preview-tab" class="ide-icon-btn" title="Open preview in new tab" aria-label="Open preview in new tab">↗</button>
+          <button id="dock-collapse" class="ide-icon-btn" title="Toggle panel" aria-label="Toggle dock">▾</button>
         </div>
       </div>
 
-      <!-- ─────────────── Main grid ─────────────── -->
-      <main class="ide-main" id="ide-main">
-        <!-- Files panel -->
-        <aside class="ide-pane ide-pane--files">
-          <header class="ide-pane-header">
-            <span class="ide-pane-title">
-              <span class="ide-dot"></span> Explorer
-            </span>
-            <div class="ide-pane-actions">
-              <button
-                id="new-file-btn"
-                class="ide-icon-btn"
-                title="New file"
-                aria-label="New file"
-                disabled
-              >+</button>
-              <button
-                id="del-file-btn"
-                class="ide-icon-btn"
-                title="Delete active file"
-                aria-label="Delete active file"
-                disabled
-              >✕</button>
-            </div>
-          </header>
-          <div id="file-tree" class="ide-file-tree" role="tree">
-            <p class="ide-empty">Boot the sandbox to load files.</p>
-          </div>
-        </aside>
-
-        <!-- Editor pane -->
-        <section class="ide-pane ide-pane--editor">
-          <header class="ide-pane-header">
-            <div id="editor-tabs" class="ide-tabs" role="tablist"></div>
-            <div class="ide-pane-actions">
-              <span class="ide-shortcut">⌘S</span>
-              <button
-                id="format-btn"
-                class="ide-icon-btn"
-                title="Reset file from template"
-                aria-label="Reset file from template"
-                disabled
-              >↺</button>
-            </div>
-          </header>
-          <div id="editor" class="ide-editor"></div>
-        </section>
-
-        <!-- Cursor-style AI pane -->
-        <section class="ide-pane ide-pane--chat">
-          <!-- Mode tabs (Ask / Agent / Edit) -->
-          <div class="ide-chat-modes" role="tablist" aria-label="Assistant mode">
-            <button
-              type="button"
-              class="ide-mode-tab is-active"
-              data-mode="ask"
-              role="tab"
-              aria-selected="true"
-            >
-              Ask <span class="ide-mode-tab-key">⌘1</span>
-            </button>
-            <button
-              type="button"
-              class="ide-mode-tab"
-              data-mode="agent"
-              role="tab"
-            >
-              Agent <span class="ide-mode-tab-key">⌘2</span>
-            </button>
-            <button
-              type="button"
-              class="ide-mode-tab"
-              data-mode="edit"
-              role="tab"
-            >
-              Edit <span class="ide-mode-tab-key">⌘3</span>
-            </button>
-          </div>
-
-          <!-- Mode hint + actions -->
-          <div class="ide-chat-toolbar">
-            <span class="ide-chat-mode-hint" id="chat-mode-hint">
-              Q&amp;A about the active file — won't edit unless you ask.
-            </span>
-            <button
-              id="chat-clear"
-              class="ide-icon-btn"
-              title="Clear chat"
-              aria-label="Clear chat"
-            >⌫</button>
-          </div>
-
-          <!-- Thread -->
-          <div id="chat-thread" class="ide-chat-thread">
-            <div class="ide-chat-empty">
-              <h3 class="ide-chat-empty-title">Pair-program with Clex.</h3>
-              <p class="ide-chat-empty-line">
-                Switch to <strong>Agent</strong> to scaffold and edit files
-                directly. The model sees your active file plus everything in
-                the explorer.
-              </p>
-              <p class="ide-chat-empty-hint">
-                Code blocks tagged
-                <code>```lang file=path/to/file</code>
-                get an <strong>Apply</strong> button that writes straight to
-                the sandbox.
-              </p>
-            </div>
-          </div>
-
-          <!-- Suggested prompts -->
-          <div class="ide-chat-suggest" id="chat-suggest">
-            <button class="ide-chip" data-prompt="Add a dark / light mode toggle to this project.">
-              Theme toggle
-            </button>
-            <button class="ide-chip" data-prompt="Refactor the active file into smaller components.">
-              Refactor
-            </button>
-            <button class="ide-chip" data-prompt="Add a contact form with client-side validation.">
-              Contact form
-            </button>
-            <button class="ide-chip" data-prompt="Explain what the active file does, line by line.">
-              Explain
-            </button>
-            <button class="ide-chip" data-prompt="Write tests for the active file using vitest.">
-              Tests
-            </button>
-          </div>
-
-          <!-- Context chips (active file + tabs) -->
-          <div class="ide-chat-context" id="chat-context"></div>
-
-          <!-- Composer -->
-          <form id="chat-form" class="ide-chat-form" autocomplete="off">
-            <textarea
-              id="chat-input"
-              class="ide-chat-input"
-              rows="3"
-              placeholder="Plan a feature or paste an error — the model can edit any file in the tree."
-            ></textarea>
-            <div class="ide-chat-form-row">
-              <div class="ide-chat-form-meta">
-                <label class="ide-chat-model-pill" id="chat-model-pill">
-                  <span class="ide-chat-model-pill-dot"></span>
-                  <span id="chat-model-name">moonshotai/kimi-k2-instruct</span>
-                  <span class="ide-chat-model-pill-cost" id="chat-model-cost">5 cr</span>
-                  <select id="model-input" aria-label="Model">
-                    <option value="moonshotai/kimi-k2-instruct">moonshotai/kimi-k2-instruct</option>
-                  </select>
-                </label>
-                <label class="ide-chat-model-pill" title="Optional Clex API key — uses your saved keys by default.">
-                  <span class="ide-chat-model-pill-dot" style="background:#4ea1ff"></span>
-                  <span id="chat-key-label">Auto key</span>
-                  <input
-                    id="clex-api-key"
-                    type="password"
-                    placeholder="clex_…"
-                    autocomplete="off"
-                    style="
-                      position: absolute;
-                      inset: 0;
-                      opacity: 0;
-                      cursor: pointer;
-                      font-family: var(--ide-mono);
-                    "
-                  />
-                </label>
-              </div>
-              <span class="ide-chat-keyhint">
-                <kbd>↩</kbd> send · <kbd>⇧↩</kbd> newline
-              </span>
-              <button
-                type="submit"
-                id="chat-send"
-                class="ide-btn ide-btn--primary ide-btn--small"
-                disabled
-              >Send</button>
-            </div>
-          </form>
-        </section>
-      </main>
-
-      <!-- ─────────────── Bottom dock ─────────────── -->
-      <section class="ide-dock" id="ide-dock">
-        <div class="ide-dock-strip">
-          <button class="ide-dock-tab active" data-dock="preview" role="tab" aria-selected="true">
-            Preview <span class="ide-dock-url" id="preview-url">(not running)</span>
-          </button>
-          <button class="ide-dock-tab" data-dock="console" role="tab">
-            Console
-          </button>
-          <div class="ide-dock-spacer"></div>
-          <div class="ide-dock-actions">
-            <div class="ide-dock-devices">
-              <button class="ide-chip ide-chip--device active" data-device="desktop">Desktop</button>
-              <button class="ide-chip ide-chip--device" data-device="tablet">Tablet</button>
-              <button class="ide-chip ide-chip--device" data-device="mobile">Mobile</button>
-            </div>
-            <button id="refresh-preview" class="ide-icon-btn" title="Refresh preview" aria-label="Refresh preview">⟳</button>
-            <button id="open-preview-tab" class="ide-icon-btn" title="Open preview in new tab" aria-label="Open preview in new tab">↗</button>
-            <button id="dock-collapse" class="ide-icon-btn" title="Toggle panel" aria-label="Toggle dock">▾</button>
-          </div>
+      <div class="ide-dock-body" data-dock-body="preview">
+        <div id="preview-frame-wrap" class="ide-preview-wrap">
+          <iframe
+            id="preview-frame"
+            title="Live preview"
+            class="ide-preview-iframe"
+            src="about:blank"
+          ></iframe>
         </div>
-
-        <div class="ide-dock-body" data-dock-body="preview">
-          <div id="preview-frame-wrap" class="ide-preview-wrap">
-            <iframe
-              id="preview-frame"
-              title="Live preview"
-              class="ide-preview-iframe"
-              src="about:blank"
-            ></iframe>
-          </div>
-        </div>
-        <div class="ide-dock-body hidden" data-dock-body="console">
-          <pre id="logs" class="ide-logs">Boot the sandbox to see logs…</pre>
-        </div>
-      </section>
-    </div>
+      </div>
+      <div class="ide-dock-body hidden" data-dock-body="console">
+        <pre id="logs" class="ide-logs">Boot the sandbox to see logs…</pre>
+      </div>
+    </section>
 
     <script src="models-data.js?v=2"></script>
-    <script src="shared.js?v=8"></script>
-    <script type="module" src="playground.js?v=3"></script>
+    <script src="shared.js?v=9"></script>
+    <script type="module" src="playground.js?v=4"></script>
   </body>
 </html>

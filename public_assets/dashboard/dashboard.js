@@ -974,6 +974,16 @@ window.addEventListener("hashchange", () => {
   if (auth.currentUser) setRoute(location.hash.replace(/^#/, "") || "overview");
 });
 
+// Allow other pages (e.g. /playground) to deep-link a sign-out by pointing
+// the user at /dashboard#signout. We swap the hash back to /overview so we
+// don't reprocess on subsequent navigation.
+if (location.hash === "#signout") {
+  history.replaceState(null, "", location.pathname + "#overview");
+  signOut(auth).catch((err) => {
+    console.warn("[clex] deep-link sign-out failed", err);
+  });
+}
+
 // If we just got back from a Firebase redirect (Google/GitHub OAuth), pick up
 // the result before onAuthStateChanged fires so the loading spinner stays up
 // instead of flashing the sign-in form.

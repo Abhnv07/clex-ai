@@ -1,5 +1,5 @@
 // ════════════════════════════════════════════════════════════════════════════
-// Clex AI IDE — playground.js (v2)
+// Clex AI IDE — playground.js (v4)
 //
 // Single-page IDE shell that wires together:
 //   1. WebContainer        — in-browser Node sandbox (npm install / npm run dev)
@@ -79,6 +79,9 @@ const els = {
   dock: document.querySelector(".ide-dock"),
   deviceBtns: $$(".ide-chip--device"),
   logs: $("logs"),
+  editorEmpty: $("editor-empty"),
+  menuBtn: $("topbar-menu-btn"),
+  menu: $("topbar-menu"),
 };
 
 // ───── Mode definitions (Cursor-style: Ask / Agent / Edit) ─────
@@ -548,10 +551,15 @@ function closeTab(path) {
       openFile(activePath, /* alreadyOpen */ true);
     } else {
       setEditorDoc("", null);
+      if (els.editorEmpty) els.editorEmpty.classList.remove("is-hidden");
+      els.saveBtn.disabled = true;
+      els.delFileBtn.disabled = true;
+      els.formatBtn.disabled = true;
     }
   }
   renderTabs();
   renderFileTree();
+  updateContextHint();
 }
 
 // ───── File ops ─────
@@ -571,6 +579,7 @@ async function openFile(path, alreadyOpen = false) {
   els.saveBtn.disabled = !dirty.has(path);
   els.delFileBtn.disabled = false;
   els.formatBtn.disabled = false;
+  if (els.editorEmpty) els.editorEmpty.classList.add("is-hidden");
   renderTabs();
   renderFileTree();
   updateContextHint();
@@ -1306,6 +1315,34 @@ function bind() {
 
   els.modelInput.addEventListener("change", updateCreditHint);
   els.apiKey.addEventListener("input", updateApiKeyLabel);
+
+  // Hamburger menu — open / close on click + outside-click + Esc.
+  if (els.menuBtn && els.menu) {
+    const closeMenu = () => {
+      els.menu.hidden = true;
+      els.menuBtn.setAttribute("aria-expanded", "false");
+    };
+    const openMenu = () => {
+      els.menu.hidden = false;
+      els.menuBtn.setAttribute("aria-expanded", "true");
+    };
+    els.menuBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (els.menu.hidden) openMenu();
+      else closeMenu();
+    });
+    document.addEventListener("click", (e) => {
+      if (els.menu.hidden) return;
+      if (els.menu.contains(e.target) || els.menuBtn.contains(e.target)) return;
+      closeMenu();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !els.menu.hidden) closeMenu();
+    });
+  }
+
+  els.newFileBtn.disabled = !wc;
+  els.delFileBtn.disabled = !wc;
 
   // Bootstrapping the model list as soon as models-data.js has loaded.
   if (window.CLEX_MODELS) {
